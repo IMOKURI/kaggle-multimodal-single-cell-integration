@@ -1,0 +1,109 @@
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: ../output/${now:%Y-%m-%d_%H-%M-%S}
+  job:
+    chdir: False
+  job_logging:
+    formatters:
+      simple:
+        format: "%(asctime)s [%(levelname)s][%(module)s] %(message)s"
+
+wandb:
+  enabled: True
+  entity: imokuri
+  project: msci  # Multimodal Single-Cell Integration
+  dir: ../cache
+  group: ${settings.training_method}
+
+settings:
+  print_freq: 100
+  # gpus: "0,1"
+
+  dirs:
+    working: ..
+    input: ${settings.dirs.working}/input
+    feature: ${settings.dirs.working}/feature
+    preprocess: ${settings.dirs.working}/preprocess
+    # train_image: ${settings.dirs.input}/train/
+    # test_image: ${settings.dirs.input}/test/
+    # other_image: ${settings.dirs.input}/other/
+
+  inputs:
+    - evaluation_ids.csv
+    - metadata.csv
+    - sample_submission.csv
+    - test_cite_inputs.h5
+    - test_multi_inputs.h5
+    - train_cite_inputs.h5
+    - train_cite_targets.h5
+    - train_multi_inputs.h5
+    - train_multi_targets.h5
+    # - train.csv
+    # - test.csv
+    # - sample_submission.csv
+
+  debug: False
+  n_debug_data: 10
+
+  amp: True
+  multi_gpu: True
+
+  skip_training: False
+  skip_inference: True
+
+  training_method: nn
+
+  label_name: label
+  n_class: 2
+  scoring: logloss
+
+# These parameters are main tuning parameters and recorded to wandb.
+params:
+  seed: ${global_params.seed}
+  model: ${model_params.model}
+  model_input: ${model_params.model_input}
+  model_name: ${model_params.model_name}
+
+global_params:
+  seed: 440
+
+cv_params:
+  n_fold: 5
+  n_validation: 1
+  fold: stratified_group
+  group_name: patient_id
+  # time_name: ""
+
+training_params:
+  epoch: 10
+  es_patience: 0
+  batch_size: 24
+  gradient_acc_step: 1
+  max_grad_norm: 1000
+  # feature_set:
+  #   - "f000" # f000_open_close
+  criterion: CrossEntropyLoss
+  optimizer: Adam
+  scheduler: CosineAnnealingWarmupRestarts
+  lr: 5e-4
+  min_lr: 1e-4
+  weight_decay: 0  # AdamW: 0.01, others: 0
+  # label_smoothing: 1e-6
+
+model_params:
+  dataset: base
+  augmentation: light
+  model: base
+  model_input: 512
+  model_name: tf_efficientnet_b4_ns
+  # dropout: 0.0
+
+inference_params:
+  pretrained: []
+  # pretrained:
+  #   - dir: ""
+  #     model: ""
+  #     name: ""
