@@ -11,6 +11,8 @@ from typing import Callable, Union
 import numpy as np
 import pandas as pd
 
+from .preprocesses.p010_pca import CustomPCA
+
 log = logging.getLogger(__name__)
 
 
@@ -24,6 +26,20 @@ def preprocess(c, df: pd.DataFrame, stem: str) -> pd.DataFrame:
     df = df.fillna(np.nan)
 
     return df
+
+
+def preprocess_train_test(c, train_df: pd.DataFrame, test_df: pd.DataFrame, kind: str) -> (pd.DataFrame, pd.DataFrame):
+    train_size = len(train_df)
+
+    df = pd.concat([train_df, test_df])
+
+    preprocessor = CustomPCA(c, kind)
+    df = transform_data(c, f"{kind}-pca.f", df, preprocessor)
+
+    train_df = df.iloc[:train_size, :]
+    test_df = df.iloc[train_size:, :]
+
+    return train_df, test_df
 
 
 def load_or_fit(func: Callable):

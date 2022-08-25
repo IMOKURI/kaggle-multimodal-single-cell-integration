@@ -35,12 +35,15 @@ settings:
     - evaluation_ids.csv
     - metadata.csv
     - sample_submission.csv
+
     - test_cite_inputs.h5
-    - test_multi_inputs.h5
     - train_cite_inputs.h5
     - train_cite_targets.h5
-    - train_multi_inputs.h5
-    - train_multi_targets.h5
+
+    # - test_multi_inputs.h5
+    # - train_multi_inputs.h5
+    # - train_multi_targets.h5
+
     # - train.csv
     # - test.csv
     # - sample_submission.csv
@@ -54,7 +57,7 @@ settings:
   skip_training: False
   skip_inference: True
 
-  training_method: nn
+  training_method: lightgbm
 
   label_name: label
   n_class: 2
@@ -70,11 +73,15 @@ params:
 global_params:
   seed: 440
 
+preprocess_params:
+  pca_n_components_cite: 240
+  pca_n_components_multi: 24000
+
 cv_params:
   n_fold: 5
   n_validation: 1
-  fold: stratified_group
-  group_name: patient_id
+  fold: kfold
+  # group_name: patient_id
   # time_name: ""
 
 training_params:

@@ -4,7 +4,7 @@ import os
 import pandas as pd
 
 from .make_fold import make_fold
-from .preprocess import preprocess
+from .preprocess import preprocess, preprocess_train_test
 from .utils import reduce_mem_usage
 
 log = logging.getLogger(__name__)
@@ -55,6 +55,32 @@ class InputData:
             df = reduce_mem_usage(df)
 
             setattr(self, stem, df)
+
+        if hasattr(self, "train_cite_inputs") and do_preprocess:
+            train, test = preprocess_train_test(
+                c, getattr(self, "train_cite_inputs"), getattr(self, "test_cite_inputs"), "cite"
+            )
+
+            train = make_fold(c, train)
+
+            train.index = getattr(self, "train_cite_inputs").index
+            test.index = getattr(self, "test_cite_inputs").index
+
+            setattr(self, "train_cite_inputs", train)
+            setattr(self, "test_cite_inputs", test)
+
+        elif hasattr(self, "train_multi_inputs") and do_preprocess:
+            train, test = preprocess_train_test(
+                c, getattr(self, "train_multi_inputs"), getattr(self, "test_multi_inputs"), "multiome"
+            )
+
+            train = make_fold(c, train)
+
+            train.index = getattr(self, "train_multi_inputs").index
+            test.index = getattr(self, "test_multi_inputs").index
+
+            setattr(self, "train_multi_inputs", train)
+            setattr(self, "test_multi_inputs", test)
 
 
 def sample_for_debug(c, df):

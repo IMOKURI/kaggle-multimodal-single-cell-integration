@@ -4,7 +4,7 @@ import sys
 
 import numpy as np
 import pandas as pd
-from sklearn.model_selection import GroupKFold, StratifiedGroupKFold, StratifiedKFold, TimeSeriesSplit
+from sklearn.model_selection import KFold, GroupKFold, StratifiedGroupKFold, StratifiedKFold, TimeSeriesSplit
 
 log = logging.getLogger(__name__)
 
@@ -12,6 +12,8 @@ log = logging.getLogger(__name__)
 def make_fold(c, df):
     if c.cv_params.n_fold == 0:
         df.loc[:, "fold"] = -1
+    elif c.cv_params.fold == "kfold":
+        df = kfold(c, df)
     elif c.cv_params.fold == "bins_stratified":
         df = bins_stratified_kfold(c, df, c.settings.label_name)
     elif c.cv_params.fold == "stratified":
@@ -97,6 +99,14 @@ def train_test_split(c, df, fold):
     valid_folds = df.loc[val_idx].reset_index(drop=True)
 
     return train_folds, valid_folds
+
+
+def kfold(c, df):
+    fold_ = KFold(n_splits=c.cv_params.n_fold, shuffle=True, random_state=c.global_params.seed)
+    for n, (_, val_index) in enumerate(fold_.split(df)):
+        df.loc[val_index, "fold"] = int(n)
+
+    return df
 
 
 def bins_stratified_kfold(c, df, col):
