@@ -49,7 +49,7 @@ settings:
     # - sample_submission.csv
 
   debug: False
-  n_debug_data: 10
+  n_debug_data: 0
 
   amp: True
   multi_gpu: True
@@ -61,7 +61,7 @@ settings:
 
   label_name: label
   n_class: 2
-  scoring: logloss
+  scoring: pearson
 
 # These parameters are main tuning parameters and recorded to wandb.
 params:
@@ -75,7 +75,7 @@ global_params:
 
 preprocess_params:
   pca_n_components_cite: 240
-  pca_n_components_multi: 24000
+  pca_n_components_multi: 240
 
 cv_params:
   n_fold: 5

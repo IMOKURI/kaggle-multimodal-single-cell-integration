@@ -69,6 +69,8 @@ class InputData:
             setattr(self, "train_cite_inputs", train)
             setattr(self, "test_cite_inputs", test)
 
+            self.train_cite_targets["fold"] = self.train_cite_inputs["fold"]
+
         elif hasattr(self, "train_multi_inputs") and do_preprocess:
             train, test = preprocess_train_test(
                 c, getattr(self, "train_multi_inputs"), getattr(self, "test_multi_inputs"), "multiome"
@@ -82,8 +84,10 @@ class InputData:
             setattr(self, "train_multi_inputs", train)
             setattr(self, "test_multi_inputs", test)
 
+            self.train_multi_targets["fold"] = self.train_multi_inputs["fold"]
+
 
 def sample_for_debug(c, df):
-    if len(df) > c.settings.n_debug_data:
+    if len(df) > c.settings.n_debug_data and c.settings.n_debug_data > 0:
         df = df.sample(n=c.settings.n_debug_data, random_state=c.global_params.seed).reset_index(drop=True)
     return df
