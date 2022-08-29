@@ -16,14 +16,14 @@ log = logging.getLogger(__name__)
 class CustomPCA(BaseTransformer):
     """ """
 
-    def __init__(self, c, kind):
+    def __init__(self, c):
         self.seed = c.global_params.seed
-        if kind == "cite":
+        if c.global_params.data == "cite":
             self.n_components = c.preprocess_params.pca_n_components_cite
-        elif kind == "multiome":
+        elif c.global_params.data == "multi":
             self.n_components = c.preprocess_params.pca_n_components_multi
         else:
-            raise Exception(f"Invalid kind. kind: {kind}")
+            raise Exception(f"Invalid data. {c.global_params.data}")
         self.columns = [f"pca_{n}" for n in range(self.n_components)]
         self.pca = PCA(n_components=self.n_components, copy=False, random_state=self.seed)
 

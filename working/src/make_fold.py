@@ -96,7 +96,7 @@ def train_test_split(c, df, fold):
     log.info(f"Num of training data: {len(trn_idx)}, num of validation data: {len(val_idx)}")
 
     train_folds = df.loc[trn_idx].reset_index(drop=True)
-    valid_folds = df.loc[val_idx].reset_index(drop=True)
+    valid_folds = df.loc[val_idx]  # .reset_index(drop=True)
 
     return train_folds, valid_folds
 

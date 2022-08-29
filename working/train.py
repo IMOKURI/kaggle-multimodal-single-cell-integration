@@ -10,7 +10,7 @@ from omegaconf.errors import ConfigAttributeError
 from scipy.optimize import minimize
 from src.get_score import optimize_function, record_result
 from src.load_data import InputData
-from src.run_loop import train_fold_lightgbm # , train_fold_nn, train_fold_tabnet, train_fold_xgboost
+from src.run_loop import train_fold_lightgbm, train_fold_tabnet  # , train_fold_nn, train_fold_xgboost
 
 log = logging.getLogger(__name__)
 
@@ -28,6 +28,8 @@ def main(c):
 
     oof_df = pd.DataFrame()
     label_df = pd.DataFrame()
+    inference_df = pd.DataFrame()
+
     losses = utils.AverageMeter()
     single_run = False
 
@@ -52,27 +54,33 @@ def main(c):
         log.info(f"========== fold {fold} training start ==========")
         utils.fix_seed(c.global_params.seed + fold)
 
-        if c.settings.training_method == "lightgbm":
-            _oof_df, _label_df, loss = train_fold_lightgbm(c, input, fold)
-        # elif c.settings.training_method == "xgboost":
+        if False:
+            raise
+        # elif c.global_params.method == "lightgbm":
+        #     _oof_df, _label_df, loss = train_fold_lightgbm(c, input, fold)
+        # elif c.global_params.method == "xgboost":
         #     _oof_df, loss = train_fold_xgboost(c, input, fold)
-        # elif c.settings.training_method == "tabnet":
-        #     _oof_df, loss = train_fold_tabnet(c, input, fold)
-        # else:
+        elif c.global_params.method == "tabnet":
+            _oof_df, _label_df, loss, _inference_df = train_fold_tabnet(c, input, fold)
+        # elif:
         #     _oof_df, loss = train_fold_nn(c, input, fold, device)
+        else:
+            raise Exception(f"Invalid training method. {c.global_params.method}")
 
         log.info(f"========== fold {fold} training result ==========")
+        log.debug(f"_oof_df: {_oof_df.shape}, _label_df: {_label_df.shape}")
         record_result(c, _oof_df, fold, _label_df, loss)
 
         oof_df = pd.concat([oof_df, _oof_df])
         label_df = pd.concat([label_df, _label_df])
+        inference_df = pd.concat([inference_df, _inference_df])
         losses.update(loss)
 
         if c.settings.debug or single_run:
             break
 
     log.info("========== training result ==========")
-    score = record_result(c, oof_df, c.cv_params.n_fold, losses.avg)
+    score = record_result(c, oof_df, c.cv_params.n_fold, label_df, losses.avg)
 
     # log.info("========== optimize training result ==========")
     # minimize_result = minimize(
@@ -90,9 +98,16 @@ def main(c):
 
     log.info(f"oof -> \n{oof_df}")
 
-    # if not c.settings.skip_inference:
-    #     log.info("========== inference result ==========")
-    #
+    if not c.settings.skip_inference:
+        log.info("========== inference result ==========")
+
+        inference_df = inference_df.groupby("cell_id").mean()
+
+        inference_path = os.path.join(HydraConfig.get().run.dir, f"{c.global_params.data}_inference_df.csv")
+        inference_df.to_csv(inference_path)
+
+        log.info(f"inference -> \n{inference_df}")
+
     #     cols_base_preds = [col for col in input.test.columns if "base_preds" in col]
     #     input.test["base_preds"] = nanmean(input.test[cols_base_preds].to_numpy(), axis=1)
     #     input.test["preds"] = (input.test[f"base_preds"] > minimize_result["x"].item()).astype(bool)

@@ -18,6 +18,11 @@ class InputData:
             stem = os.path.splitext(file_name)[0].replace("/", "__")
             extension = os.path.splitext(file_name)[1]
 
+            if c.global_params.data == "cite" and "multi" in stem:
+                continue
+            if c.global_params.data == "multi" and "cite" in stem:
+                continue
+
             original_file_path = os.path.join(c.settings.dirs.input, file_name)
             f_file_path = original_file_path.replace(extension, ".f")
 
@@ -56,9 +61,9 @@ class InputData:
 
             setattr(self, stem, df)
 
-        if hasattr(self, "train_cite_inputs") and do_preprocess:
+        if c.global_params.data == "cite" and do_preprocess:
             train, test = preprocess_train_test(
-                c, getattr(self, "train_cite_inputs"), getattr(self, "test_cite_inputs"), "cite"
+                c, getattr(self, "train_cite_inputs"), getattr(self, "test_cite_inputs")
             )
 
             train = make_fold(c, train)
@@ -71,9 +76,9 @@ class InputData:
 
             self.train_cite_targets["fold"] = self.train_cite_inputs["fold"]
 
-        elif hasattr(self, "train_multi_inputs") and do_preprocess:
+        elif c.global_params.data == "multi" and do_preprocess:
             train, test = preprocess_train_test(
-                c, getattr(self, "train_multi_inputs"), getattr(self, "test_multi_inputs"), "multiome"
+                c, getattr(self, "train_multi_inputs"), getattr(self, "test_multi_inputs")
             )
 
             train = make_fold(c, train)

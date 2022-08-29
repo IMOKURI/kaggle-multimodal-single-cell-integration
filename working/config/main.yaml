@@ -16,7 +16,7 @@ wandb:
   entity: imokuri
   project: msci  # Multimodal Single-Cell Integration
   dir: ../cache
-  group: ${settings.training_method}
+  group: ${global_params.method}
 
 settings:
   print_freq: 100
@@ -40,9 +40,9 @@ settings:
     - train_cite_inputs.h5
     - train_cite_targets.h5
 
-    # - test_multi_inputs.h5
-    # - train_multi_inputs.h5
-    # - train_multi_targets.h5
+    - test_multi_inputs.h5
+    - train_multi_inputs.h5
+    - train_multi_targets.h5
 
     # - train.csv
     # - test.csv
@@ -55,23 +55,21 @@ settings:
   multi_gpu: True
 
   skip_training: False
-  skip_inference: True
-
-  training_method: lightgbm
+  skip_inference: False
 
   label_name: label
-  n_class: 2
+  n_class: 1
   scoring: pearson
 
 # These parameters are main tuning parameters and recorded to wandb.
 params:
   seed: ${global_params.seed}
-  model: ${model_params.model}
-  model_input: ${model_params.model_input}
-  model_name: ${model_params.model_name}
+  data: ${global_params.data}
 
 global_params:
   seed: 440
+  method: tabnet
+  data: cite  # cite, multi
 
 preprocess_params:
   pca_n_components_cite: 240
@@ -95,9 +93,9 @@ training_params:
   criterion: CrossEntropyLoss
   optimizer: Adam
   scheduler: CosineAnnealingWarmupRestarts
-  lr: 5e-4
-  min_lr: 1e-4
-  weight_decay: 0  # AdamW: 0.01, others: 0
+  lr: 2e-2
+  min_lr: 1e-5
+  weight_decay: 1e-5  # AdamW: 0.01, others: 0
   # label_smoothing: 1e-6
 
 model_params:

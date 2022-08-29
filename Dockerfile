@@ -11,4 +11,5 @@ RUN pip install \
     iterative-stratification
 
 RUN pip install \
-    tables
+    tables \
+    pytorch-tabnet
