@@ -10,6 +10,9 @@ log = logging.getLogger(__name__)
 
 
 def make_fold(c, df):
+    index = df.index
+    df = df.reset_index(drop=True)
+
     if c.cv_params.n_fold == 0:
         df.loc[:, "fold"] = -1
     elif c.cv_params.fold == "kfold":
@@ -28,6 +31,7 @@ def make_fold(c, df):
     else:
         raise Exception("Invalid fold.")
 
+    df.index = index
     return df
 
 

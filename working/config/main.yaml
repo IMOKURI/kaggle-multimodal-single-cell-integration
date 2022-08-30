@@ -82,8 +82,8 @@ global_params:
 
 preprocess_params:
   methods:
-    # - pca
-    - ivis
+    - pca
+    # - ivis
   pca_n_components_cite: 240
   pca_n_components_multi: 40
   ivis_n_components_cite: 240

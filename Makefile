@@ -67,8 +67,8 @@ clean-preprocess:  ## Remove preprocess artifacts.
 	@find preprocess -type f -name *.f -exec rm -rf {} \;
 	@find preprocess -type f -name *.npy -exec rm -rf {} \;
 	@find preprocess -type f -name *.pkl -exec rm -rf {} \;
+	@find preprocess -type f -name *.pickle -exec rm -rf {} \;
 	@find preprocess -type f -name *.index -exec rm -rf {} \;
-	# @rm -rf ./dataset/input/*.npy
 
 test: ## Run tests.
 	@cd ./working && pytest

@@ -33,16 +33,22 @@ def preprocess_train_test(c, train_df: pd.DataFrame, test_df: pd.DataFrame) -> (
     train_size = len(train_df)
     train_index = train_df.index
     test_index = test_df.index
+    method = ""
 
     df = pd.concat([train_df, test_df])
 
     if "pca" in c.preprocess_params.methods:
+        method = "pca"
         preprocessor = CustomPCA(c)
-        df = transform_data(c, f"{c.global_params.data}-pca-{preprocessor.n_components}.pickle", df, preprocessor)
+        df = transform_data(c, f"{c.global_params.data}_pca_{preprocessor.n_components}.pickle", df, preprocessor)
 
-    if "ivis" in c.preprocess_params.methods:
+    elif "ivis" in c.preprocess_params.methods:
+        method = "ivis"
         preprocessor = CustomIvis(c)
-        df = transform_data(c, f"{c.global_params.data}-ivis-{preprocessor.n_components}.pickle", df, preprocessor)
+        df = transform_data(c, f"{c.global_params.data}_ivis_{preprocessor.n_components}.pickle", df, preprocessor)
+
+    else:
+        raise Exception(f"Invalid preprocess method.")
 
     train_df = df.iloc[:train_size, :]
     test_df = df.iloc[train_size:, :]
@@ -52,6 +58,19 @@ def preprocess_train_test(c, train_df: pd.DataFrame, test_df: pd.DataFrame) -> (
 
     train_df.index.name = "cell_id"
     test_df.index.name = "cell_id"
+
+    train_df.to_pickle(
+        os.path.join(
+            c.settings.dirs.preprocess,
+            f"train_{c.global_params.data}_inputs_{method}_{preprocessor.n_components}.pickle",
+        )
+    )
+    test_df.to_pickle(
+        os.path.join(
+            c.settings.dirs.preprocess,
+            f"test_{c.global_params.data}_inputs_{method}_{preprocessor.n_components}.pickle",
+        )
+    )
 
     return train_df, test_df
 
