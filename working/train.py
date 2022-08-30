@@ -9,7 +9,7 @@ from hydra.core.hydra_config import HydraConfig
 from omegaconf.errors import ConfigAttributeError
 from scipy.optimize import minimize
 from src.get_score import optimize_function, record_result
-from src.load_data import InputData
+from src.load_data import LoadData
 from src.run_loop import train_fold_lightgbm, train_fold_tabnet  # , train_fold_nn, train_fold_xgboost
 
 log = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ def main(c):
     utils.fix_seed(utils.choice_seed(c))
     device = utils.gpu_settings(c)
 
-    input = InputData(c)
+    input = LoadData(c)
 
     oof_df = pd.DataFrame()
     label_df = pd.DataFrame()

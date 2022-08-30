@@ -12,4 +12,5 @@ RUN pip install \
 
 RUN pip install \
     tables \
-    pytorch-tabnet
+    pytorch-tabnet \
+    ivis[gpu]

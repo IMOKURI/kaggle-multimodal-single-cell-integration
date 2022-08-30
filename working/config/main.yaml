@@ -32,9 +32,9 @@ settings:
     # other_image: ${settings.dirs.input}/other/
 
   inputs:
-    - evaluation_ids.csv
-    - metadata.csv
-    - sample_submission.csv
+    # - evaluation_ids.csv
+    # - metadata.csv
+    # - sample_submission.csv
 
     - test_cite_inputs.h5
     - train_cite_inputs.h5
@@ -47,6 +47,15 @@ settings:
     # - train.csv
     # - test.csv
     # - sample_submission.csv
+
+  preprocesses:
+    - test_cite_inputs.pickle
+    - train_cite_inputs.pickle
+    - train_cite_targets.pickle
+
+    - test_multi_inputs.pickle
+    - train_multi_inputs.pickle
+    - train_multi_targets.pickle
 
   debug: False
   n_debug_data: 0
@@ -72,8 +81,13 @@ global_params:
   data: cite  # cite, multi
 
 preprocess_params:
+  methods:
+    # - pca
+    - ivis
   pca_n_components_cite: 240
-  pca_n_components_multi: 240
+  pca_n_components_multi: 40
+  ivis_n_components_cite: 240
+  ivis_n_components_multi: 4
 
 cv_params:
   n_fold: 5

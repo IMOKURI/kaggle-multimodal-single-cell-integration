@@ -1,4 +1,4 @@
-.PHONY: help
+.PHONY: help preprocess
 .DEFAULT_GOAL := help
 SHELL = /bin/bash
 
@@ -10,19 +10,26 @@ HEAD_COMMIT = $(shell git rev-parse HEAD)
 build: ## Build training container image.
 	docker build --build-arg PROXY=$(http_proxy) -t kaggle-gpu-with-custom-packages .
 
+preprocess: ## Preprocess.
+	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=0,1,2,3,6,7"' \
+		-v $(shell pwd):/app -w /app/working \
+		--shm-size=356g \
+		kaggle-gpu-with-custom-packages \
+		python preprocess.py
+
 # --gpus '"device=0,1,2,3,6,7"'
 train: ## Run training.
 	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=0,1,2,3,6,7"' \
 		-v ~/.netrc:/home/jupyter/.netrc \
 		-v $(shell pwd):/app -w /app/working \
-		--shm-size=256g \
+		--shm-size=356g \
 		kaggle-gpu-with-custom-packages \
 		python train.py  # +settings.run_fold=0
 
 debug: ## Run training debug mode.
 	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=0,1,2,3,6,7"' \
 		-v $(shell pwd):/app -w /app/working \
-		--shm-size=256g \
+		--shm-size=356g \
 		kaggle-gpu-with-custom-packages \
 		python train.py settings.debug=True hydra.verbose=True +settings.run_fold=0
 

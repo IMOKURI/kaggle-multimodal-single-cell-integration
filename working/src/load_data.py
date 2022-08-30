@@ -10,8 +10,8 @@ from .utils import reduce_mem_usage
 log = logging.getLogger(__name__)
 
 
-class InputData:
-    def __init__(self, c, use_fold=True, do_preprocess=True):
+class PreprocessData:
+    def __init__(self, c, do_preprocess=True):
         self.c = c
 
         for file_name in c.settings.inputs:
@@ -24,22 +24,22 @@ class InputData:
                 continue
 
             original_file_path = os.path.join(c.settings.dirs.input, file_name)
-            f_file_path = original_file_path.replace(extension, ".f")
+            p_file_path = original_file_path.replace(extension, ".pickle")
 
-            if os.path.exists(f_file_path):
-                log.info(f"Load feather file. path: {f_file_path}")
-                df = pd.read_feather(f_file_path)
+            if os.path.exists(p_file_path):
+                log.info(f"Load pickle file. path: {p_file_path}")
+                df = pd.read_pickle(p_file_path)
 
             elif os.path.exists(original_file_path):
                 log.info(f"Load original file. path: {original_file_path}")
 
                 if extension == ".csv":
                     df = pd.read_csv(original_file_path, low_memory=False)
-                    df.to_feather(f_file_path)
+                    df.to_pickle(p_file_path)
 
                 elif extension == ".h5":
                     df = pd.read_hdf(original_file_path)
-                    # df.to_feather(f_file_path)
+                    df.to_pickle(p_file_path)
 
                 else:
                     raise Exception(f"Invalid extension to load file. filename: {original_file_path}")
@@ -48,48 +48,59 @@ class InputData:
                 log.warning(f"File does not exist. path: {original_file_path}")
                 continue
 
-            if c.settings.debug:
-                df = sample_for_debug(c, df)
+            # if c.settings.debug:
+            #     df = sample_for_debug(c, df)
 
-            if stem in [] and do_preprocess:
-                df = preprocess(c, df, stem)
+            # if stem in [] and do_preprocess:
+            #     df = preprocess(c, df, stem)
 
-            if stem in [] and use_fold:
+            setattr(self, stem, df)
+
+        if do_preprocess:
+            train, test = preprocess_train_test(
+                c,
+                getattr(self, f"train_{c.global_params.data}_inputs"),
+                getattr(self, f"test_{c.global_params.data}_inputs"),
+            )
+
+            train.to_pickle(os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_inputs.pickle"))
+            test.to_pickle(os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_inputs.pickle"))
+
+
+class LoadData:
+    def __init__(self, c, use_fold=True):
+        self.c = c
+
+        for file_name in c.settings.preprocesses:
+            stem = os.path.splitext(file_name)[0].replace("/", "__")
+
+            if c.global_params.data == "cite" and "multi" in stem:
+                continue
+            if c.global_params.data == "multi" and "cite" in stem:
+                continue
+
+            file_path = os.path.join(c.settings.dirs.preprocess, file_name)
+
+            if os.path.exists(file_path):
+                log.info(f"Load preprocessed file. path: {file_path}")
+                df = pd.read_pickle(file_path)
+
+            else:
+                log.warning(f"File does not exist. path: {file_path}")
+                continue
+
+            # if c.settings.debug:
+            #     df = sample_for_debug(c, df)
+
+            if stem in [f"train_{c.global_params.data}_inputs"] and use_fold:
                 df = make_fold(c, df)
+
+            if stem in [f"train_{c.global_params.data}_targets"] and use_fold:
+                df["fold"] = getattr(self, f"train_{c.global_params.data}_inputs")["fold"]
 
             df = reduce_mem_usage(df)
 
             setattr(self, stem, df)
-
-        if c.global_params.data == "cite" and do_preprocess:
-            train, test = preprocess_train_test(
-                c, getattr(self, "train_cite_inputs"), getattr(self, "test_cite_inputs")
-            )
-
-            train = make_fold(c, train)
-
-            train.index = getattr(self, "train_cite_inputs").index
-            test.index = getattr(self, "test_cite_inputs").index
-
-            setattr(self, "train_cite_inputs", train)
-            setattr(self, "test_cite_inputs", test)
-
-            self.train_cite_targets["fold"] = self.train_cite_inputs["fold"]
-
-        elif c.global_params.data == "multi" and do_preprocess:
-            train, test = preprocess_train_test(
-                c, getattr(self, "train_multi_inputs"), getattr(self, "test_multi_inputs")
-            )
-
-            train = make_fold(c, train)
-
-            train.index = getattr(self, "train_multi_inputs").index
-            test.index = getattr(self, "test_multi_inputs").index
-
-            setattr(self, "train_multi_inputs", train)
-            setattr(self, "test_multi_inputs", test)
-
-            self.train_multi_targets["fold"] = self.train_multi_inputs["fold"]
 
 
 def sample_for_debug(c, df):
