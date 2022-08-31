@@ -36,16 +36,31 @@ def preprocess_train_test(c, train_df: pd.DataFrame, test_df: pd.DataFrame) -> (
     method = ""
 
     df = pd.concat([train_df, test_df])
+    log.info(f"Shape before preprocess: {df.shape}")
 
-    if "pca" in c.preprocess_params.methods:
+    if c.preprocess_params.cols in ["GL", "KI"]:
+        log.info("Skip preprocess.")
+        preprocessor = CustomPCA(c)
+
+    elif "pca" in c.preprocess_params.methods:
         method = "pca"
         preprocessor = CustomPCA(c)
-        df = transform_data(c, f"{c.global_params.data}_pca_{preprocessor.n_components}.pickle", df, preprocessor)
+        df = transform_data(
+            c,
+            f"{c.global_params.data}_{c.preprocess_params.cols}_pca_{preprocessor.n_components}.pickle",
+            df,
+            preprocessor,
+        )
 
     elif "ivis" in c.preprocess_params.methods:
         method = "ivis"
         preprocessor = CustomIvis(c)
-        df = transform_data(c, f"{c.global_params.data}_ivis_{preprocessor.n_components}.pickle", df, preprocessor)
+        df = transform_data(
+            c,
+            f"{c.global_params.data}_{c.preprocess_params.cols}_ivis_{preprocessor.n_components}.pickle",
+            df,
+            preprocessor,
+        )
 
     else:
         raise Exception(f"Invalid preprocess method.")
@@ -62,13 +77,13 @@ def preprocess_train_test(c, train_df: pd.DataFrame, test_df: pd.DataFrame) -> (
     train_df.to_pickle(
         os.path.join(
             c.settings.dirs.preprocess,
-            f"train_{c.global_params.data}_inputs_{method}_{preprocessor.n_components}.pickle",
+            f"train_{c.global_params.data}_{c.preprocess_params.cols}_inputs_{method}_{preprocessor.n_components}.pickle",
         )
     )
     test_df.to_pickle(
         os.path.join(
             c.settings.dirs.preprocess,
-            f"test_{c.global_params.data}_inputs_{method}_{preprocessor.n_components}.pickle",
+            f"test_{c.global_params.data}_{c.preprocess_params.cols}_inputs_{method}_{preprocessor.n_components}.pickle",
         )
     )
 

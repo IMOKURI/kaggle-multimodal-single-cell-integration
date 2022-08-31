@@ -48,6 +48,10 @@ class PreprocessData:
                 log.warning(f"File does not exist. path: {original_file_path}")
                 continue
 
+            if c.preprocess_params.cols != "all":
+                cols = [co for co in df.columns if co.startswith(c.preprocess_params.cols)]
+                df = df[cols]
+
             # if c.settings.debug:
             #     df = sample_for_debug(c, df)
 
@@ -71,6 +75,10 @@ class LoadData:
     def __init__(self, c, use_fold=True):
         self.c = c
 
+        train_inputs = pd.DataFrame()
+        train_targets = pd.DataFrame()
+        test_inputs = pd.DataFrame()
+
         for file_name in c.settings.preprocesses:
             stem = os.path.splitext(file_name)[0].replace("/", "__")
 
@@ -89,18 +97,37 @@ class LoadData:
                 log.warning(f"File does not exist. path: {file_path}")
                 continue
 
+            if "targets" in stem:
+                train_targets = df
+            elif "train" in stem:
+                train_inputs = pd.concat([train_inputs, df], axis=1)
+                train_inputs.index = df.index
+                train_inputs.index.name = df.index.name
+            elif "test" in stem:
+                test_inputs = pd.concat([test_inputs, df], axis=1)
+                test_inputs.index = df.index
+                test_inputs.index.name = df.index.name
+            else:
+                raise Exception("Invalid filename")
+
             # if c.settings.debug:
             #     df = sample_for_debug(c, df)
 
-            if stem in [f"train_{c.global_params.data}_inputs"] and use_fold:
-                df = make_fold(c, df)
+            # df = reduce_mem_usage(df)
 
-            if stem in [f"train_{c.global_params.data}_targets"] and use_fold:
-                df["fold"] = getattr(self, f"train_{c.global_params.data}_inputs")["fold"]
+            # setattr(self, stem, df)
 
-            df = reduce_mem_usage(df)
+        assert train_inputs.index.equals(train_targets.index)
+        assert train_inputs.index.name == train_targets.index.name
+        assert train_inputs.columns.equals(test_inputs.columns)
 
-            setattr(self, stem, df)
+        if use_fold:
+            train_inputs = make_fold(c, train_inputs)
+            train_targets["fold"] = train_inputs["fold"]
+
+        setattr(self, f"train_{c.global_params.data}_inputs", train_inputs)
+        setattr(self, f"train_{c.global_params.data}_targets", train_targets)
+        setattr(self, f"test_{c.global_params.data}_inputs", test_inputs)
 
 
 def sample_for_debug(c, df):

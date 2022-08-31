@@ -38,24 +38,76 @@ settings:
 
     - test_cite_inputs.h5
     - train_cite_inputs.h5
-    - train_cite_targets.h5
+    # - train_cite_targets.h5
 
     - test_multi_inputs.h5
     - train_multi_inputs.h5
-    - train_multi_targets.h5
+    # - train_multi_targets.h5
 
     # - train.csv
     # - test.csv
     # - sample_submission.csv
 
   preprocesses:
-    - test_cite_inputs.pickle
-    - train_cite_inputs.pickle
+    - train_cite_all_inputs_pca_240.pickle
     - train_cite_targets.pickle
+    - test_cite_all_inputs_pca_240.pickle
 
-    - test_multi_inputs.pickle
-    - train_multi_inputs.pickle
+    - train_multi_GL_inputs__100.pickle
+    - train_multi_KI_inputs__100.pickle
+    - train_multi_chr10_inputs_pca_100.pickle
+    - train_multi_chr11_inputs_pca_100.pickle
+    - train_multi_chr12_inputs_pca_100.pickle
+    - train_multi_chr13_inputs_pca_100.pickle
+    - train_multi_chr14_inputs_pca_100.pickle
+    - train_multi_chr15_inputs_pca_100.pickle
+    - train_multi_chr16_inputs_pca_100.pickle
+    - train_multi_chr17_inputs_pca_100.pickle
+    - train_multi_chr18_inputs_pca_100.pickle
+    - train_multi_chr19_inputs_pca_100.pickle
+    - train_multi_chr1_inputs_pca_400.pickle
+    - train_multi_chr20_inputs_pca_100.pickle
+    - train_multi_chr21_inputs_pca_100.pickle
+    - train_multi_chr22_inputs_pca_100.pickle
+    - train_multi_chr2_inputs_pca_200.pickle
+    - train_multi_chr3_inputs_pca_100.pickle
+    - train_multi_chr4_inputs_pca_100.pickle
+    - train_multi_chr5_inputs_pca_100.pickle
+    - train_multi_chr6_inputs_pca_100.pickle
+    - train_multi_chr7_inputs_pca_100.pickle
+    - train_multi_chr8_inputs_pca_100.pickle
+    - train_multi_chr9_inputs_pca_100.pickle
+    - train_multi_chrX_inputs_pca_100.pickle
+    - train_multi_chrY_inputs_pca_100.pickle
+
     - train_multi_targets.pickle
+
+    - test_multi_GL_inputs__100.pickle
+    - test_multi_KI_inputs__100.pickle
+    - test_multi_chr10_inputs_pca_100.pickle
+    - test_multi_chr11_inputs_pca_100.pickle
+    - test_multi_chr12_inputs_pca_100.pickle
+    - test_multi_chr13_inputs_pca_100.pickle
+    - test_multi_chr14_inputs_pca_100.pickle
+    - test_multi_chr15_inputs_pca_100.pickle
+    - test_multi_chr16_inputs_pca_100.pickle
+    - test_multi_chr17_inputs_pca_100.pickle
+    - test_multi_chr18_inputs_pca_100.pickle
+    - test_multi_chr19_inputs_pca_100.pickle
+    - test_multi_chr1_inputs_pca_400.pickle
+    - test_multi_chr20_inputs_pca_100.pickle
+    - test_multi_chr21_inputs_pca_100.pickle
+    - test_multi_chr22_inputs_pca_100.pickle
+    - test_multi_chr2_inputs_pca_200.pickle
+    - test_multi_chr3_inputs_pca_100.pickle
+    - test_multi_chr4_inputs_pca_100.pickle
+    - test_multi_chr5_inputs_pca_100.pickle
+    - test_multi_chr6_inputs_pca_100.pickle
+    - test_multi_chr7_inputs_pca_100.pickle
+    - test_multi_chr8_inputs_pca_100.pickle
+    - test_multi_chr9_inputs_pca_100.pickle
+    - test_multi_chrX_inputs_pca_100.pickle
+    - test_multi_chrY_inputs_pca_100.pickle
 
   debug: False
   n_debug_data: 0
@@ -78,16 +130,17 @@ params:
 global_params:
   seed: 440
   method: tabnet
-  data: cite  # cite, multi
+  data: multi  # cite, multi
 
 preprocess_params:
+  cols: KI  # all, chr1 ~ chr22, chrX, chrY, GL, KI
   methods:
     - pca
     # - ivis
   pca_n_components_cite: 240
-  pca_n_components_multi: 40
+  pca_n_components_multi: 100
   ivis_n_components_cite: 240
-  ivis_n_components_multi: 4
+  ivis_n_components_multi: 100
 
 cv_params:
   n_fold: 5

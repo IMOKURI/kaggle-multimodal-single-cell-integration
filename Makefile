@@ -13,7 +13,7 @@ build: ## Build training container image.
 preprocess: ## Preprocess.
 	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=0,1,2,3,6,7"' \
 		-v $(shell pwd):/app -w /app/working \
-		--shm-size=356g \
+		--shm-size=256g \
 		kaggle-gpu-with-custom-packages \
 		python preprocess.py
 
@@ -22,14 +22,14 @@ train: ## Run training.
 	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=0,1,2,3,6,7"' \
 		-v ~/.netrc:/home/jupyter/.netrc \
 		-v $(shell pwd):/app -w /app/working \
-		--shm-size=356g \
+		--shm-size=256g \
 		kaggle-gpu-with-custom-packages \
 		python train.py  # +settings.run_fold=0
 
 debug: ## Run training debug mode.
 	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=0,1,2,3,6,7"' \
 		-v $(shell pwd):/app -w /app/working \
-		--shm-size=356g \
+		--shm-size=256g \
 		kaggle-gpu-with-custom-packages \
 		python train.py settings.debug=True hydra.verbose=True +settings.run_fold=0
 
