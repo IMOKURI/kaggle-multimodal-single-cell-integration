@@ -92,9 +92,8 @@ def main(c):
     # score = record_result(c, oof_df, c.cv_params.n_fold, losses.avg)
     # oof_df["preds"] = (oof_df["base_preds"] > minimize_result["x"].item()).astype(np.int8)
 
-    oof_path = os.path.join(HydraConfig.get().run.dir, "oof_df.f")
-    oof_df.reset_index(drop=True).to_feather(oof_path)
-    # oof_df[["PassengerId", c.settings.label_name, "preds", "fold"]].reset_index(drop=True).to_feather("oof_df.f")
+    oof_path = os.path.join(HydraConfig.get().run.dir, "oof.pickle")
+    oof_df.to_pickle(oof_path)
 
     log.info(f"oof -> \n{oof_df}")
 
@@ -103,8 +102,8 @@ def main(c):
 
         inference_df = inference_df.groupby("cell_id").mean()
 
-        inference_path = os.path.join(HydraConfig.get().run.dir, f"{c.global_params.data}_inference_df.csv")
-        inference_df.to_csv(inference_path)
+        inference_path = os.path.join(HydraConfig.get().run.dir, f"{c.global_params.data}_inference.pickle")
+        inference_df.to_pickle(inference_path)
 
         log.info(f"inference -> \n{inference_df}")
 

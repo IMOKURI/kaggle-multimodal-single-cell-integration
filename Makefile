@@ -11,7 +11,7 @@ build: ## Build training container image.
 	docker build --build-arg PROXY=$(http_proxy) -t kaggle-gpu-with-custom-packages .
 
 preprocess: ## Preprocess.
-	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=0,1,2,3,6,7"' \
+	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=2,3,6,7"' \
 		-v $(shell pwd):/app -w /app/working \
 		--shm-size=256g \
 		kaggle-gpu-with-custom-packages \
@@ -19,7 +19,7 @@ preprocess: ## Preprocess.
 
 # --gpus '"device=0,1,2,3,6,7"'
 train: ## Run training.
-	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=0,1,2,3,6,7"' \
+	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=1,3,6,7"' \
 		-v ~/.netrc:/home/jupyter/.netrc \
 		-v $(shell pwd):/app -w /app/working \
 		--shm-size=256g \
@@ -27,7 +27,7 @@ train: ## Run training.
 		python train.py  # +settings.run_fold=0
 
 debug: ## Run training debug mode.
-	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=0,1,2,3,6,7"' \
+	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=0,3,6,7"' \
 		-v $(shell pwd):/app -w /app/working \
 		--shm-size=256g \
 		kaggle-gpu-with-custom-packages \
