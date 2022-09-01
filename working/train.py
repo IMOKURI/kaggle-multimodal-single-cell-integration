@@ -79,6 +79,10 @@ def main(c):
         if c.settings.debug or single_run:
             break
 
+    log.info("========== postprocess ==========")
+    if c.global_params.data == "multi":
+        oof_df[oof_df < 0] = 0
+
     log.info("========== training result ==========")
     score = record_result(c, oof_df, c.cv_params.n_fold, label_df, losses.avg)
 

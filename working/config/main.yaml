@@ -39,11 +39,11 @@ settings:
 
     - test_cite_inputs.h5
     - train_cite_inputs.h5
-    # - train_cite_targets.h5
+    - train_cite_targets.h5
 
-    - test_multi_inputs.h5
-    - train_multi_inputs.h5
-    # - train_multi_targets.h5
+    # - test_multi_inputs.h5
+    # - train_multi_inputs.h5
+    - train_multi_targets.h5
 
     # - train.csv
     # - test.csv
@@ -138,10 +138,10 @@ params:
 global_params:
   seed: 440
   method: tabnet
-  data: cite  # cite, multi
+  data: multi  # cite, multi
 
 preprocess_params:
-  cols: KI  # all, chr1 ~ chr22, chrX, chrY, GL, KI
+  cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
   methods:
     - pca
     # - ivis

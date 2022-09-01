@@ -23,6 +23,10 @@ def main(c):
 
     input = PostprocessData(c)
 
+    # Multiome の target は 非負
+    input.multi_inference[input.multi_inference < 0] = 0
+    assert (input.multi_inference < 0).sum().sum() == 0
+
     inference = pd.concat([input.multi_inference, input.cite_inference])
 
     for row_id, cell_id, gene_id in tqdm(
