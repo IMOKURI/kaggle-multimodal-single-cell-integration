@@ -135,6 +135,7 @@ input
 multirun
 output
 preprocess
+postprocess
 
 notebook/inference.ipynb
 submission.csv

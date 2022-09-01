@@ -255,10 +255,10 @@ def train_fold_tabnet(c, input, fold):
         eval_set=[(valid_ds, valid_labels)],
         eval_metric=["rmse"],
         max_epochs=10000,
-        patience=20,
-        batch_size=5120,
-        virtual_batch_size=640,
-        num_workers=4,
+        patience=50,
+        batch_size=2048,
+        virtual_batch_size=256,
+        num_workers=8,
         drop_last=True,
     )
 

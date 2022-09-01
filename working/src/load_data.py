@@ -130,6 +130,46 @@ class LoadData:
         setattr(self, f"test_{c.global_params.data}_inputs", test_inputs)
 
 
+class PostprocessData:
+    def __init__(self, c):
+        self.c = c
+        self.evaluation_ids = pd.DataFrame()
+        self.sample_submission = pd.DataFrame()
+        self.cite_inference = pd.DataFrame()
+        self.multi_inference = pd.DataFrame()
+
+        for file_name in c.settings.postprocesses:
+            stem = os.path.splitext(file_name)[0].replace("/", "__")
+            extension = os.path.splitext(file_name)[1]
+
+            original_file_path = os.path.join(c.settings.dirs.postprocess, file_name)
+            p_file_path = original_file_path.replace(extension, ".pickle")
+
+            if os.path.exists(p_file_path):
+                log.info(f"Load pickle file. path: {p_file_path}")
+                df = pd.read_pickle(p_file_path)
+
+            elif os.path.exists(original_file_path):
+                log.info(f"Load original file. path: {original_file_path}")
+
+                if extension == ".csv":
+                    df = pd.read_csv(original_file_path, low_memory=False)
+                    df.to_pickle(p_file_path)
+
+                elif extension == ".h5":
+                    df = pd.read_hdf(original_file_path)
+                    df.to_pickle(p_file_path)
+
+                else:
+                    raise Exception(f"Invalid extension to load file. filename: {original_file_path}")
+
+            else:
+                log.warning(f"File does not exist. path: {original_file_path}")
+                continue
+
+            setattr(self, stem, df)
+
+
 def sample_for_debug(c, df):
     if len(df) > c.settings.n_debug_data and c.settings.n_debug_data > 0:
         df = df.sample(n=c.settings.n_debug_data, random_state=c.global_params.seed).reset_index(drop=True)

@@ -1,4 +1,4 @@
-.PHONY: help preprocess
+.PHONY: help preprocess postprocess
 .DEFAULT_GOAL := help
 SHELL = /bin/bash
 
@@ -11,11 +11,18 @@ build: ## Build training container image.
 	docker build --build-arg PROXY=$(http_proxy) -t kaggle-gpu-with-custom-packages .
 
 preprocess: ## Preprocess.
-	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=2,3,6,7"' \
+	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=7"' \
 		-v $(shell pwd):/app -w /app/working \
 		--shm-size=256g \
 		kaggle-gpu-with-custom-packages \
 		python preprocess.py
+
+postprocess: ## Postprocess.
+	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=6"' \
+		-v $(shell pwd):/app -w /app/working \
+		--shm-size=256g \
+		kaggle-gpu-with-custom-packages \
+		python postprocess.py
 
 # --gpus '"device=0,1,2,3,6,7"'
 train: ## Run training.
