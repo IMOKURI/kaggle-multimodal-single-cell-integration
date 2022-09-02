@@ -27,7 +27,7 @@ def main(c):
     input.multi_inference[input.multi_inference < 0] = 0
     assert (input.multi_inference < 0).sum().sum() == 0
 
-    inference = pd.concat([input.multi_inference, input.cite_inference])
+    inference = pd.concat([input.cite_inference, input.multi_inference])
 
     for row_id, cell_id, gene_id in tqdm(
         zip(input.evaluation_ids["row_id"], input.evaluation_ids["cell_id"], input.evaluation_ids["gene_id"]),

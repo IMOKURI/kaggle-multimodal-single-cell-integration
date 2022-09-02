@@ -70,6 +70,24 @@ class PreprocessData:
             train.to_pickle(os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_inputs.pickle"))
             test.to_pickle(os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_inputs.pickle"))
 
+            if c.global_params.data == "cite":
+                # cite: target の column名を含む inputs の column を抽出する
+                cols = []
+                for target_col in self.train_cite_targets.columns:
+                    cols += [col for col in self.train_cite_inputs.columns if target_col in col]
+
+                train = self.train_cite_inputs[cols]
+                test = self.test_cite_inputs[cols]
+
+                log.info(f"cite no pca data: {train.shape}")
+
+                train.to_pickle(
+                    os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_no_pca_inputs.pickle")
+                )
+                test.to_pickle(
+                    os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_no_pca_inputs.pickle")
+                )
+
 
 class LoadData:
     def __init__(self, c, use_fold=True):
@@ -121,6 +139,8 @@ class LoadData:
         assert train_inputs.index.name == train_targets.index.name
         assert train_inputs.columns.equals(test_inputs.columns)
 
+        log.info(f"Data size, train: {train_inputs.shape}, target: {train_targets.shape}, test: {test_inputs.shape}")
+
         if use_fold:
             train_inputs = make_fold(c, train_inputs)
             train_targets["fold"] = train_inputs["fold"]
@@ -136,7 +156,9 @@ class PostprocessData:
         self.evaluation_ids = pd.DataFrame()
         self.sample_submission = pd.DataFrame()
         self.cite_inference = pd.DataFrame()
+        self.cite_oof = pd.DataFrame()
         self.multi_inference = pd.DataFrame()
+        self.multi_oof = pd.DataFrame()
 
         for file_name in c.settings.postprocesses:
             stem = os.path.splitext(file_name)[0].replace("/", "__")
