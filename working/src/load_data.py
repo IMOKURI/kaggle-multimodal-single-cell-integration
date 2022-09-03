@@ -154,6 +154,7 @@ class PostprocessData:
     def __init__(self, c):
         self.c = c
         self.evaluation_ids = pd.DataFrame()
+        self.metadata = pd.DataFrame()
         self.sample_submission = pd.DataFrame()
         self.cite_inference = pd.DataFrame()
         self.cite_oof = pd.DataFrame()

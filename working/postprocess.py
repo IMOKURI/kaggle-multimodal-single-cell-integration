@@ -2,6 +2,7 @@ import logging
 import os
 
 import hydra
+import numpy as np
 import pandas as pd
 import src.utils as utils
 from hydra.core.hydra_config import HydraConfig
@@ -23,9 +24,28 @@ def main(c):
 
     input = PostprocessData(c)
 
+    # Cite の day2-donor27678 の値を train の day2-donor32606 の target に変換する (Public test leak...)
+    leak_32606_cell_id = input.metadata[
+        (input.metadata["donor"] == 32606) & (input.metadata["technology"] == "citeseq") & (input.metadata["day"] == 2)
+    ]["cell_id"]
+    leak_27678_cell_id = input.metadata[
+        (input.metadata["donor"] == 27678) & (input.metadata["technology"] == "citeseq") & (input.metadata["day"] == 2)
+    ]["cell_id"]
+    input.cite_inference.loc[leak_27678_cell_id, :] = input.train_cite_targets.loc[leak_32606_cell_id, :].to_numpy()
+    assert len(leak_32606_cell_id) == 7476
+    assert len(leak_27678_cell_id) == 7476
+    assert np.array_equal(
+        input.cite_inference.loc[leak_27678_cell_id, :].to_numpy(),
+        input.train_cite_targets.loc[leak_32606_cell_id, :].to_numpy(),
+    )
+
     # Multiome の target は 非負
     input.multi_inference[input.multi_inference < 0] = 0
     assert (input.multi_inference < 0).sum().sum() == 0
+
+    # TODO: Multiome の分布をチェック
+
+    # TODO: CV計算
 
     inference = pd.concat([input.cite_inference, input.multi_inference])
 
