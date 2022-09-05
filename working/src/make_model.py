@@ -58,7 +58,7 @@ def make_model(c, device=None, model_path=None):
 #     return clf
 
 
-def make_model_tabnet(c, ds=None, model_path=None):
+def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None):
 
     tabnet_params = dict(
         n_d=16,
@@ -68,9 +68,9 @@ def make_model_tabnet(c, ds=None, model_path=None):
         n_shared=2,  # same above
         gamma=1.3,
         lambda_sparse=0,
-        # cat_dims=[len(np.unique(train_cat[:, i])) for i in range(train_cat.shape[1])],
-        # cat_emb_dim=[1] * train_cat.shape[1],
-        # cat_idxs=features_cat_index,
+        cat_idxs=c_index,
+        cat_dims=c_features,
+        cat_emb_dim=[1],
         optimizer_fn=torch.optim.Adam,
         optimizer_params=dict(lr=c.training_params.lr, weight_decay=c.training_params.weight_decay),
         mask_type="entmax",

@@ -114,6 +114,8 @@ settings:
     - test_multi_chrX_inputs_pca_100.pickle
     - test_multi_chrY_inputs_pca_100.pickle
 
+    - metadata.pickle
+
   postprocesses:
     - evaluation_ids.csv
     - metadata.csv

@@ -2,6 +2,7 @@ import logging
 import os
 
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
 
 from .make_fold import make_fold
 from .preprocess import preprocess, preprocess_train_test
@@ -96,6 +97,7 @@ class LoadData:
         train_inputs = pd.DataFrame()
         train_targets = pd.DataFrame()
         test_inputs = pd.DataFrame()
+        metadata = pd.DataFrame()
 
         for file_name in c.settings.preprocesses:
             stem = os.path.splitext(file_name)[0].replace("/", "__")
@@ -125,6 +127,16 @@ class LoadData:
                 test_inputs = pd.concat([test_inputs, df], axis=1)
                 test_inputs.index = df.index
                 test_inputs.index.name = df.index.name
+            elif "metadata" in stem:
+                if c.global_params.data == "cite":
+                    metadata = df[df["technology"] == "citeseq"].set_index("cell_id")
+                elif c.global_params.data == "multi":
+                    metadata = df[df["technology"] == "multiome"].set_index("cell_id")
+
+                le = LabelEncoder()
+                metadata["cell_type_num"] = le.fit_transform(metadata["cell_type"].to_numpy())
+                setattr(self, "metadata_cell_type_num", le.classes_)
+
             else:
                 raise Exception("Invalid filename")
 
@@ -135,11 +147,15 @@ class LoadData:
 
             # setattr(self, stem, df)
 
+        train_inputs = train_inputs.join(metadata["cell_type_num"])
+        test_inputs = test_inputs.join(metadata["cell_type_num"])
+
         assert train_inputs.index.equals(train_targets.index)
         assert train_inputs.index.name == train_targets.index.name
         assert train_inputs.columns.equals(test_inputs.columns)
 
         log.info(f"Data size, train: {train_inputs.shape}, target: {train_targets.shape}, test: {test_inputs.shape}")
+        log.debug(f"input columns: {train_inputs.columns}")
 
         if use_fold:
             train_inputs = make_fold(c, train_inputs)

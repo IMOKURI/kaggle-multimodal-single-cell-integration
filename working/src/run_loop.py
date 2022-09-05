@@ -247,7 +247,13 @@ def train_fold_tabnet(c, input, fold):
     # train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_folds, valid_folds)
     train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_df, valid_df, train_label_df, valid_label_df)
 
-    model = make_model_tabnet(c, train_ds)
+    categorical_index = []
+    categorical_features = []
+
+    categorical_index.append(df.columns.get_loc("cell_type_num"))
+    categorical_features.append(len(input.metadata_cell_type_num))
+
+    model = make_model_tabnet(c, train_ds, c_index=categorical_index, c_features=categorical_features)
 
     model.fit(
         train_ds,
