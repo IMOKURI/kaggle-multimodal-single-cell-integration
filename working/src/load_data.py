@@ -176,6 +176,8 @@ class PostprocessData:
         self.cite_oof = pd.DataFrame()
         self.multi_inference = pd.DataFrame()
         self.multi_oof = pd.DataFrame()
+        self.train_cite_targets = pd.DataFrame()
+        self.train_multi_targets = pd.DataFrame()
 
         for file_name in c.settings.postprocesses:
             stem = os.path.splitext(file_name)[0].replace("/", "__")
