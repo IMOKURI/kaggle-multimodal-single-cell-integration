@@ -41,9 +41,9 @@ settings:
     - train_cite_inputs.h5
     - train_cite_targets.h5
 
-    # - test_multi_inputs.h5
-    # - train_multi_inputs.h5
-    # - train_multi_targets.h5
+    - test_multi_inputs.h5
+    - train_multi_inputs.h5
+    - train_multi_targets.h5
 
     # - train.csv
     # - test.csv
@@ -120,12 +120,12 @@ settings:
     - sample_submission.csv
 
     - cite_inference.pickle
-    # - cite_oof.pickle
+    - cite_oof.pickle
     - train_cite_targets.pickle
 
     - multi_inference.pickle
-    # - multi_oof.pickle
-    # - train_multi_targets.pickle
+    - multi_oof.pickle
+    - train_multi_targets.pickle
 
   debug: False
   n_debug_data: 0
