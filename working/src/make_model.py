@@ -60,9 +60,9 @@ def make_model(c, device=None, model_path=None):
 
 def make_pre_model_tabnet(c, c_index=None, c_features=None):
     tabnet_params = dict(
-        n_d=16,
-        n_a=16,
-        n_steps=2,
+        n_d=32,
+        n_a=32,
+        n_steps=1,
         n_independent=2,  # 2 is better CV than 1, but need more time
         n_shared=2,  # same above
         gamma=1.3,
@@ -71,10 +71,10 @@ def make_pre_model_tabnet(c, c_index=None, c_features=None):
         cat_dims=c_features,
         cat_emb_dim=[1],
         optimizer_fn=torch.optim.Adam,
-        optimizer_params=dict(lr=2e-2),
+        optimizer_params=dict(lr=2e-2, weight_decay=1e-5),
         mask_type="entmax",
         seed=c.global_params.seed,
-        verbose=10,
+        verbose=5,
     )  # type: dict[str, Any]
 
     clf = TabNetPretrainer(**tabnet_params)
@@ -84,9 +84,9 @@ def make_pre_model_tabnet(c, c_index=None, c_features=None):
 def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None):
 
     tabnet_params = dict(
-        n_d=16,
-        n_a=16,
-        n_steps=2,
+        n_d=32,
+        n_a=32,
+        n_steps=1,
         n_independent=2,  # 2 is better CV than 1, but need more time
         n_shared=2,  # same above
         gamma=1.3,
@@ -98,7 +98,7 @@ def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None
         optimizer_params=dict(lr=c.training_params.lr, weight_decay=c.training_params.weight_decay),
         mask_type="entmax",
         seed=c.global_params.seed,
-        verbose=10,
+        verbose=5,
     )  # type: dict[str, Any]
 
     if ds is not None:

@@ -259,8 +259,9 @@ def train_fold_tabnet(c, input, fold):
     pre_model = make_pre_model_tabnet(c, c_index=categorical_index, c_features=categorical_features)
 
     pre_model.fit(
-        pre_train_ds,
-        eval_set=[inference_df.to_numpy()],
+        train_ds,
+        eval_set=[valid_ds, inference_df.to_numpy()],
+        eval_name=["valid", "test"],
         max_epochs=1000,
         patience=10,
         batch_size=2048,
@@ -276,7 +277,8 @@ def train_fold_tabnet(c, input, fold):
         train_ds,
         train_labels,
         eval_set=[(valid_ds, valid_labels)],
-        eval_metric=["rmse"],
+        eval_name=["valid"],
+        eval_metric=["rmse", "mse"],
         max_epochs=10000,
         patience=50,
         batch_size=2048,
