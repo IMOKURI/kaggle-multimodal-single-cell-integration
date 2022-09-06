@@ -89,6 +89,38 @@ class PreprocessData:
                     os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_no_pca_inputs.pickle")
                 )
 
+                # cite: RNA Type ごとの和を特徴量とする
+                rna_annot = pd.read_table(os.path.join(c.settings.dirs.input, "catrapid_rnas.txt"))
+                rna_annot_human = rna_annot[rna_annot["species"] == "human"].reset_index(drop=True)
+                rna_biotype_dict = {ens: biotype for ens, biotype in zip(rna_annot_human["ensg"], rna_annot_human["biotype"])}
+
+                annot_cols = []
+                for co in [col.split("_")[0] for col in self.train_cite_inputs.columns]:
+                    try:
+                        annot_cols.append(rna_biotype_dict[co])
+                    except KeyError:
+                        annot_cols.append(co)
+
+                train = self.train_cite_inputs
+                test = self.test_cite_inputs
+
+                train.columns = annot_cols
+                test.columns = annot_cols
+                train.columns.name = "gene_id"
+                test.columns.name = "gene_id"
+
+                train = train.T.groupby("gene_id").sum().T
+                test = test.T.groupby("gene_id").sum().T
+
+                log.info(f"cite sum by RNA type: {train.shape}")  # 列数は 205
+
+                train.to_pickle(
+                    os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_sum_by_rna_type_inputs.pickle")
+                )
+                test.to_pickle(
+                    os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_sum_by_rna_type_inputs.pickle")
+                )
+
 
 class LoadData:
     def __init__(self, c, use_fold=True):

@@ -247,9 +247,6 @@ def train_fold_tabnet(c, input, fold):
     # train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_folds, valid_folds)
     train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_df, valid_df, train_label_df, valid_label_df)
 
-    pre_train_ds = np.vstack([df.drop("fold", axis=1).to_numpy(), inference_df.to_numpy()])
-    log.debug(f"Pre trained data shape: {pre_train_ds.shape}")
-
     categorical_index = []
     categorical_features = []
 
