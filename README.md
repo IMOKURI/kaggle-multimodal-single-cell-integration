@@ -23,11 +23,17 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 ### Citeseq
 
+- Tabnet Pre-train
+    - 学習データ・テストデータで教師なし学習（穴埋め）
 - Tabnet (no tuning yet)
+    - 学習データ 5 fold
 
 ### Multiome
 
+- Tabnet Pre-train
+    - 学習データ・テストデータで教師なし学習（穴埋め）
 - Tabnet (no tuning yet)
+    - 学習データ 5 fold
 
 
 ### Postprocess

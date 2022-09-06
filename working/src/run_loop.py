@@ -26,7 +26,7 @@ from .get_score import get_score, optimize_function
 from .make_dataset import make_dataloader, make_dataset, make_dataset_nn
 from .make_fold import train_test_split
 from .make_loss import make_criterion, make_optimizer, make_scheduler
-from .make_model import make_model, make_model_tabnet  # , make_model_xgboost
+from .make_model import make_model, make_model_tabnet, make_pre_model_tabnet  # , make_model_xgboost
 from .run_epoch import inference_epoch, train_epoch, validate_epoch
 from .utils import AverageMeter, timeSince
 
@@ -247,11 +247,28 @@ def train_fold_tabnet(c, input, fold):
     # train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_folds, valid_folds)
     train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_df, valid_df, train_label_df, valid_label_df)
 
+    pre_train_ds = np.vstack([df.drop("fold", axis=1).to_numpy(), inference_df.to_numpy()])
+    log.debug(f"Pre trained data shape: {pre_train_ds.shape}")
+
     categorical_index = []
     categorical_features = []
 
     categorical_index.append(df.columns.get_loc("cell_type_num"))
     categorical_features.append(len(input.metadata_cell_type_num))
+
+    pre_model = make_pre_model_tabnet(c, c_index=categorical_index, c_features=categorical_features)
+
+    pre_model.fit(
+        pre_train_ds,
+        eval_set=[inference_df.to_numpy()],
+        max_epochs=1000,
+        patience=10,
+        batch_size=2048,
+        virtual_batch_size=256,
+        num_workers=8,
+        drop_last=True,
+        pretraining_ratio=0.8,
+    )
 
     model = make_model_tabnet(c, train_ds, c_index=categorical_index, c_features=categorical_features)
 
@@ -266,6 +283,7 @@ def train_fold_tabnet(c, input, fold):
         virtual_batch_size=256,
         num_workers=8,
         drop_last=True,
+        from_unsupervised=pre_model,
     )
 
     model_dir = os.path.join(HydraConfig.get().run.dir, f"fold{fold}")
@@ -289,6 +307,14 @@ def train_fold_tabnet(c, input, fold):
     valid_label_df = valid_label_df.drop("fold", axis=1)
     preds_df = pd.DataFrame(valid_preds, columns=valid_label_df.columns, index=valid_label_df.index)
     inference_df = pd.DataFrame(inference_preds, columns=valid_label_df.columns, index=inference_df.index)
+
+    # feature importance の大きい方から10個を大きい順で取得
+    importance_index = np.argsort(model.feature_importances_)[-10:][::-1]
+    importance = {}
+    for index in importance_index:
+        importance[train_df.columns[index]] = model.feature_importances_[index]
+
+    log.info(f"Feature importance: {importance}")
 
     return preds_df, valid_label_df, model.best_cost, inference_df
     # return valid_folds, model.best_cost

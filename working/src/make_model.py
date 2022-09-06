@@ -9,7 +9,7 @@ import torch
 import torch.cuda.amp as amp
 import torch.nn as nn
 import xgboost as xgb
-
+from pytorch_tabnet.pretraining import TabNetPretrainer
 from pytorch_tabnet.tab_model import TabNetClassifier, TabNetRegressor
 
 log = logging.getLogger(__name__)
@@ -56,6 +56,29 @@ def make_model(c, device=None, model_path=None):
 #         clf.load_model(model_path)
 #
 #     return clf
+
+
+def make_pre_model_tabnet(c, c_index=None, c_features=None):
+    tabnet_params = dict(
+        n_d=16,
+        n_a=16,
+        n_steps=2,
+        n_independent=2,  # 2 is better CV than 1, but need more time
+        n_shared=2,  # same above
+        gamma=1.3,
+        lambda_sparse=0,
+        cat_idxs=c_index,
+        cat_dims=c_features,
+        cat_emb_dim=[1],
+        optimizer_fn=torch.optim.Adam,
+        optimizer_params=dict(lr=2e-2),
+        mask_type="entmax",
+        seed=c.global_params.seed,
+        verbose=10,
+    )  # type: dict[str, Any]
+
+    clf = TabNetPretrainer(**tabnet_params)
+    return clf
 
 
 def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None):

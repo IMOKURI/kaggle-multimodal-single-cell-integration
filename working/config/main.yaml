@@ -150,7 +150,7 @@ params:
 global_params:
   seed: 440
   method: tabnet
-  data: multi  # cite, multi
+  data: cite  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
