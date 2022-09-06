@@ -256,20 +256,20 @@ def train_fold_tabnet(c, input, fold):
     categorical_index.append(df.columns.get_loc("cell_type_num"))
     categorical_features.append(len(input.metadata_cell_type_num))
 
-    pre_model = make_pre_model_tabnet(c, c_index=categorical_index, c_features=categorical_features)
-
-    pre_model.fit(
-        train_ds,
-        eval_set=[valid_ds, inference_df.to_numpy()],
-        eval_name=["valid", "test"],
-        max_epochs=1000,
-        patience=10,
-        batch_size=2048,
-        virtual_batch_size=256,
-        num_workers=8,
-        drop_last=True,
-        pretraining_ratio=0.8,
-    )
+    # pre_model = make_pre_model_tabnet(c, c_index=categorical_index, c_features=categorical_features)
+    #
+    # pre_model.fit(
+    #     train_ds,
+    #     eval_set=[valid_ds, inference_df.to_numpy()],
+    #     eval_name=["valid", "test"],
+    #     max_epochs=1000,
+    #     patience=10,
+    #     batch_size=2048,
+    #     virtual_batch_size=256,
+    #     num_workers=8,
+    #     drop_last=True,
+    #     pretraining_ratio=0.8,
+    # )
 
     model = make_model_tabnet(c, train_ds, c_index=categorical_index, c_features=categorical_features)
 
@@ -285,7 +285,7 @@ def train_fold_tabnet(c, input, fold):
         virtual_batch_size=256,
         num_workers=8,
         drop_last=True,
-        from_unsupervised=pre_model,
+        # from_unsupervised=pre_model,
     )
 
     model_dir = os.path.join(HydraConfig.get().run.dir, f"fold{fold}")
