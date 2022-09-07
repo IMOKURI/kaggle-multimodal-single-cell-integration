@@ -52,13 +52,19 @@ settings:
   preprocesses:
     - train_cite_all_inputs_pca_240.pickle
     - train_cite_no_pca_inputs.pickle
-    - train_cite_sum_by_rna_type_inputs.pickle
+    # - train_cite_sum_by_rna_type_inputs.pickle
+    - train_cite_mean_by_rna_type_inputs.pickle
+    - train_cite_std_by_rna_type_inputs.pickle
+    - train_cite_skew_by_rna_type_inputs.pickle
 
     - train_cite_targets.pickle
 
     - test_cite_all_inputs_pca_240.pickle
     - test_cite_no_pca_inputs.pickle
-    - test_cite_sum_by_rna_type_inputs.pickle
+    # - test_cite_sum_by_rna_type_inputs.pickle
+    - test_cite_mean_by_rna_type_inputs.pickle
+    - test_cite_std_by_rna_type_inputs.pickle
+    - test_cite_skew_by_rna_type_inputs.pickle
 
     - train_multi_GL_inputs__100.pickle
     - train_multi_KI_inputs__100.pickle

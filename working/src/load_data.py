@@ -90,6 +90,7 @@ class PreprocessData:
                 )
 
                 # cite: RNA Type ごとの和を特徴量とする
+                # 他に、 mean, std, skew も
                 rna_annot = pd.read_table(os.path.join(c.settings.dirs.input, "catrapid_rnas.txt"))
                 rna_annot_human = rna_annot[rna_annot["species"] == "human"].reset_index(drop=True)
                 rna_biotype_dict = {ens: biotype for ens, biotype in zip(rna_annot_human["ensg"], rna_annot_human["biotype"])}
@@ -111,6 +112,12 @@ class PreprocessData:
 
                 train = train.T.groupby("gene_id").sum().T
                 test = test.T.groupby("gene_id").sum().T
+
+                train.columns = [f"{col}_sum" for col in train.columns]
+                test.columns = [f"{col}_sum" for col in test.columns]
+
+                train = train.dropna(axis=1)
+                test = test.dropna(axis=1)
 
                 log.info(f"cite sum by RNA type: {train.shape}")  # 列数は 205
 
