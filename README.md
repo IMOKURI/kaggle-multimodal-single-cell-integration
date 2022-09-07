@@ -12,6 +12,7 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 - PCA で 240 次元に削減
 - ターゲットの列名を含む インプットの列名のデータを温存
 - metadata の cell_type を特徴量に追加
+- RNAタイプごとの mean, std, skew を追加
 
 #### Multiome
 

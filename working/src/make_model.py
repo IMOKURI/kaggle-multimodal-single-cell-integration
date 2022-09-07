@@ -113,8 +113,10 @@ def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None
         )
         tabnet_params["scheduler_fn"] = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts
 
-    clf = TabNetRegressor(**tabnet_params)
-    # clf = TabNetClassifier(**tabnet_params)
+    if "adversarial" in c.global_params.method:
+        clf = TabNetClassifier(**tabnet_params)
+    else:
+        clf = TabNetRegressor(**tabnet_params)
 
     if model_path is not None:
         clf.load_model(model_path)

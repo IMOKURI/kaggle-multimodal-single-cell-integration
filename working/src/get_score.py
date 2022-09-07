@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import scipy.stats as stats
 import wandb
-from sklearn.metrics import accuracy_score, log_loss, mean_squared_error
+from sklearn.metrics import accuracy_score, log_loss, mean_squared_error, auc
 
 log = logging.getLogger(__name__)
 
@@ -13,6 +13,8 @@ log = logging.getLogger(__name__)
 def get_score(scoring, y_true, y_pred):
     if scoring == "rmse":
         return np.sqrt(mean_squared_error(y_true, y_pred))
+    elif scoring == "auc":
+        return auc(y_true, y_pred)
     elif scoring == "accuracy":
         return accuracy_score(y_true, y_pred)
     elif scoring == "logloss":
@@ -44,10 +46,10 @@ def record_result(c, df, fold, label_df=None, loss=None):
         score = get_score("pearson", label_df, df)
         # score = np.mean(df[["time_id", "target", "preds"]].groupby("time_id").apply(pearson_coef))
     else:
-        # preds = df["preds"].to_numpy()
-        # labels = df[c.settings.label_name].to_numpy()
-        preds = df[[f"preds_{n}" for n in df[c.settings.label_name].unique()]].to_numpy()
-        labels = df[["label_CE", "label_LAA"]].to_numpy()
+        preds = df["preds"].to_numpy()
+        labels = df[c.settings.label_name].to_numpy()
+        # preds = df[[f"preds_{n}" for n in df[c.settings.label_name].unique()]].to_numpy()
+        # labels = df[["label_CE", "label_LAA"]].to_numpy()
         score = get_score(c.settings.scoring, labels, preds)
 
     log.info(f"Score: {score:<.5f}")
@@ -64,8 +66,6 @@ def pearson_coef(data):
 
 
 def optimize_function(c, y_true, y_pred):
-    assert c.settings.scoring == "accuracy"
-
     def optimize_score(x):
         return -accuracy_score(y_true, y_pred > x)
 

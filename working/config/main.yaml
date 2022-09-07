@@ -144,11 +144,11 @@ settings:
   multi_gpu: True
 
   skip_training: False
-  skip_inference: False
+  skip_inference: True
 
   label_name: label
   n_class: 1
-  scoring: pearson
+  scoring: accuracy  # pearson, accuracy
 
 # These parameters are main tuning parameters and recorded to wandb.
 params:
@@ -157,7 +157,7 @@ params:
 
 global_params:
   seed: 440
-  method: tabnet
+  method: adversarial_tabnet  # tabnet, adversarial_tabnet
   data: cite  # cite, multi
 
 preprocess_params:

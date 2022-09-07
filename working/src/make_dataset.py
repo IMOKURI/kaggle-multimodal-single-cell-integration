@@ -20,37 +20,36 @@ def make_dataset_nn(c, df, label=True, transform="simple"):
 
 
 def make_dataset(c, train_df, valid_df, train_label_df=None, valid_label_df=None, is_training=True, lightgbm=False):
-    for col in ["index", "fold", "group_fold", "time_fold"]:
+    if train_label_df is None or valid_label_df is None:
+        if c.settings.n_class == 1:
+            labels = [c.settings.label_name]
+        else:
+            labels = [f"{c.settings.label_name}_{n}" for n in range(c.settings.n_class)]
+
+        if is_training:
+            train_labels = train_df[labels].to_numpy().squeeze()
+            valid_labels = valid_df[labels].to_numpy().squeeze()
+        else:
+            train_labels = None
+            valid_labels = None
+    else:
+        labels = []
+        train_labels = None
+        valid_labels = None
+
+    for col in ["index", "fold", "group_fold", "time_fold", c.settings.label_name] + labels:
         try:
             train_df = train_df.drop(col, axis=1)
             valid_df = valid_df.drop(col, axis=1)
-            train_label_df = train_label_df.drop(col, axis=1)
-            valid_label_df = valid_label_df.drop(col, axis=1)
+            if train_label_df is not None and valid_label_df is not None:
+                train_label_df = train_label_df.drop(col, axis=1)
+                valid_label_df = valid_label_df.drop(col, axis=1)
         except KeyError:
             pass
 
-    # if train_label_df is not None and valid_label_df is not None:
-    train_labels = train_label_df.to_numpy()
-    valid_labels = valid_label_df.to_numpy()
-
-    # if c.settings.n_class == 1:
-    #     labels = [c.settings.label_name]
-    # else:
-    #     labels = [f"{c.settings.label_name}_{n}" for n in range(c.settings.n_class)]
-    #
-    # if is_training:
-    #     train_labels = train_df[labels].to_numpy()
-    #     valid_labels = valid_df[labels].to_numpy()
-    # else:
-    #     train_labels = None
-    #     valid_labels = None
-
-    # for col in ["index", "fold", "group_fold", "time_fold", c.settings.label_name] + labels:
-    #     try:
-    #         train_df = train_df.drop(col, axis=1)
-    #         valid_df = valid_df.drop(col, axis=1)
-    #     except KeyError:
-    #         pass
+    if train_label_df is not None and valid_label_df is not None:
+        train_labels = train_label_df.to_numpy()
+        valid_labels = valid_label_df.to_numpy()
 
     if lightgbm:
         train_ds = lgb.Dataset(data=train_df, label=train_labels)

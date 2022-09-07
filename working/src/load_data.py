@@ -93,7 +93,9 @@ class PreprocessData:
                 # 他に、 mean, std, skew も
                 rna_annot = pd.read_table(os.path.join(c.settings.dirs.input, "catrapid_rnas.txt"))
                 rna_annot_human = rna_annot[rna_annot["species"] == "human"].reset_index(drop=True)
-                rna_biotype_dict = {ens: biotype for ens, biotype in zip(rna_annot_human["ensg"], rna_annot_human["biotype"])}
+                rna_biotype_dict = {
+                    ens: biotype for ens, biotype in zip(rna_annot_human["ensg"], rna_annot_human["biotype"])
+                }
 
                 annot_cols = []
                 for co in [col.split("_")[0] for col in self.train_cite_inputs.columns]:
@@ -122,10 +124,14 @@ class PreprocessData:
                 log.info(f"cite sum by RNA type: {train.shape}")  # 列数は 205
 
                 train.to_pickle(
-                    os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_sum_by_rna_type_inputs.pickle")
+                    os.path.join(
+                        c.settings.dirs.preprocess, f"train_{c.global_params.data}_sum_by_rna_type_inputs.pickle"
+                    )
                 )
                 test.to_pickle(
-                    os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_sum_by_rna_type_inputs.pickle")
+                    os.path.join(
+                        c.settings.dirs.preprocess, f"test_{c.global_params.data}_sum_by_rna_type_inputs.pickle"
+                    )
                 )
 
 
@@ -199,6 +205,7 @@ class LoadData:
         if use_fold:
             train_inputs = make_fold(c, train_inputs)
             train_targets["fold"] = train_inputs["fold"]
+            test_inputs = make_fold(c, test_inputs)
 
         setattr(self, f"train_{c.global_params.data}_inputs", train_inputs)
         setattr(self, f"train_{c.global_params.data}_targets", train_targets)

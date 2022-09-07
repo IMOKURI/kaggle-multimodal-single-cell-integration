@@ -216,12 +216,67 @@ def train_fold_lightgbm(c, input, fold, tuning=False):
 #     return valid_folds, model.best_score
 
 
+def adversarial_train_fold_tabnet(c, input, fold):
+    df = getattr(input, f"train_{c.global_params.data}_inputs")
+    inference_df = getattr(input, f"test_{c.global_params.data}_inputs")
+
+    df["label"] = 0
+    inference_df["label"] = 1
+
+    df = pd.concat([df, inference_df])
+
+    train_df, valid_df = train_test_split(c, df, fold)
+    train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_df, valid_df)
+
+    categorical_index = []
+    categorical_features = []
+
+    categorical_index.append(df.columns.get_loc("cell_type_num"))
+    categorical_features.append(len(input.metadata_cell_type_num))
+
+    model = make_model_tabnet(c, train_ds, c_index=categorical_index, c_features=categorical_features)
+
+    model.fit(
+        train_ds,
+        train_labels,
+        eval_set=[(valid_ds, valid_labels)],
+        eval_name=["valid"],
+        eval_metric=["accuracy", "auc"],
+        max_epochs=10000,
+        patience=50,
+        batch_size=2048,
+        virtual_batch_size=256,
+        num_workers=8,
+        drop_last=True,
+        # from_unsupervised=pre_model,
+    )
+
+    model_dir = os.path.join(HydraConfig.get().run.dir, f"fold{fold}")
+    os.makedirs(model_dir, exist_ok=True)
+    model.save_model(f"{model_dir}/tabnet")
+
+    valid_preds_df = pd.DataFrame(valid_labels, columns=[c.settings.label_name])
+    valid_preds_df["preds"] = model.predict(valid_ds)
+
+    # feature importance の大きい方から10個を大きい順で取得
+    importance_index = np.argsort(model.feature_importances_)[-10:][::-1]
+    importance = {}
+    for index in importance_index:
+        importance[train_df.columns[index]] = model.feature_importances_[index]
+
+    log.info(f"Feature importance: {importance}")
+
+    empty_df = pd.DataFrame()
+
+    return valid_preds_df, empty_df, model.best_cost, empty_df
+
+
 def train_fold_tabnet(c, input, fold):
     # df = input.train
 
     df = getattr(input, f"train_{c.global_params.data}_inputs")
     label_df = getattr(input, f"train_{c.global_params.data}_targets")
-    inference_df = getattr(input, f"test_{c.global_params.data}_inputs")
+    inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop("fold", axis=1)
 
     train_df, valid_df = train_test_split(c, df, fold)
     train_label_df, valid_label_df = train_test_split(c, label_df, fold)
