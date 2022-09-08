@@ -170,10 +170,16 @@ class LoadData:
             if "targets" in stem:
                 train_targets = df
             elif "train" in stem:
+                if c.global_params.data == "multi":
+                    id = stem.split("_")[2]
+                    df.columns = [f"{id}_{col}" for col in df.columns]
                 train_inputs = pd.concat([train_inputs, df], axis=1)
                 train_inputs.index = df.index
                 train_inputs.index.name = df.index.name
             elif "test" in stem:
+                if c.global_params.data == "multi":
+                    id = stem.split("_")[2]
+                    df.columns = [f"{id}_{col}" for col in df.columns]
                 test_inputs = pd.concat([test_inputs, df], axis=1)
                 test_inputs.index = df.index
                 test_inputs.index.name = df.index.name
@@ -205,6 +211,12 @@ class LoadData:
         if c.global_params.data == "cite" and c.preprocess_params.cite_drop_cols != []:
             train_inputs = train_inputs.drop(c.preprocess_params.cite_drop_cols, axis=1)
             test_inputs = test_inputs.drop(c.preprocess_params.cite_drop_cols, axis=1)
+        elif c.global_params.data == "multi" and c.preprocess_params.multi_drop_cols != []:
+            train_inputs = train_inputs.drop(c.preprocess_params.multi_drop_cols, axis=1)
+            test_inputs = test_inputs.drop(c.preprocess_params.multi_drop_cols, axis=1)
+            log.info(
+                f"Removed columns count: {pd.Series([col.split('_')[0] for col in c.preprocess_params.multi_drop_cols]).value_counts()}"
+            )
 
         assert train_inputs.index.equals(train_targets.index)
         assert train_inputs.index.name == train_targets.index.name
