@@ -38,6 +38,9 @@ def preprocess_train_test(c, train_df: pd.DataFrame, test_df: pd.DataFrame) -> (
     df = pd.concat([train_df, test_df])
     log.info(f"Shape before preprocess: {df.shape}")
 
+    # 列の中に1つの値しかない列は削除
+    df = df.loc[:, df.nunique() != 1]
+
     if c.preprocess_params.cols in ["GL", "KI"]:
         log.info("Skip preprocess.")
         preprocessor = CustomPCA(c)

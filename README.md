@@ -5,6 +5,11 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 ## Solution
 
+### Adversarial Training
+
+- 学習データとテストデータを分類するタスクで、学習データとテストデータを分類できてしまう特徴量を除外したい
+
+
 ### Preprocess
 
 #### Citeseq

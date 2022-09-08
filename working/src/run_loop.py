@@ -234,13 +234,14 @@ def adversarial_train_fold_tabnet(c, input, fold):
     train_df, valid_df = train_test_split(c, df, fold)
     train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_df, valid_df)
 
-    categorical_index = []
-    categorical_features = []
-
-    categorical_index.append(df.columns.get_loc("cell_type_num"))
-    categorical_features.append(len(input.metadata_cell_type_num))
-
-    model = make_model_tabnet(c, train_ds, c_index=categorical_index, c_features=categorical_features)
+    # categorical_index = []
+    # categorical_features = []
+    #
+    # categorical_index.append(df.columns.get_loc("cell_type_num"))
+    # categorical_features.append(len(input.metadata_cell_type_num))
+    #
+    # model = make_model_tabnet(c, train_ds, c_index=categorical_index, c_features=categorical_features)
+    model = make_model_tabnet(c, train_ds)
 
     model.fit(
         train_ds,
@@ -248,8 +249,8 @@ def adversarial_train_fold_tabnet(c, input, fold):
         eval_set=[(valid_ds, valid_labels)],
         eval_name=["valid"],
         eval_metric=["accuracy", "auc"],
-        max_epochs=10000,
-        patience=50,
+        max_epochs=1000,
+        patience=10,
         batch_size=2048,
         virtual_batch_size=256,
         num_workers=8,
@@ -308,11 +309,11 @@ def train_fold_tabnet(c, input, fold):
     # train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_folds, valid_folds)
     train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_df, valid_df, train_label_df, valid_label_df)
 
-    categorical_index = []
-    categorical_features = []
-
-    categorical_index.append(df.columns.get_loc("cell_type_num"))
-    categorical_features.append(len(input.metadata_cell_type_num))
+    # categorical_index = []
+    # categorical_features = []
+    #
+    # categorical_index.append(df.columns.get_loc("cell_type_num"))
+    # categorical_features.append(len(input.metadata_cell_type_num))
 
     # pre_model = make_pre_model_tabnet(c, c_index=categorical_index, c_features=categorical_features)
     #
@@ -329,7 +330,8 @@ def train_fold_tabnet(c, input, fold):
     #     pretraining_ratio=0.8,
     # )
 
-    model = make_model_tabnet(c, train_ds, c_index=categorical_index, c_features=categorical_features)
+    # model = make_model_tabnet(c, train_ds, c_index=categorical_index, c_features=categorical_features)
+    model = make_model_tabnet(c, train_ds)
 
     model.fit(
         train_ds,

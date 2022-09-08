@@ -62,77 +62,82 @@ class PreprocessData:
             setattr(self, stem, df)
 
         if do_preprocess:
-            train, test = preprocess_train_test(
-                c,
-                getattr(self, f"train_{c.global_params.data}_inputs"),
-                getattr(self, f"test_{c.global_params.data}_inputs"),
-            )
+            train = (getattr(self, f"train_{c.global_params.data}_inputs"),)
+            test = (getattr(self, f"test_{c.global_params.data}_inputs"),)
+
+            # 過学習のもとになりそうなカラムを削除
+            if c.global_params.data == "cite":
+                train = train.drop(c.preprocess_params.cite_drop_cols, axis=1)
+                test = test.drop(c.preprocess_params.cite_drop_cols, axis=1)
+
+            train, test = preprocess_train_test(c, train, test)
 
             train.to_pickle(os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_inputs.pickle"))
             test.to_pickle(os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_inputs.pickle"))
 
             if c.global_params.data == "cite":
+                ...
                 # cite: target の column名を含む inputs の column を抽出する
-                cols = []
-                for target_col in self.train_cite_targets.columns:
-                    cols += [col for col in self.train_cite_inputs.columns if target_col in col]
-
-                train = self.train_cite_inputs[cols]
-                test = self.test_cite_inputs[cols]
-
-                log.info(f"cite no pca data: {train.shape}")
-
-                train.to_pickle(
-                    os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_no_pca_inputs.pickle")
-                )
-                test.to_pickle(
-                    os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_no_pca_inputs.pickle")
-                )
+                # cols = []
+                # for target_col in self.train_cite_targets.columns:
+                #     cols += [col for col in self.train_cite_inputs.columns if target_col in col]
+                #
+                # train = self.train_cite_inputs[cols]
+                # test = self.test_cite_inputs[cols]
+                #
+                # log.info(f"cite no pca data: {train.shape}")
+                #
+                # train.to_pickle(
+                #     os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_no_pca_inputs.pickle")
+                # )
+                # test.to_pickle(
+                #     os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_no_pca_inputs.pickle")
+                # )
 
                 # cite: RNA Type ごとの和を特徴量とする
                 # 他に、 mean, std, skew も
-                rna_annot = pd.read_table(os.path.join(c.settings.dirs.input, "catrapid_rnas.txt"))
-                rna_annot_human = rna_annot[rna_annot["species"] == "human"].reset_index(drop=True)
-                rna_biotype_dict = {
-                    ens: biotype for ens, biotype in zip(rna_annot_human["ensg"], rna_annot_human["biotype"])
-                }
-
-                annot_cols = []
-                for co in [col.split("_")[0] for col in self.train_cite_inputs.columns]:
-                    try:
-                        annot_cols.append(rna_biotype_dict[co])
-                    except KeyError:
-                        annot_cols.append(co)
-
-                train = self.train_cite_inputs
-                test = self.test_cite_inputs
-
-                train.columns = annot_cols
-                test.columns = annot_cols
-                train.columns.name = "gene_id"
-                test.columns.name = "gene_id"
-
-                train = train.T.groupby("gene_id").sum().T
-                test = test.T.groupby("gene_id").sum().T
-
-                train.columns = [f"{col}_sum" for col in train.columns]
-                test.columns = [f"{col}_sum" for col in test.columns]
-
-                train = train.dropna(axis=1)
-                test = test.dropna(axis=1)
-
-                log.info(f"cite sum by RNA type: {train.shape}")  # 列数は 205
-
-                train.to_pickle(
-                    os.path.join(
-                        c.settings.dirs.preprocess, f"train_{c.global_params.data}_sum_by_rna_type_inputs.pickle"
-                    )
-                )
-                test.to_pickle(
-                    os.path.join(
-                        c.settings.dirs.preprocess, f"test_{c.global_params.data}_sum_by_rna_type_inputs.pickle"
-                    )
-                )
+                # rna_annot = pd.read_table(os.path.join(c.settings.dirs.input, "catrapid_rnas.txt"))
+                # rna_annot_human = rna_annot[rna_annot["species"] == "human"].reset_index(drop=True)
+                # rna_biotype_dict = {
+                #     ens: biotype for ens, biotype in zip(rna_annot_human["ensg"], rna_annot_human["biotype"])
+                # }
+                #
+                # annot_cols = []
+                # for co in [col.split("_")[0] for col in self.train_cite_inputs.columns]:
+                #     try:
+                #         annot_cols.append(rna_biotype_dict[co])
+                #     except KeyError:
+                #         annot_cols.append(co)
+                #
+                # train = self.train_cite_inputs
+                # test = self.test_cite_inputs
+                #
+                # train.columns = annot_cols
+                # test.columns = annot_cols
+                # train.columns.name = "gene_id"
+                # test.columns.name = "gene_id"
+                #
+                # train = train.T.groupby("gene_id").sum().T
+                # test = test.T.groupby("gene_id").sum().T
+                #
+                # train.columns = [f"{col}_sum" for col in train.columns]
+                # test.columns = [f"{col}_sum" for col in test.columns]
+                #
+                # train = train.dropna(axis=1)
+                # test = test.dropna(axis=1)
+                #
+                # log.info(f"cite sum by RNA type: {train.shape}")  # 列数は 205
+                #
+                # train.to_pickle(
+                #     os.path.join(
+                #         c.settings.dirs.preprocess, f"train_{c.global_params.data}_sum_by_rna_type_inputs.pickle"
+                #     )
+                # )
+                # test.to_pickle(
+                #     os.path.join(
+                #         c.settings.dirs.preprocess, f"test_{c.global_params.data}_sum_by_rna_type_inputs.pickle"
+                #     )
+                # )
 
 
 class LoadData:
@@ -178,10 +183,10 @@ class LoadData:
                 elif c.global_params.data == "multi":
                     metadata = df[df["technology"] == "multiome"].set_index("cell_id")
 
-                le = LabelEncoder()
-                metadata["cell_type_num"] = le.fit_transform(metadata["cell_type"].to_numpy())
+                # le = LabelEncoder()
+                # metadata["cell_type_num"] = le.fit_transform(metadata["cell_type"].to_numpy())
                 setattr(self, "metadata", metadata)
-                setattr(self, "metadata_cell_type_num", le.classes_)
+                # setattr(self, "metadata_cell_type_num", le.classes_)
 
             else:
                 raise Exception("Invalid filename")
@@ -193,8 +198,13 @@ class LoadData:
 
             # setattr(self, stem, df)
 
-        train_inputs = train_inputs.join(metadata["cell_type_num"])
-        test_inputs = test_inputs.join(metadata["cell_type_num"])
+        # train_inputs = train_inputs.join(metadata["cell_type_num"])
+        # test_inputs = test_inputs.join(metadata["cell_type_num"])
+
+        # 過学習のもとになりそうなカラムを削除
+        if c.global_params.data == "cite" and c.preprocess_params.cite_drop_cols != []:
+            train_inputs = train_inputs.drop(c.preprocess_params.cite_drop_cols, axis=1)
+            test_inputs = test_inputs.drop(c.preprocess_params.cite_drop_cols, axis=1)
 
         assert train_inputs.index.equals(train_targets.index)
         assert train_inputs.index.name == train_targets.index.name
