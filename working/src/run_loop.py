@@ -220,6 +220,12 @@ def adversarial_train_fold_tabnet(c, input, fold):
     df = getattr(input, f"train_{c.global_params.data}_inputs")
     inference_df = getattr(input, f"test_{c.global_params.data}_inputs")
 
+    # inference_df から leak データを除外する
+    leak_27678_cell_id = input.metadata[
+        (input.metadata["donor"] == 27678) & (input.metadata["technology"] == "citeseq") & (input.metadata["day"] == 2)
+    ].index
+    inference_df = inference_df.drop(leak_27678_cell_id)
+
     df["label"] = 0
     inference_df["label"] = 1
 

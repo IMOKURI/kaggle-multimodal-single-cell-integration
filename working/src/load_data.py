@@ -180,6 +180,7 @@ class LoadData:
 
                 le = LabelEncoder()
                 metadata["cell_type_num"] = le.fit_transform(metadata["cell_type"].to_numpy())
+                setattr(self, "metadata", metadata)
                 setattr(self, "metadata_cell_type_num", le.classes_)
 
             else:
