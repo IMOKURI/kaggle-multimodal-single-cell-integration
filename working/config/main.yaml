@@ -126,6 +126,9 @@ settings:
 
     - metadata.pickle
 
+    - cite_adversarial_oof.pickle
+    - multi_adversarial_oof.pickle
+
   postprocesses:
     - evaluation_ids.csv
     - metadata.csv
@@ -269,6 +272,7 @@ preprocess_params:
     - pca_62
     - pca_95
     - pca_97
+
   multi_drop_cols:
     # step0 -> auc: 0.9
     # step1 -> auc: 0.89
@@ -2194,7 +2198,7 @@ preprocess_params:
 cv_params:
   n_fold: 5
   n_validation: 1
-  fold: kfold
+  fold: stratified  # kfold
   # group_name: patient_id
   # time_name: ""
 

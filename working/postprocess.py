@@ -50,7 +50,7 @@ def main(c):
     cv_cite = get_score(c.settings.scoring, input.train_cite_targets.sort_index(), input.cite_oof.sort_index())
     cv_multi = get_score(c.settings.scoring, input.train_multi_targets.sort_index(), input.multi_oof.sort_index())
     cv = 0.712 * cv_cite + 0.288 * cv_multi
-    log.info(f"All training data CV: {cv} (cite: {cv_cite}, multi: {cv_multi})")
+    log.info(f"All training data CV: {cv:.5f} (cite: {cv_cite:.5f}, multi: {cv_multi:.5f})")
 
     # validation data from adversarial training
     cite_good_validation = input.cite_adversarial_oof[
@@ -71,7 +71,7 @@ def main(c):
     )
     cv = 0.712 * cv_cite + 0.288 * cv_multi
     log.info(
-        f"training data that similar test data CV: {cv} (cite: {cv_cite}(size: {len(cite_good_validation)}), multi: {cv_multi}(size: {len(multi_good_validation)}))"
+        f"training data that similar test data CV: {cv:.5f} (cite: {cv_cite:.5f}(size: {len(cite_good_validation)}), multi: {cv_multi:.5f}(size: {len(multi_good_validation)}))"
     )
 
     inference = pd.concat([input.cite_inference, input.multi_inference])

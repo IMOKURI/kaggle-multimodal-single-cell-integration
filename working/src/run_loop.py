@@ -284,10 +284,17 @@ def train_fold_tabnet(c, input, fold):
 
     df = getattr(input, f"train_{c.global_params.data}_inputs")
     label_df = getattr(input, f"train_{c.global_params.data}_targets")
-    inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop("fold", axis=1)
+    inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop(["fold", c.settings.label_name], axis=1)
 
     train_df, valid_df = train_test_split(c, df, fold)
+    # good_validation = input.adversarial[(input.adversarial["label"] == 0) & (input.adversarial["preds"] == 1)]
+    # train_df = df[~df.index.isin(good_validation.index)]
+    # valid_df = df[df.index.isin(good_validation.index)]
+    # log.info(f"Num of training data: {len(train_df)}, num of validation data: {len(valid_df)}")
+
     train_label_df, valid_label_df = train_test_split(c, label_df, fold)
+    # train_label_df = label_df[~label_df.index.isin(good_validation.index)]
+    # valid_label_df = label_df[label_df.index.isin(good_validation.index)]
 
     # train_store = Store.training(c, train_df, "train", fold=fold)
     # valid_store = Store.training(c, valid_df, "valid", fold=fold)
