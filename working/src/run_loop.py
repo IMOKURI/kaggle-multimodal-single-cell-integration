@@ -262,8 +262,9 @@ def adversarial_train_fold_tabnet(c, input, fold):
     os.makedirs(model_dir, exist_ok=True)
     model.save_model(f"{model_dir}/tabnet")
 
-    valid_preds_df = pd.DataFrame(valid_labels, columns=[c.settings.label_name])
+    valid_preds_df = pd.DataFrame(valid_labels, columns=[c.settings.label_name], index=valid_df.index)
     valid_preds_df["preds"] = model.predict(valid_ds)
+    valid_preds_df.index.name = "cell_id"
 
     # feature importance の大きい方から10個を大きい順で取得
     importance_index = np.argsort(model.feature_importances_)[-20:][::-1]

@@ -138,6 +138,7 @@ settings:
 
     - multi_inference.pickle
     - multi_oof.pickle
+    - multi_adversarial_oof.pickle
     - train_multi_targets.pickle
 
   debug: False
@@ -147,11 +148,11 @@ settings:
   multi_gpu: True
 
   skip_training: False
-  skip_inference: True
+  skip_inference: False  # ** adversarial
 
   label_name: label
   n_class: 1
-  scoring: accuracy  # pearson, accuracy
+  scoring: pearson  # pearson, accuracy  # ** adversarial
 
 # These parameters are main tuning parameters and recorded to wandb.
 params:
@@ -160,8 +161,8 @@ params:
 
 global_params:
   seed: 440
-  method: adversarial_tabnet  # tabnet, adversarial_tabnet
-  data: multi  # cite, multi
+  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
+  data: cite  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI

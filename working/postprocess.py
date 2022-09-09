@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import src.utils as utils
 from hydra.core.hydra_config import HydraConfig
-from src.load_data import PostprocessData
 from src.get_score import get_score
+from src.load_data import PostprocessData
 
 if utils.is_env_notebook:
     from tqdm.notebook import tqdm
@@ -50,13 +50,35 @@ def main(c):
     cv_cite = get_score(c.settings.scoring, input.train_cite_targets.sort_index(), input.cite_oof.sort_index())
     cv_multi = get_score(c.settings.scoring, input.train_multi_targets.sort_index(), input.multi_oof.sort_index())
     cv = 0.712 * cv_cite + 0.288 * cv_multi
-    log.info(f"CV: {cv} (cite: {cv_cite}, multi: {cv_multi})")
+    log.info(f"All training data CV: {cv} (cite: {cv_cite}, multi: {cv_multi})")
+
+    # validation data from adversarial training
+    cite_good_validation = input.cite_adversarial_oof[
+        (input.cite_adversarial_oof["label"] == 0) & (input.cite_adversarial_oof["preds"] == 1)
+    ]
+    multi_good_validation = input.multi_adversarial_oof[
+        (input.multi_adversarial_oof["label"] == 0) & (input.multi_adversarial_oof["preds"] == 1)
+    ]
+    cv_cite = get_score(
+        c.settings.scoring,
+        input.train_cite_targets.loc[cite_good_validation.index, :].sort_index(),
+        input.cite_oof.loc[cite_good_validation.index, :].sort_index(),
+    )
+    cv_multi = get_score(
+        c.settings.scoring,
+        input.train_multi_targets.loc[multi_good_validation.index, :].sort_index(),
+        input.multi_oof.loc[multi_good_validation.index, :].sort_index(),
+    )
+    cv = 0.712 * cv_cite + 0.288 * cv_multi
+    log.info(
+        f"training data that similar test data CV: {cv} (cite: {cv_cite}(size: {len(cite_good_validation)}), multi: {cv_multi}(size: {len(multi_good_validation)}))"
+    )
 
     inference = pd.concat([input.cite_inference, input.multi_inference])
 
     for row_id, cell_id, gene_id in tqdm(
         zip(input.evaluation_ids["row_id"], input.evaluation_ids["cell_id"], input.evaluation_ids["gene_id"]),
-        total=len(inference),
+        total=len(input.evaluation_ids),
     ):
         input.sample_submission.at[row_id, "target"] = inference.at[cell_id, gene_id]
 
