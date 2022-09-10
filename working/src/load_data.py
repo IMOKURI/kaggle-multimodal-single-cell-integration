@@ -210,6 +210,17 @@ class LoadData:
         # train_inputs = train_inputs.join(metadata["cell_type_num"])
         # test_inputs = test_inputs.join(metadata["cell_type_num"])
 
+        rna_annot = pd.read_table(os.path.join(c.settings.dirs.input, "catrapid_rnas.txt"))
+        rna_annot_human = rna_annot[rna_annot["species"] == "human"].reset_index(drop=True)
+        rna_biotype_dict = {ens: biotype for ens, biotype in zip(rna_annot_human["ensg"], rna_annot_human["biotype"])}
+        biotype_cols = [
+            col
+            for col in train_inputs.columns
+            if (col.split("_")[0] in rna_biotype_dict) and (rna_biotype_dict[col.split("_")[0]] == "protein_coding")
+        ]
+        train_inputs = train_inputs[biotype_cols]
+        test_inputs = test_inputs[biotype_cols]
+
         # 過学習のもとになりそうなカラムを削除
         if c.global_params.data == "cite" and c.preprocess_params.cite_drop_cols != []:
             train_inputs = train_inputs.drop(c.preprocess_params.cite_drop_cols, axis=1)
