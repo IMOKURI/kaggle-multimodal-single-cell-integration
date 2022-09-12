@@ -267,7 +267,7 @@ def adversarial_train_fold_tabnet(c, input, fold):
     valid_preds_df.index.name = "cell_id"
 
     # feature importance の大きい方から10個を大きい順で取得
-    importance_index = np.argsort(model.feature_importances_)[-200:][::-1]
+    importance_index = np.argsort(model.feature_importances_)[-10:][::-1]
     importance = {}
     for index in importance_index:
         importance[train_df.columns[index]] = model.feature_importances_[index]
