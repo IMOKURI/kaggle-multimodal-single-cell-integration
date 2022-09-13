@@ -66,9 +66,9 @@ class PreprocessData:
             test = (getattr(self, f"test_{c.global_params.data}_inputs"),)
 
             # 過学習のもとになりそうなカラムを削除
-            if c.global_params.data == "cite":
-                train = train.drop(c.preprocess_params.cite_drop_cols, axis=1)
-                test = test.drop(c.preprocess_params.cite_drop_cols, axis=1)
+            # if c.global_params.data == "cite":
+            #     train = train.drop(c.preprocess_params.cite_drop_cols, axis=1)
+            #     test = test.drop(c.preprocess_params.cite_drop_cols, axis=1)
 
             train, test = preprocess_train_test(c, train, test)
 
@@ -78,21 +78,22 @@ class PreprocessData:
             if c.global_params.data == "cite":
                 ...
                 # cite: target の column名を含む inputs の column を抽出する
-                # cols = []
-                # for target_col in self.train_cite_targets.columns:
-                #     cols += [col for col in self.train_cite_inputs.columns if target_col in col]
-                #
-                # train = self.train_cite_inputs[cols]
-                # test = self.test_cite_inputs[cols]
-                #
-                # log.info(f"cite no pca data: {train.shape}")
-                #
-                # train.to_pickle(
-                #     os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_no_pca_inputs.pickle")
-                # )
-                # test.to_pickle(
-                #     os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_no_pca_inputs.pickle")
-                # )
+                cols = []
+                for target_col in self.train_cite_targets.columns:
+                    cols += [col for col in self.train_cite_inputs.columns if target_col in col]
+                cols = list(set(cols))
+
+                train = self.train_cite_inputs[cols]
+                test = self.test_cite_inputs[cols]
+
+                log.info(f"cite no pca data: {train.shape}")
+
+                train.to_pickle(
+                    os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_no_pca_inputs.pickle")
+                )
+                test.to_pickle(
+                    os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_no_pca_inputs.pickle")
+                )
 
                 # cite: RNA Type ごとの和を特徴量とする
                 # 他に、 mean, std, skew も
@@ -141,7 +142,7 @@ class PreprocessData:
 
 
 class LoadData:
-    def __init__(self, c, use_fold=True):
+    def __init__(self, c, use_fold=True, do_preprocess=True):
         self.c = c
 
         train_inputs = pd.DataFrame()
@@ -210,6 +211,7 @@ class LoadData:
         # train_inputs = train_inputs.join(metadata["cell_type_num"])
         # test_inputs = test_inputs.join(metadata["cell_type_num"])
 
+        # RNA アノテーションによるカラム抽出
         # rna_annot = pd.read_table(os.path.join(c.settings.dirs.input, "catrapid_rnas.txt"))
         # rna_annot_human = rna_annot[rna_annot["species"] == "human"].reset_index(drop=True)
         # rna_biotype_dict = {ens: biotype for ens, biotype in zip(rna_annot_human["ensg"], rna_annot_human["biotype"])}
@@ -222,15 +224,16 @@ class LoadData:
         # test_inputs = test_inputs[biotype_cols]
 
         # 過学習のもとになりそうなカラムを削除
-        if c.global_params.data == "cite" and c.preprocess_params.cite_drop_cols != []:
-            train_inputs = train_inputs.drop(c.preprocess_params.cite_drop_cols, axis=1)
-            test_inputs = test_inputs.drop(c.preprocess_params.cite_drop_cols, axis=1)
-        elif c.global_params.data == "multi" and c.preprocess_params.multi_drop_cols != []:
-            train_inputs = train_inputs.drop(c.preprocess_params.multi_drop_cols, axis=1)
-            test_inputs = test_inputs.drop(c.preprocess_params.multi_drop_cols, axis=1)
-            log.info(
-                f"Removed columns count: {pd.Series([col.split('_')[0] for col in c.preprocess_params.multi_drop_cols]).value_counts()}"
-            )
+        if do_preprocess:
+            if c.global_params.data == "cite" and c.preprocess_params.cite_drop_cols != []:
+                train_inputs = train_inputs.drop(c.preprocess_params.cite_drop_cols, axis=1)
+                test_inputs = test_inputs.drop(c.preprocess_params.cite_drop_cols, axis=1)
+            elif c.global_params.data == "multi" and c.preprocess_params.multi_drop_cols != []:
+                train_inputs = train_inputs.drop(c.preprocess_params.multi_drop_cols, axis=1)
+                test_inputs = test_inputs.drop(c.preprocess_params.multi_drop_cols, axis=1)
+                log.info(
+                    f"Removed columns count: {pd.Series([col.split('_')[0] for col in c.preprocess_params.multi_drop_cols]).value_counts()}"
+                )
 
         assert train_inputs.index.equals(train_targets.index)
         assert train_inputs.index.name == train_targets.index.name

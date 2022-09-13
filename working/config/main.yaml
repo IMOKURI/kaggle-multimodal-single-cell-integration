@@ -52,7 +52,7 @@ settings:
   preprocesses:
     # - train_cite_inputs.pickle
     - train_cite_all_inputs_pca_240.pickle
-    # - train_cite_no_pca_inputs.pickle
+    - train_cite_no_pca_inputs.pickle
     # - train_cite_sum_by_rna_type_inputs.pickle
     # - train_cite_mean_by_rna_type_inputs.pickle
     # - train_cite_std_by_rna_type_inputs.pickle
@@ -62,7 +62,7 @@ settings:
 
     # - test_cite_inputs.pickle
     - test_cite_all_inputs_pca_240.pickle
-    # - test_cite_no_pca_inputs.pickle
+    - test_cite_no_pca_inputs.pickle
     # - test_cite_sum_by_rna_type_inputs.pickle
     # - test_cite_mean_by_rna_type_inputs.pickle
     # - test_cite_std_by_rna_type_inputs.pickle
@@ -272,6 +272,62 @@ preprocess_params:
     - pca_62
     - pca_95
     - pca_97
+    # no_pca step1
+    - ENSG00000004468_CD38
+    - ENSG00000010278_CD9
+    - ENSG00000019582_CD74
+    - ENSG00000105185_PDCD5
+    - ENSG00000110651_CD81
+    - ENSG00000114013_CD86
+    - ENSG00000116815_CD58
+    - ENSG00000117091_CD48
+    - ENSG00000135218_CD36
+    - ENSG00000135404_CD63
+    - ENSG00000135535_CD164
+    - ENSG00000139187_KLRG1
+    - ENSG00000153283_CD96
+    - ENSG00000167851_CD300A
+    - ENSG00000168329_CX3CR1
+    - ENSG00000170584_NUDCD2
+    - ENSG00000174059_CD34
+    - ENSG00000185963_BICD2
+    - ENSG00000196352_CD55
+    - ENSG00000196776_CD47
+    - ENSG00000204287_HLA-DRA
+    - ENSG00000206527_HACD2
+    - ENSG00000206531_CD200R1L
+    - ENSG00000229391_HLA-DRB6
+    # no_pca step2
+    - ENSG00000012124_CD22
+    - ENSG00000066294_CD84
+    - ENSG00000071994_PDCD2
+    - ENSG00000085117_CD82
+    - ENSG00000091972_CD200
+    - ENSG00000105369_CD79A
+    - ENSG00000110848_CD69
+    - ENSG00000112149_CD83
+    - ENSG00000116824_CD2
+    - ENSG00000125810_CD93
+    - ENSG00000134256_CD101
+    - ENSG00000144554_FANCD2
+    - ENSG00000150593_PDCD4
+    - ENSG00000161714_PLCD3
+    - ENSG00000167775_CD320
+    - ENSG00000169442_CD52
+    - ENSG00000170458_CD14
+    - ENSG00000172116_CD8B
+    - ENSG00000174807_CD248
+    - ENSG00000186074_CD300LF
+    - ENSG00000196126_HLA-DRB1
+    - ENSG00000198502_HLA-DRB5
+    - ENSG00000198821_CD247
+    - ENSG00000198851_CD3E
+    - ENSG00000203497_PDCD4-AS1
+    - ENSG00000204592_HLA-E
+    - ENSG00000215039_CD27-AS1
+    - ENSG00000255443_CD44-AS1
+    - ENSG00000255909_PDCD5P1
+    # no_pca step3
 
   multi_drop_cols:
     # step0 -> auc: 0.9
