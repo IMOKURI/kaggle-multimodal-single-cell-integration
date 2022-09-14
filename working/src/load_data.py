@@ -70,10 +70,10 @@ class PreprocessData:
             #     train = train.drop(c.preprocess_params.cite_drop_cols, axis=1)
             #     test = test.drop(c.preprocess_params.cite_drop_cols, axis=1)
 
-            train, test = preprocess_train_test(c, train, test)
-
-            train.to_pickle(os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_inputs.pickle"))
-            test.to_pickle(os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_inputs.pickle"))
+            # train, test = preprocess_train_test(c, train, test)
+            #
+            # train.to_pickle(os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_inputs.pickle"))
+            # test.to_pickle(os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_inputs.pickle"))
 
             if c.global_params.data == "cite":
                 ...
@@ -81,6 +81,11 @@ class PreprocessData:
                 cols = []
                 for target_col in self.train_cite_targets.columns:
                     cols += [col for col in self.train_cite_inputs.columns if target_col in col]
+
+                # 明示的に温存する column を抽出する
+                if c.preprocess_params.cite_no_pca_cols != []:
+                    cols += c.preprocess_params.cite_no_pca_cols
+
                 cols = list(set(cols))
 
                 train = self.train_cite_inputs[cols]
