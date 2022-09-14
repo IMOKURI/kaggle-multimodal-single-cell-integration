@@ -8,7 +8,7 @@ HEAD_COMMIT = $(shell git rev-parse HEAD)
 
 
 build: ## Build training container image.
-	docker build --build-arg PROXY=$(http_proxy) -t kaggle-gpu-with-custom-packages .
+	docker build --build-arg PROXY=$(http_proxy) -t kaggle-gpu-with-custom-packages - < Dockerfile
 
 preprocess: ## Preprocess.
 	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=7,6"' \

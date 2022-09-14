@@ -13,6 +13,7 @@ import pandas as pd
 
 from .preprocesses.p010_pca import CustomPCA
 from .preprocesses.p011_ivis import CustomIvis
+from .preprocesses.p012_faiss import FaissKNeighbors
 
 log = logging.getLogger(__name__)
 
@@ -67,6 +68,12 @@ def preprocess_train_test(c, train_df: pd.DataFrame, test_df: pd.DataFrame) -> (
 
     else:
         raise Exception(f"Invalid preprocess method.")
+
+    if "faiss" in c.preprocess_params.methods:
+        log.info(f"faiss fit data: {df.shape}")
+        index = FaissKNeighbors(c)
+        index.fit(df)
+        index.save(f"{c.global_params.data}_{c.preprocess_params.cols}_faiss_{index.dim}.index")
 
     train_df = df.iloc[:train_size, :]
     test_df = df.iloc[train_size:, :]

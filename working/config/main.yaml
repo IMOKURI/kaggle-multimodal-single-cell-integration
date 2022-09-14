@@ -172,6 +172,7 @@ preprocess_params:
   methods:
     - pca
     # - ivis
+    - faiss
   pca_n_components_cite: 240
   pca_n_components_multi: 100
   ivis_n_components_cite: 240

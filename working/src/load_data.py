@@ -62,8 +62,8 @@ class PreprocessData:
             setattr(self, stem, df)
 
         if do_preprocess:
-            train = (getattr(self, f"train_{c.global_params.data}_inputs"),)
-            test = (getattr(self, f"test_{c.global_params.data}_inputs"),)
+            train = getattr(self, f"train_{c.global_params.data}_inputs")
+            test = getattr(self, f"test_{c.global_params.data}_inputs")
 
             # 過学習のもとになりそうなカラムを削除
             # if c.global_params.data == "cite":
