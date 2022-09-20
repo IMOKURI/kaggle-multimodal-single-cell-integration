@@ -9,6 +9,7 @@ import torch
 import torch.cuda.amp as amp
 import torch.nn as nn
 import xgboost as xgb
+from sklearn.linear_model import Ridge
 from pytorch_tabnet.pretraining import TabNetPretrainer
 from pytorch_tabnet.tab_model import TabNetClassifier, TabNetRegressor
 
@@ -29,6 +30,20 @@ def make_model(c, device=None, model_path=None):
     if model_path is not None:
         model.load_state_dict(torch.load(os.path.join(model_path, "pytorch_model.bin")))
     return model
+
+
+def make_model_ridge(c, ds=None, model_path=None):
+
+    ridge_params = dict(
+        random_state=c.global_params.seed,
+    )  # type: dict[str, Any]
+
+    clf = Ridge(**ridge_params)
+
+    # if model_path is not None:
+    #     clf.load_model(model_path)
+
+    return clf
 
 
 def make_model_xgboost(c, ds=None, model_path=None):

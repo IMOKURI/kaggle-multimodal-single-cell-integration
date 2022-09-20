@@ -14,6 +14,7 @@ from src.load_data import LoadData
 from src.run_loop import (  # , train_fold_nn
     adversarial_train_fold_tabnet,
     train_fold_lightgbm,
+    train_fold_ridge,
     train_fold_tabnet,
     train_fold_xgboost,
 )
@@ -64,6 +65,8 @@ def main(c):
             raise
         # elif c.global_params.method == "lightgbm":
         #     _oof_df, _label_df, loss = train_fold_lightgbm(c, input, fold)
+        elif c.global_params.method == "ridge":
+            _oof_df, _label_df, loss, _inference_df = train_fold_ridge(c, input, fold)
         elif c.global_params.method == "xgboost":
             _oof_df, _label_df, loss, _inference_df = train_fold_xgboost(c, input, fold)
         elif c.global_params.method == "tabnet":
