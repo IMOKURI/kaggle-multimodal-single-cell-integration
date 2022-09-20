@@ -6,6 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 
 from .make_fold import make_fold
 from .preprocess import preprocess, preprocess_train_test
+from .preprocesses.p001_dist_transformer import DistTransformer
 from .utils import reduce_mem_usage
 
 log = logging.getLogger(__name__)
@@ -248,6 +249,12 @@ class LoadData:
         assert train_inputs.index.equals(train_targets.index)
         assert train_inputs.index.name == train_targets.index.name
         assert train_inputs.columns.equals(test_inputs.columns)
+
+        # Standard Scaler
+        # ss = DistTransformer()
+        # ss.fit(pd.concat([train_inputs, test_inputs]))
+        # train_inputs = ss.transform(train_inputs)
+        # test_inputs = ss.transform(test_inputs)
 
         log.info(f"Data size, train: {train_inputs.shape}, target: {train_targets.shape}, test: {test_inputs.shape}")
         log.debug(f"input columns: {train_inputs.columns}")

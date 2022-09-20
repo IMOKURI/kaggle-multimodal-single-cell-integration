@@ -11,10 +11,11 @@ from scipy.optimize import minimize
 from sklearn.metrics import confusion_matrix
 from src.get_score import optimize_function, record_result
 from src.load_data import LoadData
-from src.run_loop import (  # , train_fold_nn, train_fold_xgboost
+from src.run_loop import (  # , train_fold_nn
     adversarial_train_fold_tabnet,
     train_fold_lightgbm,
     train_fold_tabnet,
+    train_fold_xgboost,
 )
 
 log = logging.getLogger(__name__)
@@ -63,8 +64,8 @@ def main(c):
             raise
         # elif c.global_params.method == "lightgbm":
         #     _oof_df, _label_df, loss = train_fold_lightgbm(c, input, fold)
-        # elif c.global_params.method == "xgboost":
-        #     _oof_df, loss = train_fold_xgboost(c, input, fold)
+        elif c.global_params.method == "xgboost":
+            _oof_df, _label_df, loss, _inference_df = train_fold_xgboost(c, input, fold)
         elif c.global_params.method == "tabnet":
             _oof_df, _label_df, loss, _inference_df = train_fold_tabnet(c, input, fold)
         elif c.global_params.method == "adversarial_tabnet":

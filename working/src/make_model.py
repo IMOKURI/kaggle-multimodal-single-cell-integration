@@ -31,31 +31,31 @@ def make_model(c, device=None, model_path=None):
     return model
 
 
-# def make_model_xgboost(c, ds=None, model_path=None):
-#
-#     xgb_params = dict(
-#         n_estimators=10000,
-#         # learning_rate=0.05,
-#         objective="binary:logistic",  # "reg:squarederror",
-#         eval_metric="logloss",  # "rmse",
-#         random_state=c.global_params.seed,
-#         tree_method="gpu_hist",
-#     )  # type: dict[str, Any]
-#
-#     # if ds is not None:
-#     #     num_data = len(ds)
-#     #     num_steps = num_data // (c.training_params.batch_size * c.training_params.gradient_acc_step) * c.training_params.epoch + 5
-#     #
-#     #     xgb_params["scheduler_params"] = dict(T_0=num_steps, T_mult=1, eta_min=c.training_params.min_lr, last_epoch=-1)
-#     #     xgb_params["scheduler_fn"] = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts
-#
-#     clf = xgb.XGBRegressor(**xgb_params)
-#     # clf = xgb.XGBClassifier(**xgb_params)
-#
-#     if model_path is not None:
-#         clf.load_model(model_path)
-#
-#     return clf
+def make_model_xgboost(c, ds=None, model_path=None):
+
+    xgb_params = dict(
+        n_estimators=1000,
+        # learning_rate=0.05,
+        objective="reg:squarederror",  # "binary:logistic", "reg:squarederror",
+        eval_metric="rmse",  # "logloss", "rmse",
+        random_state=c.global_params.seed,
+        tree_method="gpu_hist",
+    )  # type: dict[str, Any]
+
+    # if ds is not None:
+    #     num_data = len(ds)
+    #     num_steps = num_data // (c.training_params.batch_size * c.training_params.gradient_acc_step) * c.training_params.epoch + 5
+    #
+    #     xgb_params["scheduler_params"] = dict(T_0=num_steps, T_mult=1, eta_min=c.training_params.min_lr, last_epoch=-1)
+    #     xgb_params["scheduler_fn"] = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts
+
+    clf = xgb.XGBRegressor(**xgb_params)
+    # clf = xgb.XGBClassifier(**xgb_params)
+
+    if model_path is not None:
+        clf.load_model(model_path)
+
+    return clf
 
 
 def make_pre_model_tabnet(c, c_index=None, c_features=None):
