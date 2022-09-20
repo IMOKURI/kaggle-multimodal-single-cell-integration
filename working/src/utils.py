@@ -60,7 +60,11 @@ def catch_everything_in_kaggle(name: Optional[str] = None):
 
 def choice_seed(c):
     try:
-        return c.global_params.seed
+        method = len(c.global_params.method)
+    except ConfigAttributeError:
+        method = 0
+    try:
+        return c.global_params.seed + method
     except ConfigAttributeError:
         with open_dict(c):
             c.global_params.seed = random.randint(1, 10_000)
