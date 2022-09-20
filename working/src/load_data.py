@@ -65,13 +65,18 @@ class PreprocessData:
             train = getattr(self, f"train_{c.global_params.data}_inputs")
             test = getattr(self, f"test_{c.global_params.data}_inputs")
 
+            if c.global_params.data == "cite":
+                test = pd.concat([self.test_cite_inputs, self.test_cite_inputs_day_2_donor_27678])
+                test = test.dropna(axis=1)
+                setattr(self, "test_cite_inputs", test)
+
             # 過学習のもとになりそうなカラムを削除
             # if c.global_params.data == "cite":
             #     train = train.drop(c.preprocess_params.cite_drop_cols, axis=1)
             #     test = test.drop(c.preprocess_params.cite_drop_cols, axis=1)
 
-            # train, test = preprocess_train_test(c, train, test)
-            #
+            train, test = preprocess_train_test(c, train, test)
+
             # train.to_pickle(os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_inputs.pickle"))
             # test.to_pickle(os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_inputs.pickle"))
 

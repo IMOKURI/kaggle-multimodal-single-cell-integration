@@ -6,14 +6,9 @@ from copy import copy
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler, OrdinalEncoder, PowerTransformer, QuantileTransformer, StandardScaler
+from progressbar import progressbar
 
-from ..utils import is_env_notebook
 from .base import BaseTransformer
-
-if is_env_notebook:
-    from tqdm.notebook import tqdm
-else:
-    from tqdm import tqdm
 
 log = logging.getLogger(__name__)
 
@@ -83,14 +78,14 @@ class DistTransformer(BaseTransformer):
     def fit(self, X: pd.DataFrame) -> None:
         self._input_cols = X.columns.tolist()
 
-        col_iter = tqdm(self._input_cols) if self.verbose else self._input_cols
+        col_iter = progressbar(self._input_cols) if self.verbose else self._input_cols
         for col in col_iter:
             self.transformers[col] = _DistTransformer(self.t)
             self.transformers[col].fit(X[col])
 
     def transform(self, X: pd.DataFrame) -> pd.DataFrame:
         out_df = X.copy()
-        col_iter = tqdm(self._input_cols) if self.verbose else self._input_cols
+        col_iter = progressbar(self._input_cols) if self.verbose else self._input_cols
         for col in col_iter:
             out_df[col] = self.transformers[col].transform(X[col])
 

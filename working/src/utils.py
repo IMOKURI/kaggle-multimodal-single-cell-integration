@@ -1,4 +1,3 @@
-import json
 import logging
 import math
 import os
@@ -15,7 +14,6 @@ import git
 import numpy as np
 import pandas as pd
 import psutil
-import requests
 import torch
 import wandb
 from omegaconf import OmegaConf, open_dict
@@ -32,15 +30,6 @@ def basic_logger():
         level=logging.getLevelName("INFO"),
         format="%(asctime)s [%(levelname)s] [%(module)s] %(message)s",
     )
-
-
-def is_env_notebook():
-    if "get_ipython" not in globals():
-        return False
-    env_name = get_ipython().__class__.__name__
-    if env_name == "TerminalInteractiveShell":
-        return False
-    return True
 
 
 def set_always_catch(catch: bool):

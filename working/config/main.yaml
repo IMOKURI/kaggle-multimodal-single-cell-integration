@@ -38,6 +38,7 @@ settings:
     - sample_submission.csv
 
     - test_cite_inputs.h5
+    - test_cite_inputs_day_2_donor_27678.h5
     - train_cite_inputs.h5
     - train_cite_targets.h5
 
@@ -52,7 +53,7 @@ settings:
   preprocesses:
     # - train_cite_inputs.pickle
     - train_cite_all_inputs_pca_240.pickle
-    - train_cite_no_pca_inputs.pickle
+    # - train_cite_no_pca_inputs.pickle
     # - train_cite_sum_by_rna_type_inputs.pickle
     # - train_cite_mean_by_rna_type_inputs.pickle
     # - train_cite_std_by_rna_type_inputs.pickle
@@ -62,7 +63,7 @@ settings:
 
     # - test_cite_inputs.pickle
     - test_cite_all_inputs_pca_240.pickle
-    - test_cite_no_pca_inputs.pickle
+    # - test_cite_no_pca_inputs.pickle
     # - test_cite_sum_by_rna_type_inputs.pickle
     # - test_cite_mean_by_rna_type_inputs.pickle
     # - test_cite_std_by_rna_type_inputs.pickle

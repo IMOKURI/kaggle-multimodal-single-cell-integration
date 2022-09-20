@@ -6,13 +6,9 @@ import numpy as np
 import pandas as pd
 import src.utils as utils
 from hydra.core.hydra_config import HydraConfig
+from progressbar import progressbar
 from src.get_score import get_score
 from src.load_data import PostprocessData
-
-if utils.is_env_notebook:
-    from tqdm.notebook import tqdm
-else:
-    from tqdm import tqdm
 
 log = logging.getLogger(__name__)
 
@@ -76,9 +72,8 @@ def main(c):
 
     inference = pd.concat([input.cite_inference, input.multi_inference])
 
-    for row_id, cell_id, gene_id in tqdm(
+    for row_id, cell_id, gene_id in progressbar(
         zip(input.evaluation_ids["row_id"], input.evaluation_ids["cell_id"], input.evaluation_ids["gene_id"]),
-        total=len(input.evaluation_ids),
     ):
         input.sample_submission.at[row_id, "target"] = inference.at[cell_id, gene_id]
 

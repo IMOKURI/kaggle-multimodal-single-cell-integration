@@ -5,14 +5,10 @@ import logging
 import lightgbm as lgb
 import numpy as np
 import pandas as pd
+from progressbar import progressbar
 
 from .base import BaseTransformer
-from ..utils import analyze_column, is_env_notebook
-
-if is_env_notebook:
-    from tqdm.notebook import tqdm
-else:
-    from tqdm import tqdm
+from ..utils import analyze_column
 
 log = logging.getLogger(__name__)
 
@@ -43,7 +39,7 @@ class LGBMImputer(BaseTransformer):
         self.feature_with_missing = [col for col in self.feature_names if X[col].isnull().sum() > 0]
 
         params = {}
-        pbar = tqdm(self.feature_with_missing)
+        pbar = progressbar(self.feature_with_missing)
         for icol, col in enumerate(pbar):
             if icol in self.cat_features:
                 nuni = X[col].dropna().nunique()
@@ -94,7 +90,7 @@ class LGBMImputer(BaseTransformer):
     def transform(self, X):
         output_X = X.copy()
 
-        for icol, col in enumerate(tqdm(self.feature_with_missing)):
+        for icol, col in enumerate(progressbar(self.feature_with_missing)):
             model = self.imputers[col]
             y_offset = self.offsets[col]
             objective = self.objectives[col]
@@ -126,7 +122,7 @@ class LGBMImputer(BaseTransformer):
         self.feature_with_missing = [col for col in self.feature_names if X[col].isnull().sum() > 0]
 
         params = {}
-        pbar = tqdm(self.feature_with_missing)
+        pbar = progressbar(self.feature_with_missing)
         for icol, col in enumerate(pbar):
             if icol in self.cat_features:
                 nuni = X[col].dropna().nunique()
