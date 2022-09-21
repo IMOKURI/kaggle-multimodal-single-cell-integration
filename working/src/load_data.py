@@ -325,9 +325,7 @@ class PostprocessData:
 
         # inference_df から leak データを除外する
         leak_27678_cell_id = self.metadata[
-            (self.metadata["donor"] == 27678)
-            & (self.metadata["technology"] == "citeseq")
-            & (self.metadata["day"] == 2)
+            (self.metadata["donor"] == 27678) & (self.metadata["technology"] == "citeseq") & (self.metadata["day"] == 2)
         ]["cell_id"]
         assert len(leak_27678_cell_id) == 7476
 
@@ -357,7 +355,9 @@ class PostprocessData:
             [
                 self.cite_inference,
                 pd.DataFrame(
-                    np.zeros((len(leak_27678_cell_id), len(self.cite_inference.columns))), index=leak_27678_cell_id
+                    np.zeros((len(leak_27678_cell_id), len(self.cite_inference.columns))),
+                    index=leak_27678_cell_id,
+                    columns=self.cite_inference.columns,
                 ),
             ]
         )
