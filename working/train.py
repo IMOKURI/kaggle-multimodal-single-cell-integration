@@ -17,6 +17,7 @@ from src.run_loop import (  # , train_fold_nn
     train_fold_ridge,
     train_fold_tabnet,
     train_fold_xgboost,
+    train_fold_xgboost_dask,
 )
 
 log = logging.getLogger(__name__)
@@ -69,6 +70,8 @@ def main(c):
             _oof_df, _label_df, loss, _inference_df = train_fold_ridge(c, input, fold)
         elif c.global_params.method == "xgboost":
             _oof_df, _label_df, loss, _inference_df = train_fold_xgboost(c, input, fold)
+        elif c.global_params.method == "xgboost_dask":
+            _oof_df, _label_df, loss, _inference_df = train_fold_xgboost_dask(c, input, fold)
         elif c.global_params.method == "tabnet":
             _oof_df, _label_df, loss, _inference_df = train_fold_tabnet(c, input, fold)
         elif c.global_params.method == "adversarial_tabnet":

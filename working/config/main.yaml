@@ -166,7 +166,7 @@ params:
 
 global_params:
   seed: 440
-  method: xgboost  # tabnet, adversarial_tabnet  # ** adversarial
+  method: xgboost_dask  # tabnet, adversarial_tabnet  # ** adversarial
   data: multi  # cite, multi
 
 preprocess_params:

@@ -15,4 +15,5 @@ RUN conda install -c pytorch faiss-gpu
 RUN pip install \
     tables \
     pytorch-tabnet \
-    ivis[gpu]
+    ivis[gpu] \
+    dask-cuda
