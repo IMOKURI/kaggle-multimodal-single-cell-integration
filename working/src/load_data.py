@@ -333,23 +333,24 @@ class PostprocessData:
         for dir, weight in c.inference_params.cite_pretrained.items():
             log.info(f"  -> {dir}")
             path = os.path.join(c.settings.dirs.output, dir, "oof.pickle")
-            df = pd.read_pickle(path)
-            if self.cite_oof is None:
-                self.cite_oof = pd.DataFrame(std(df.to_numpy()) * weight)
-                self.cite_oof.index = df.index
-                self.cite_oof.columns = df.columns
-            else:
-                self.cite_oof += std(df.to_numpy()) * weight
+            oof_df = pd.read_pickle(path)
 
             path = os.path.join(c.settings.dirs.output, dir, "cite_inference.pickle")
-            df = pd.read_pickle(path)
-            df = df.drop(leak_27678_cell_id)
-            if self.cite_inference is None:
-                self.cite_inference = pd.DataFrame(std(df.to_numpy()) * weight)
-                self.cite_inference.index = df.index
-                self.cite_inference.columns = df.columns
+            inf_df = pd.read_pickle(path)
+            inf_df = inf_df.drop(leak_27678_cell_id)
+
+            df = pd.concat([oof_df, inf_df])
+            df = pd.DataFrame(std(df.to_numpy()) * weight, index=df.index, columns=df.columns)
+
+            if self.cite_oof is None:
+                self.cite_oof = df.iloc[:len(oof_df), :]
             else:
-                self.cite_inference += std(df.to_numpy()) * weight
+                self.cite_oof += df.iloc[:len(oof_df), :]
+
+            if self.cite_inference is None:
+                self.cite_inference = df.iloc[len(oof_df):, :]
+            else:
+                self.cite_inference += df.iloc[len(oof_df):, :]
 
         self.cite_inference = pd.concat(
             [
@@ -366,23 +367,23 @@ class PostprocessData:
         for dir, weight in c.inference_params.multi_pretrained.items():
             log.info(f"  -> {dir}")
             path = os.path.join(c.settings.dirs.output, dir, "oof.pickle")
-            df = pd.read_pickle(path)
-            if self.multi_oof is None:
-                self.multi_oof = pd.DataFrame(std(df.to_numpy()) * weight)
-                self.multi_oof.index = df.index
-                self.multi_oof.columns = df.columns
-            else:
-                self.multi_oof += std(df.to_numpy()) * weight
+            oof_df = pd.read_pickle(path)
 
             path = os.path.join(c.settings.dirs.output, dir, "multi_inference.pickle")
-            df = pd.read_pickle(path)
-            if self.multi_inference is None:
-                self.multi_inference = pd.DataFrame(std(df.to_numpy()) * weight)
-                self.multi_inference.index = df.index
-                self.multi_inference.columns = df.columns
-            else:
-                self.multi_inference += std(df.to_numpy()) * weight
+            inf_df = pd.read_pickle(path)
 
+            df = pd.concat([oof_df, inf_df])
+            df = pd.DataFrame(std(df.to_numpy()) * weight, index=df.index, columns=df.columns)
+
+            if self.multi_oof is None:
+                self.multi_oof = df.iloc[:len(oof_df), :]
+            else:
+                self.multi_oof += df.iloc[:len(oof_df), :]
+
+            if self.multi_inference is None:
+                self.multi_inference = df.iloc[len(oof_df):, :]
+            else:
+                self.multi_inference += df.iloc[len(oof_df):, :]
 
 def sample_for_debug(c, df):
     if len(df) > c.settings.n_debug_data and c.settings.n_debug_data > 0:
