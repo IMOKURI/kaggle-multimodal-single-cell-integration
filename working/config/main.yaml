@@ -25,6 +25,7 @@ settings:
   dirs:
     working: ..
     input: ${settings.dirs.working}/input
+    output: ${settings.dirs.working}/output
     feature: ${settings.dirs.working}/feature
     preprocess: ${settings.dirs.working}/preprocess
     postprocess: ${settings.dirs.working}/postprocess
@@ -135,13 +136,13 @@ settings:
     - metadata.csv
     - sample_submission.csv
 
-    - cite_inference.pickle
-    - cite_oof.pickle
+    # - cite_inference.pickle
+    # - cite_oof.pickle
     - cite_adversarial_oof.pickle
     - train_cite_targets.pickle
 
-    - multi_inference.pickle
-    - multi_oof.pickle
+    # - multi_inference.pickle
+    # - multi_oof.pickle
     - multi_adversarial_oof.pickle
     - train_multi_targets.pickle
 
@@ -165,8 +166,8 @@ params:
 
 global_params:
   seed: 440
-  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
-  data: cite  # cite, multi
+  method: xgboost  # tabnet, adversarial_tabnet  # ** adversarial
+  data: multi  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
@@ -511,6 +512,13 @@ model_params:
   # dropout: 0.0
 
 inference_params:
+  cite_pretrained:
+    2022-09-20_13-51-37: 1  # ridge
+    2022-09-20_13-52-57: 1  # tabnet
+    2022-09-20_13-54-49: 1  # xgboost
+  multi_pretrained:
+    # 2022-09-20_14-06-40: 1  # ridge
+    2022-09-20_14-23-30: 1  # tabnet
   pretrained: []
   # pretrained:
   #   - dir: ""

@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 import src.utils as utils
 from hydra.core.hydra_config import HydraConfig
-from progressbar import progressbar
 from src.get_score import get_score
 from src.load_data import PostprocessData
 
@@ -20,21 +19,6 @@ def main(c):
     utils.fix_seed(utils.choice_seed(c))
 
     input = PostprocessData(c)
-
-    # Cite の day2-donor27678 の値を train の day2-donor32606 の target に変換する (Public test leak...)
-    # leak_32606_cell_id = input.metadata[
-    #     (input.metadata["donor"] == 32606) & (input.metadata["technology"] == "citeseq") & (input.metadata["day"] == 2)
-    # ]["cell_id"]
-    # leak_27678_cell_id = input.metadata[
-    #     (input.metadata["donor"] == 27678) & (input.metadata["technology"] == "citeseq") & (input.metadata["day"] == 2)
-    # ]["cell_id"]
-    # input.cite_inference.loc[leak_27678_cell_id, :] = input.train_cite_targets.loc[leak_32606_cell_id, :].to_numpy()
-    # assert len(leak_32606_cell_id) == 7476
-    # assert len(leak_27678_cell_id) == 7476
-    # assert np.array_equal(
-    #     input.cite_inference.loc[leak_27678_cell_id, :].to_numpy(),
-    #     input.train_cite_targets.loc[leak_32606_cell_id, :].to_numpy(),
-    # )
 
     # Multiome の target は 非負
     input.multi_oof[input.multi_oof < 0] = 0
@@ -72,8 +56,8 @@ def main(c):
 
     inference = pd.concat([input.cite_inference, input.multi_inference])
 
-    for row_id, cell_id, gene_id in progressbar(
-        zip(input.evaluation_ids["row_id"], input.evaluation_ids["cell_id"], input.evaluation_ids["gene_id"]),
+    for row_id, cell_id, gene_id in zip(
+        input.evaluation_ids["row_id"], input.evaluation_ids["cell_id"], input.evaluation_ids["gene_id"]
     ):
         input.sample_submission.at[row_id, "target"] = inference.at[cell_id, gene_id]
 

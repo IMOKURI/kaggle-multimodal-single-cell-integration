@@ -1,7 +1,9 @@
 import logging
 import os
 
+import numpy as np
 import pandas as pd
+from progressbar import progressbar
 from sklearn.preprocessing import LabelEncoder
 
 from .make_fold import make_fold
@@ -281,12 +283,12 @@ class PostprocessData:
         self.evaluation_ids = pd.DataFrame()
         self.metadata = pd.DataFrame()
         self.sample_submission = pd.DataFrame()
-        self.cite_inference = pd.DataFrame()
         self.cite_adversarial_oof = pd.DataFrame()
-        self.cite_oof = pd.DataFrame()
-        self.multi_inference = pd.DataFrame()
+        self.cite_inference = None
+        self.cite_oof = None
         self.multi_adversarial_oof = pd.DataFrame()
-        self.multi_oof = pd.DataFrame()
+        self.multi_inference = None
+        self.multi_oof = None
         self.train_cite_targets = pd.DataFrame()
         self.train_multi_targets = pd.DataFrame()
 
@@ -321,8 +323,72 @@ class PostprocessData:
 
             setattr(self, stem, df)
 
+        # inference_df から leak データを除外する
+        leak_27678_cell_id = self.metadata[
+            (self.metadata["donor"] == 27678)
+            & (self.metadata["technology"] == "citeseq")
+            & (self.metadata["day"] == 2)
+        ]["cell_id"]
+        assert len(leak_27678_cell_id) == 7476
+
+        log.info("Load CITEseq inference data.")
+        for dir, weight in c.inference_params.cite_pretrained.items():
+            log.info(f"  -> {dir}")
+            path = os.path.join(c.settings.dirs.output, dir, "oof.pickle")
+            df = pd.read_pickle(path)
+            if self.cite_oof is None:
+                self.cite_oof = pd.DataFrame(std(df.to_numpy()) * weight)
+                self.cite_oof.index = df.index
+                self.cite_oof.columns = df.columns
+            else:
+                self.cite_oof += std(df.to_numpy()) * weight
+
+            path = os.path.join(c.settings.dirs.output, dir, "cite_inference.pickle")
+            df = pd.read_pickle(path)
+            df = df.drop(leak_27678_cell_id)
+            if self.cite_inference is None:
+                self.cite_inference = pd.DataFrame(std(df.to_numpy()) * weight)
+                self.cite_inference.index = df.index
+                self.cite_inference.columns = df.columns
+            else:
+                self.cite_inference += std(df.to_numpy()) * weight
+
+        self.cite_inference = pd.concat(
+            [
+                self.cite_inference,
+                pd.DataFrame(
+                    np.zeros((len(leak_27678_cell_id), len(self.cite_inference.columns))), index=leak_27678_cell_id
+                ),
+            ]
+        )
+
+        log.info("Load Multiome inference data.")
+        for dir, weight in c.inference_params.multi_pretrained.items():
+            log.info(f"  -> {dir}")
+            path = os.path.join(c.settings.dirs.output, dir, "oof.pickle")
+            df = pd.read_pickle(path)
+            if self.multi_oof is None:
+                self.multi_oof = pd.DataFrame(std(df.to_numpy()) * weight)
+                self.multi_oof.index = df.index
+                self.multi_oof.columns = df.columns
+            else:
+                self.multi_oof += std(df.to_numpy()) * weight
+
+            path = os.path.join(c.settings.dirs.output, dir, "multi_inference.pickle")
+            df = pd.read_pickle(path)
+            if self.multi_inference is None:
+                self.multi_inference = pd.DataFrame(std(df.to_numpy()) * weight)
+                self.multi_inference.index = df.index
+                self.multi_inference.columns = df.columns
+            else:
+                self.multi_inference += std(df.to_numpy()) * weight
+
 
 def sample_for_debug(c, df):
     if len(df) > c.settings.n_debug_data and c.settings.n_debug_data > 0:
         df = df.sample(n=c.settings.n_debug_data, random_state=c.global_params.seed).reset_index(drop=True)
     return df
+
+
+def std(x):
+    return (x - np.mean(x)) / np.std(x)
