@@ -20,12 +20,6 @@ def main(c):
 
     input = PostprocessData(c)
 
-    # Multiome の target は 非負
-    input.multi_oof[input.multi_oof < 0] = 0
-    input.multi_inference[input.multi_inference < 0] = 0
-    assert (input.multi_oof < 0).sum().sum() == 0
-    assert (input.multi_inference < 0).sum().sum() == 0
-
     # https://www.kaggle.com/competitions/open-problems-multimodal/discussion/349591
     cv_cite = get_score(c.settings.scoring, input.train_cite_targets.sort_index(), input.cite_oof.sort_index())
     cv_multi = get_score(c.settings.scoring, input.train_multi_targets.sort_index(), input.multi_oof.sort_index())

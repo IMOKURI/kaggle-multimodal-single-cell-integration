@@ -394,6 +394,11 @@ class PostprocessData:
             inf_df = pd.read_pickle(path)
 
             df = pd.concat([oof_df, inf_df])
+
+            # Multiome の target は 非負
+            df[df < 0] = 0
+            assert (df < 0).sum().sum() == 0
+
             df = pd.DataFrame(std(df.to_numpy()) * weight, index=df.index, columns=df.columns)
 
             if self.multi_oof is None:
