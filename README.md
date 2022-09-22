@@ -5,44 +5,39 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 ## Solution
 
-### Adversarial Training
-
-- 学習データとテストデータを分類するタスクで、学習データとテストデータを分類できてしまう特徴量を除外したい
-
-
 ### Preprocess
 
 #### Citeseq
 
 - PCA で 240 次元に削減
 - ターゲットの列名を含む インプットの列名のデータを温存
-- metadata の cell_type を特徴量に追加
-- RNAタイプごとの mean, std, skew を追加
+- [ivis](https://bering-ivis.readthedocs.io/en/latest/index.html) の教師なし学習で 240 次元の特徴量を生成
+- [ivis](https://bering-ivis.readthedocs.io/en/latest/index.html) の教師あり学習で 240 次元の特徴量を生成
 
 #### Multiome
 
 - 列名の接頭文字が同じグルーごとに PCA で およそ 各 100 次元に削減
-- metadata の cell_type を特徴量に追加
+    - さらに [ivis](https://bering-ivis.readthedocs.io/en/latest/index.html) の教師なし学習で 240 次元の特徴量を生成
 
 
-### Training
+### Training (CV Score)
 
-### Citeseq
+#### Citeseq
 
-- Tabnet Pre-train
-- Tabnet
+- Ridge (0.89366)
+- Tabnet (0.89339)
+- XGBoost (0.89358)
 
-### Multiome
+#### Multiome
 
-- Tabnet Pre-train
-- Tabnet
+- Tabnet (0.66728)
 
 
 ### Postprocess
 
 #### Citeseq
 
-- Publicテストリーク対応
+
 
 #### Multiome
 
@@ -50,6 +45,11 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 
 
-#### Ensemble
+### Ensemble
 
 - 各推論を Standardize してからアンサンブルする
+    - OOF と 推論結果をまとめて Standardize する
+
+## Score
+
+- CV: 0.83229 (cite: 0.89904, multi: 0.66728), LB: xxx
