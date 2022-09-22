@@ -17,6 +17,8 @@ log = logging.getLogger(__name__)
 class PreprocessData:
     def __init__(self, c, do_preprocess=True):
         self.c = c
+        train_inputs = pd.DataFrame()
+        test_inputs = pd.DataFrame()
 
         for file_name in c.settings.inputs:
             stem = os.path.splitext(file_name)[0].replace("/", "__")
@@ -62,11 +64,30 @@ class PreprocessData:
             # if stem in [] and do_preprocess:
             #     df = preprocess(c, df, stem)
 
-            setattr(self, stem, df)
+            if c.global_params.data == "multi" and "inputs" in stem:
+                if "train" in stem:
+                    id = stem.split("_")[2]
+                    df.columns = [f"{id}_{col}" for col in df.columns]
+                    train_inputs = pd.concat([train_inputs, df], axis=1)
+                    train_inputs.index = df.index
+                    train_inputs.index.name = df.index.name
+                elif "test" in stem:
+                    id = stem.split("_")[2]
+                    df.columns = [f"{id}_{col}" for col in df.columns]
+                    test_inputs = pd.concat([test_inputs, df], axis=1)
+                    test_inputs.index = df.index
+                    test_inputs.index.name = df.index.name
+            else:
+                setattr(self, stem, df)
+
+        if c.global_params.data == "multi" and "inputs" in stem:
+            setattr(self, f"train_{c.global_params.data}_inputs", train_inputs)
+            setattr(self, f"test_{c.global_params.data}_inputs", test_inputs)
 
         if do_preprocess:
             train = getattr(self, f"train_{c.global_params.data}_inputs")
             test = getattr(self, f"test_{c.global_params.data}_inputs")
+            label = getattr(self, f"train_{c.global_params.data}_targets")
 
             if c.global_params.data == "cite":
                 test = pd.concat([self.test_cite_inputs, self.test_cite_inputs_day_2_donor_27678])
@@ -78,7 +99,7 @@ class PreprocessData:
             #     train = train.drop(c.preprocess_params.cite_drop_cols, axis=1)
             #     test = test.drop(c.preprocess_params.cite_drop_cols, axis=1)
 
-            train, test = preprocess_train_test(c, train, test)
+            train, test = preprocess_train_test(c, train, test, label)
 
             # train.to_pickle(os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_inputs.pickle"))
             # test.to_pickle(os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_inputs.pickle"))

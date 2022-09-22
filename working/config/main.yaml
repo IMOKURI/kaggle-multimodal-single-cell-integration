@@ -43,9 +43,63 @@ settings:
     - train_cite_inputs.h5
     - train_cite_targets.h5
 
-    - test_multi_inputs.h5
-    - train_multi_inputs.h5
+    # - test_multi_inputs.h5
+    # - train_multi_inputs.h5
     - train_multi_targets.h5
+
+    - train_multi_GL_inputs__100.pickle
+    - train_multi_KI_inputs__100.pickle
+    - train_multi_chr10_inputs_pca_100.pickle
+    - train_multi_chr11_inputs_pca_100.pickle
+    - train_multi_chr12_inputs_pca_100.pickle
+    - train_multi_chr13_inputs_pca_100.pickle
+    - train_multi_chr14_inputs_pca_100.pickle
+    - train_multi_chr15_inputs_pca_100.pickle
+    - train_multi_chr16_inputs_pca_100.pickle
+    - train_multi_chr17_inputs_pca_100.pickle
+    - train_multi_chr18_inputs_pca_100.pickle
+    - train_multi_chr19_inputs_pca_100.pickle
+    - train_multi_chr1_inputs_pca_400.pickle
+    - train_multi_chr20_inputs_pca_100.pickle
+    - train_multi_chr21_inputs_pca_100.pickle
+    - train_multi_chr22_inputs_pca_100.pickle
+    - train_multi_chr2_inputs_pca_200.pickle
+    - train_multi_chr3_inputs_pca_100.pickle
+    - train_multi_chr4_inputs_pca_100.pickle
+    - train_multi_chr5_inputs_pca_100.pickle
+    - train_multi_chr6_inputs_pca_100.pickle
+    - train_multi_chr7_inputs_pca_100.pickle
+    - train_multi_chr8_inputs_pca_100.pickle
+    - train_multi_chr9_inputs_pca_100.pickle
+    - train_multi_chrX_inputs_pca_100.pickle
+    - train_multi_chrY_inputs_pca_100.pickle
+
+    - test_multi_GL_inputs__100.pickle
+    - test_multi_KI_inputs__100.pickle
+    - test_multi_chr10_inputs_pca_100.pickle
+    - test_multi_chr11_inputs_pca_100.pickle
+    - test_multi_chr12_inputs_pca_100.pickle
+    - test_multi_chr13_inputs_pca_100.pickle
+    - test_multi_chr14_inputs_pca_100.pickle
+    - test_multi_chr15_inputs_pca_100.pickle
+    - test_multi_chr16_inputs_pca_100.pickle
+    - test_multi_chr17_inputs_pca_100.pickle
+    - test_multi_chr18_inputs_pca_100.pickle
+    - test_multi_chr19_inputs_pca_100.pickle
+    - test_multi_chr1_inputs_pca_400.pickle
+    - test_multi_chr20_inputs_pca_100.pickle
+    - test_multi_chr21_inputs_pca_100.pickle
+    - test_multi_chr22_inputs_pca_100.pickle
+    - test_multi_chr2_inputs_pca_200.pickle
+    - test_multi_chr3_inputs_pca_100.pickle
+    - test_multi_chr4_inputs_pca_100.pickle
+    - test_multi_chr5_inputs_pca_100.pickle
+    - test_multi_chr6_inputs_pca_100.pickle
+    - test_multi_chr7_inputs_pca_100.pickle
+    - test_multi_chr8_inputs_pca_100.pickle
+    - test_multi_chr9_inputs_pca_100.pickle
+    - test_multi_chrX_inputs_pca_100.pickle
+    - test_multi_chrY_inputs_pca_100.pickle
 
     # - train.csv
     # - test.csv
@@ -98,6 +152,7 @@ settings:
     - train_multi_chr9_inputs_pca_100.pickle
     - train_multi_chrX_inputs_pca_100.pickle
     - train_multi_chrY_inputs_pca_100.pickle
+    - train_multi_all_inputs_ivis_240.pickle
 
     - train_multi_targets.pickle
 
@@ -127,6 +182,7 @@ settings:
     - test_multi_chr9_inputs_pca_100.pickle
     - test_multi_chrX_inputs_pca_100.pickle
     - test_multi_chrY_inputs_pca_100.pickle
+    - test_multi_all_inputs_ivis_240.pickle
 
     - metadata.pickle
 
@@ -168,7 +224,7 @@ params:
 
 global_params:
   seed: 440
-  method: xgboost  # tabnet, adversarial_tabnet  # ** adversarial
+  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
   data: cite  # cite, multi
 
 preprocess_params:
@@ -176,6 +232,7 @@ preprocess_params:
   methods:
     # - pca
     # - ivis
+    - ivis_supervised
     # - faiss
   pca_n_components_cite: 240
   pca_n_components_multi: 240

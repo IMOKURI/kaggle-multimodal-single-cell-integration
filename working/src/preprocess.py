@@ -6,7 +6,7 @@ import os
 import pickle
 import re
 from functools import wraps
-from typing import Callable, Union
+from typing import Callable, Optional, Union, Tuple
 
 import numpy as np
 import pandas as pd
@@ -31,7 +31,9 @@ def preprocess(c, df: pd.DataFrame, stem: str) -> pd.DataFrame:
     return df
 
 
-def preprocess_train_test(c, train_df: pd.DataFrame, test_df: pd.DataFrame) -> (pd.DataFrame, pd.DataFrame):
+def preprocess_train_test(
+    c, train_df: pd.DataFrame, test_df: pd.DataFrame, label_df: Optional[pd.DataFrame] = None
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
     train_size = len(train_df)
     train_index = train_df.index
     test_index = test_df.index
@@ -73,6 +75,36 @@ def preprocess_train_test(c, train_df: pd.DataFrame, test_df: pd.DataFrame) -> (
             df,
             preprocessor,
         )
+
+    elif "ivis_supervised" in c.preprocess_params.methods:
+        method = "ivis_supervised"
+        preprocessor = DistTransformer(transform="min-max")
+        df = transform_data(
+            c,
+            f"{c.global_params.data}_{c.preprocess_params.cols}_minmax.pickle",
+            df,
+            preprocessor,
+        )
+
+        train_df = df.iloc[:train_size, :]
+        test_df = df.iloc[train_size:, :]
+
+        preprocessor = CustomIvis(c)
+        train_df = transform_data(
+            c,
+            f"train-{c.global_params.data}_{c.preprocess_params.cols}_ivis_supervised_{preprocessor.n_components}.pickle",
+            train_df,
+            preprocessor,
+            label_df
+        )
+        test_df = transform_data(
+            c,
+            f"test-{c.global_params.data}_{c.preprocess_params.cols}_ivis_supervised_{preprocessor.n_components}.pickle",
+            test_df,
+            preprocessor,
+        )
+
+        df = pd.concat([train_df, test_df])
 
     else:
         raise Exception(f"Invalid preprocess method.")
@@ -173,17 +205,22 @@ def load_or_transform(func: Callable):
 
 
 @load_or_fit
-def fit_instance(_, path, data: np.ndarray, instance):
-    instance.fit(data)
+def fit_instance(_, path, data: np.ndarray, instance, label=None):
+    if label is None:
+        instance.fit(data)
+    else:
+        instance.fit(data, label)
 
     log.info(f"Fit preprocess. -> {path}")
     return instance
 
 
 @load_or_transform
-def transform_data(c, path, data: Union[np.ndarray, pd.DataFrame], instance) -> Union[np.ndarray, pd.DataFrame]:
+def transform_data(
+    c, path, data: Union[np.ndarray, pd.DataFrame], instance, label=None
+) -> Union[np.ndarray, pd.DataFrame]:
     instance = fit_instance(
-        c, re.sub("\w+-", "", path).replace(".npy", ".pkl").replace(".pickle", ".pkl"), data, instance
+        c, re.sub("\w+-", "", path).replace(".npy", ".pkl").replace(".pickle", ".pkl"), data, instance, label
     )
     features = instance.transform(data)
 
