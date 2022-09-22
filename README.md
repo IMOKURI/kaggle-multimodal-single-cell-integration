@@ -12,7 +12,6 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 - PCA で 240 次元に削減
 - ターゲットの列名を含む インプットの列名のデータを温存
 - [ivis](https://bering-ivis.readthedocs.io/en/latest/index.html) の教師なし学習で 240 次元の特徴量を生成
-- [ivis](https://bering-ivis.readthedocs.io/en/latest/index.html) の教師あり学習で 240 次元の特徴量を生成
 
 #### Multiome
 
