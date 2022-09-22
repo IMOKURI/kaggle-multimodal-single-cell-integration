@@ -108,6 +108,7 @@ settings:
   preprocesses:
     # - train_cite_inputs.pickle
     - train_cite_all_inputs_ivis_240.pickle
+    # - train_cite_all_inputs_ivis_supervised_240.pickle
     - train_cite_all_inputs_pca_240.pickle
     - train_cite_no_pca_inputs.pickle
     # - train_cite_sum_by_rna_type_inputs.pickle
@@ -119,6 +120,7 @@ settings:
 
     # - test_cite_inputs.pickle
     - test_cite_all_inputs_ivis_240.pickle
+    # - test_cite_all_inputs_ivis_supervised_240.pickle
     - test_cite_all_inputs_pca_240.pickle
     - test_cite_no_pca_inputs.pickle
     # - test_cite_sum_by_rna_type_inputs.pickle
@@ -217,7 +219,6 @@ settings:
   n_class: 1
   scoring: pearson  # pearson, accuracy  # ** adversarial
 
-# These parameters are main tuning parameters and recorded to wandb.
 params:
   seed: ${global_params.seed}
   data: ${global_params.data}
@@ -232,7 +233,7 @@ preprocess_params:
   methods:
     # - pca
     # - ivis
-    - ivis_supervised
+    # - ivis_supervised
     # - faiss
   pca_n_components_cite: 240
   pca_n_components_multi: 240

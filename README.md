@@ -52,4 +52,4 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 ## Score
 
-- CV: 0.83229 (cite: 0.89904, multi: 0.66728), LB: xxx
+- CV: 0.83229 (cite: 0.89904, multi: 0.66728), LB: 0.809
