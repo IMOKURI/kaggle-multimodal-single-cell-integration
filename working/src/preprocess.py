@@ -11,6 +11,7 @@ from typing import Callable, Union
 import numpy as np
 import pandas as pd
 
+from .preprocesses.p001_dist_transformer import DistTransformer
 from .preprocesses.p010_pca import CustomPCA
 from .preprocesses.p011_ivis import CustomIvis
 from .preprocesses.p012_faiss import FaissKNeighbors
@@ -58,6 +59,13 @@ def preprocess_train_test(c, train_df: pd.DataFrame, test_df: pd.DataFrame) -> (
 
     elif "ivis" in c.preprocess_params.methods:
         method = "ivis"
+        preprocessor = DistTransformer(transform="min-max")
+        df = transform_data(
+            c,
+            f"{c.global_params.data}_{c.preprocess_params.cols}_minmax.pickle",
+            df,
+            preprocessor,
+        )
         preprocessor = CustomIvis(c)
         df = transform_data(
             c,

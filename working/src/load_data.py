@@ -343,14 +343,14 @@ class PostprocessData:
             df = pd.DataFrame(std(df.to_numpy()) * weight, index=df.index, columns=df.columns)
 
             if self.cite_oof is None:
-                self.cite_oof = df.iloc[:len(oof_df), :]
+                self.cite_oof = df.iloc[: len(oof_df), :]
             else:
-                self.cite_oof += df.iloc[:len(oof_df), :]
+                self.cite_oof += df.iloc[: len(oof_df), :]
 
             if self.cite_inference is None:
-                self.cite_inference = df.iloc[len(oof_df):, :]
+                self.cite_inference = df.iloc[len(oof_df) :, :]
             else:
-                self.cite_inference += df.iloc[len(oof_df):, :]
+                self.cite_inference += df.iloc[len(oof_df) :, :]
 
         self.cite_inference = pd.concat(
             [
@@ -376,14 +376,15 @@ class PostprocessData:
             df = pd.DataFrame(std(df.to_numpy()) * weight, index=df.index, columns=df.columns)
 
             if self.multi_oof is None:
-                self.multi_oof = df.iloc[:len(oof_df), :]
+                self.multi_oof = df.iloc[: len(oof_df), :]
             else:
-                self.multi_oof += df.iloc[:len(oof_df), :]
+                self.multi_oof += df.iloc[: len(oof_df), :]
 
             if self.multi_inference is None:
-                self.multi_inference = df.iloc[len(oof_df):, :]
+                self.multi_inference = df.iloc[len(oof_df) :, :]
             else:
-                self.multi_inference += df.iloc[len(oof_df):, :]
+                self.multi_inference += df.iloc[len(oof_df) :, :]
+
 
 def sample_for_debug(c, df):
     if len(df) > c.settings.n_debug_data and c.settings.n_debug_data > 0:

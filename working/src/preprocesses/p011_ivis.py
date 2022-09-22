@@ -26,7 +26,7 @@ class CustomIvis(BaseTransformer):
         else:
             raise Exception(f"Invalid data. {c.global_params.data}")
         self.columns = [f"ivis_{n}" for n in range(self.n_components)]
-        self.ivis = Ivis(embedding_dims=self.n_components, n_epochs_without_progress=10, batch_size=1024)
+        self.ivis = Ivis(embedding_dims=self.n_components, k=5, n_epochs_without_progress=10, batch_size=1024)
 
     def fit(self, df):
         # df = df.loc[:, (df != 0).any(axis=0)]
