@@ -208,6 +208,8 @@ class LoadData:
                 if c.global_params.data == "multi":
                     id = stem.split("_")[2]
                     df.columns = [f"{id}_{col}" for col in df.columns]
+                elif "ivis_supervised" in stem:
+                    df.columns = [f"ivis_supervised_{col}" for col in df.columns]
                 train_inputs = pd.concat([train_inputs, df], axis=1)
                 train_inputs.index = df.index
                 train_inputs.index.name = df.index.name
@@ -215,6 +217,8 @@ class LoadData:
                 if c.global_params.data == "multi":
                     id = stem.split("_")[2]
                     df.columns = [f"{id}_{col}" for col in df.columns]
+                elif "ivis_supervised" in stem:
+                    df.columns = [f"ivis_supervised_{col}" for col in df.columns]
                 test_inputs = pd.concat([test_inputs, df], axis=1)
                 test_inputs.index = df.index
                 test_inputs.index.name = df.index.name
@@ -288,6 +292,9 @@ class LoadData:
             train_inputs[c.settings.label_name] = 0
             train_inputs.loc[good_validation.index, :][c.settings.label_name] = 1
             test_inputs[c.settings.label_name] = 0
+
+            train_inputs = train_inputs.join(self.metadata["donor"])
+            test_inputs = test_inputs.join(self.metadata["donor"])
 
             train_inputs = make_fold(c, train_inputs)
             train_targets["fold"] = train_inputs["fold"]

@@ -168,7 +168,9 @@ def train_fold_ridge(c, input, fold):
     # df = input.train
     df = getattr(input, f"train_{c.global_params.data}_inputs")
     label_df = getattr(input, f"train_{c.global_params.data}_targets")
-    inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop(["fold", c.settings.label_name], axis=1)
+    inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop(
+        ["fold", c.settings.label_name, c.cv_params.group_name], axis=1
+    )
 
     train_df, valid_df = train_test_split(c, df, fold)
     train_label_df, valid_label_df = train_test_split(c, label_df, fold)
@@ -231,7 +233,9 @@ def train_fold_xgboost(c, input, fold):
     # df = input.train
     df = getattr(input, f"train_{c.global_params.data}_inputs")
     label_df = getattr(input, f"train_{c.global_params.data}_targets")
-    inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop(["fold", c.settings.label_name], axis=1)
+    inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop(
+        ["fold", c.settings.label_name, c.cv_params.group_name], axis=1
+    )
 
     train_df, valid_df = train_test_split(c, df, fold)
     train_label_df, valid_label_df = train_test_split(c, label_df, fold)
@@ -361,7 +365,9 @@ def train_fold_tabnet(c, input, fold):
 
     df = getattr(input, f"train_{c.global_params.data}_inputs")
     label_df = getattr(input, f"train_{c.global_params.data}_targets")
-    inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop(["fold", c.settings.label_name], axis=1)
+    inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop(
+        ["fold", c.settings.label_name, c.cv_params.group_name], axis=1
+    )
 
     train_df, valid_df = train_test_split(c, df, fold)
     # good_validation = input.adversarial[(input.adversarial["label"] == 0) & (input.adversarial["preds"] == 1)]

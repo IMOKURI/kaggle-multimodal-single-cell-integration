@@ -37,7 +37,7 @@ def make_dataset(c, train_df, valid_df, train_label_df=None, valid_label_df=None
         train_labels = None
         valid_labels = None
 
-    for col in ["index", "fold", "group_fold", "time_fold", c.settings.label_name] + labels:
+    for col in ["index", "fold", "group_fold", "time_fold", c.settings.label_name, c.cv_params.group_name] + labels:
         try:
             train_df = train_df.drop(col, axis=1)
             valid_df = valid_df.drop(col, axis=1)

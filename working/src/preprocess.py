@@ -95,7 +95,7 @@ def preprocess_train_test(
             f"train-{c.global_params.data}_{c.preprocess_params.cols}_ivis_supervised_{preprocessor.n_components}.pickle",
             train_df,
             preprocessor,
-            label_df
+            label_df,
         )
         test_df = transform_data(
             c,
