@@ -317,6 +317,7 @@ class PostprocessData:
         self.multi_adversarial_oof = pd.DataFrame()
         self.multi_inference = None
         self.multi_oof = None
+        self.public_inference = None
         self.train_cite_targets = pd.DataFrame()
         self.train_multi_targets = pd.DataFrame()
 
@@ -417,6 +418,19 @@ class PostprocessData:
                 self.multi_inference = df.iloc[len(oof_df) :, :]
             else:
                 self.multi_inference += df.iloc[len(oof_df) :, :]
+
+        log.info("Load public submission.")
+        for dir, weight in c.inference_params.pretrained.items():
+            log.info(f"  -> {dir}")
+            path = os.path.join(c.settings.dirs.output, dir, "submission.csv")
+            df = pd.read_csv(path)
+
+            df = pd.DataFrame(std(df.to_numpy()) * weight, columns=df.columns)
+
+            if self.public_inference is None:
+                self.public_inference = df
+            else:
+                self.public_inference["target"] = self.public_inference["target"] + df["target"]
 
 
 def sample_for_debug(c, df):
