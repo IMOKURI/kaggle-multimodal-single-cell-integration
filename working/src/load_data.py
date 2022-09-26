@@ -279,10 +279,17 @@ class LoadData:
 
         # Standard Scaler
         if c.global_params.method in ["ridge"]:
-            ss = DistTransformer()
-            ss.fit(pd.concat([train_inputs, test_inputs]))
-            train_inputs = ss.transform(train_inputs)
-            test_inputs = ss.transform(test_inputs)
+            dt = DistTransformer()
+            dt.fit(pd.concat([train_inputs, test_inputs]))
+            train_inputs = dt.transform(train_inputs)
+            test_inputs = dt.transform(test_inputs)
+
+        # quantile transformer
+        if c.global_params.method in ["nn"]:
+            dt = DistTransformer("rankgauss")
+            dt.fit(pd.concat([train_inputs, test_inputs]))
+            train_inputs = dt.transform(train_inputs)
+            test_inputs = dt.transform(test_inputs)
 
         log.info(f"Data size, train: {train_inputs.shape}, target: {train_targets.shape}, test: {test_inputs.shape}")
         log.debug(f"input columns: {train_inputs.columns}")

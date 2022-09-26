@@ -70,9 +70,8 @@ def train_fold_lightgbm(c, input, fold, tuning=False):
     #     fallback_to_none=False,
     # )
     # train_ds, _, valid_ds, valid_raw_ds = make_dataset(c, train_folds, valid_folds, lightgbm=True)
-    train_ds, _, valid_ds, valid_raw_ds = make_dataset(
-        c, train_df, valid_df, train_label_df, valid_label_df, lightgbm=True
-    )
+    train_ds, _ = make_dataset(c, train_df, train_label_df, lightgbm=True)
+    valid_ds, valid_raw_ds = make_dataset(c, valid_df, valid_label_df, lightgbm=True)
 
     lgb_params = {
         "objective": "regression",
@@ -156,7 +155,7 @@ def train_fold_lightgbm(c, input, fold, tuning=False):
             feature_store=c.settings.dirs.feature,
             fallback_to_none=False,
         )
-        _, pred_raw_ds, _, _ = make_dataset(c, pred_folds, pred_folds, is_training=False, lightgbm=True)
+        _, pred_raw_ds = make_dataset(c, pred_folds, lightgbm=True)
         input.test[f"preds_{fold}"] = model.predict(pred_raw_ds, num_iteration=model.best_iteration)
         # input.test[f"base_preds_{fold}"] = model.predict(pred_raw_ds, num_iteration=model.best_iteration)
         # input.test[f"preds_{fold}"] = (input.test[f"base_preds_{fold}"] > minimize_result["x"].item()).astype(bool)
@@ -194,7 +193,8 @@ def train_fold_ridge(c, input, fold):
     # )
 
     # train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_folds, valid_folds)
-    train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_df, valid_df, train_label_df, valid_label_df)
+    train_ds, train_labels = make_dataset(c, train_df, train_label_df)
+    valid_ds, valid_labels = make_dataset(c, valid_df, valid_label_df)
 
     model = make_model_ridge(c, train_ds)
 
@@ -259,7 +259,8 @@ def train_fold_xgboost(c, input, fold):
     # )
 
     # train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_folds, valid_folds)
-    train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_df, valid_df, train_label_df, valid_label_df)
+    train_ds, train_labels = make_dataset(c, train_df, train_label_df)
+    valid_ds, valid_labels = make_dataset(c, valid_df, valid_label_df)
 
     model = make_model_xgboost(c, train_ds)
 
@@ -313,7 +314,8 @@ def adversarial_train_fold_tabnet(c, input, fold):
     df = pd.concat([df, inference_df])
 
     train_df, valid_df = train_test_split(c, df, fold)
-    train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_df, valid_df)
+    train_ds, train_labels = make_dataset(c, train_df)
+    valid_ds, valid_labels = make_dataset(c, valid_df)
 
     # categorical_index = []
     # categorical_features = []
@@ -398,7 +400,8 @@ def train_fold_tabnet(c, input, fold):
     #     fallback_to_none=False,
     # )
     # train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_folds, valid_folds)
-    train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_df, valid_df, train_label_df, valid_label_df)
+    train_ds, train_labels = make_dataset(c, train_df, train_label_df)
+    valid_ds, valid_labels = make_dataset(c, valid_df, valid_label_df)
 
     # categorical_index = []
     # categorical_features = []
@@ -473,115 +476,124 @@ def train_fold_tabnet(c, input, fold):
     # return valid_folds, model.best_cost
 
 
-# def train_fold_nn(c, input, fold, device):
-#     df = input.train
-#     # df = pd.concat([input.train, input.other])
-#     train_folds, valid_folds = train_test_split(c, df, fold)
-#
-#     # ====================================================
-#     # Data Loader
-#     # ====================================================
-#     train_ds = make_dataset_nn(c, train_folds, transform="light")
-#     valid_ds = make_dataset_nn(c, valid_folds, transform="simple")
-#
-#     train_loader = make_dataloader(c, train_ds, shuffle=True, drop_last=True)
-#     valid_loader = make_dataloader(c, valid_ds, shuffle=False, drop_last=False)
-#
-#     # ====================================================
-#     # Model
-#     # ====================================================
-#     model = make_model(c, device)
-#
-#     criterion = make_criterion(c)
-#     optimizer = make_optimizer(c, model)
-#     scaler = amp.GradScaler(enabled=c.settings.amp)
-#     # scheduler = make_scheduler(c, optimizer, train_ds)
-#     scheduler = make_scheduler(c, optimizer, df)
-#
-#     es = EarlyStopping(c=c, fold=fold)
-#
-#     # ====================================================
-#     # Loop
-#     # ====================================================
-#     for epoch in range(c.training_params.epoch):
-#         start_time = time.time()
-#
-#         # ====================================================
-#         # Training
-#         # ====================================================
-#         if c.settings.skip_training:
-#             avg_train_loss = 0
-#         else:
-#             avg_train_loss = train_epoch(
-#                 c,
-#                 train_loader,
-#                 model,
-#                 criterion,
-#                 optimizer,
-#                 scheduler,
-#                 scaler,
-#                 epoch,
-#                 device,
-#                 verbose=True,
-#             )
-#
-#         # ====================================================
-#         # Validation
-#         # ====================================================
-#         if c.cv_params.n_fold == 0:
-#             log.warning("Use training data for validation.")
-#             avg_val_loss, preds = validate_epoch(c, train_loader, model, criterion, device, verbose=True)
-#             # valid_labels = train_folds[c.settings.label_name].to_numpy()
-#             valid_labels = train_folds[["label_CE", "label_LAA"]].to_numpy()
-#         else:
-#             avg_val_loss, preds = validate_epoch(c, valid_loader, model, criterion, device, verbose=True)
-#             # valid_labels = valid_folds[c.settings.label_name].to_numpy()
-#             valid_labels = valid_folds[["label_CE", "label_LAA"]].to_numpy()
-#
-#         if "LogitsLoss" in c.training_params.criterion:
-#             preds = 1 / (1 + np.exp(-preds))
-#
-#         # scoring
-#         if c.settings.n_class > 1:
-#             # score = get_score(c.settings.scoring, valid_labels, preds.argmax(1))
-#             score = get_score(c.settings.scoring, valid_labels, preds)
-#         else:
-#             raise Exception("Invalid n_class.")
-#
-#         elapsed = time.time() - start_time
-#         log.info(
-#             f"Epoch {epoch + 1} - "
-#             f"train_loss: {avg_train_loss:.4f} "
-#             f"valid_loss: {avg_val_loss:.4f} "
-#             f"score: {score:.4f} "
-#             f"time: {elapsed:.0f}s"
-#         )
-#         if c.wandb.enabled:
-#             wandb.log(
-#                 {
-#                     "epoch": epoch + 1,
-#                     f"train_loss/fold{fold}": avg_train_loss,
-#                     f"valid_loss/fold{fold}": avg_val_loss,
-#                     f"score/fold{fold}": score,
-#                 }
-#             )
-#
-#         es(avg_val_loss, score, model, preds)
-#
-#         if es.early_stop or os.path.exists(os.path.join(c.settings.dirs.working, "abort-training.flag")):
-#             log.info("Early stopping")
-#             break
-#
-#     if c.settings.n_class == 1:
-#         valid_folds["preds"] = es.best_preds
-#     elif c.settings.n_class > 1:
-#         # valid_folds["preds"] = es.best_preds
-#         valid_folds[[f"preds_{n}" for n in df[c.settings.label_name].unique()]] = es.best_preds
-#         # valid_folds["preds"] = 0.0  # es.best_preds.argmax(1)
-#     else:
-#         raise Exception("Invalid n_class.")
-#
-#     return valid_folds, es.best_loss
+def train_fold_nn(c, input, fold, device):
+    # df = input.train
+    # df = pd.concat([input.train, input.other])
+    df = getattr(input, f"train_{c.global_params.data}_inputs")
+    label_df = getattr(input, f"train_{c.global_params.data}_targets")
+    inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop(
+        ["fold", c.settings.label_name, c.cv_params.group_name], axis=1
+    )
+
+    train_folds, valid_folds = train_test_split(c, df, fold)
+    train_label_folds, valid_label_folds = train_test_split(c, label_df, fold)
+
+    # ====================================================
+    # Data Loader
+    # ====================================================
+    # train_ds = make_dataset_nn(c, train_folds, transform="light")
+    # valid_ds = make_dataset_nn(c, valid_folds, transform="simple")
+    train_ds = make_dataset_nn(c, train_folds, label_df=train_label_folds)
+    valid_ds = make_dataset_nn(c, valid_folds, label_df=valid_label_folds)
+
+    train_loader = make_dataloader(c, train_ds, shuffle=True, drop_last=True)
+    valid_loader = make_dataloader(c, valid_ds, shuffle=False, drop_last=False)
+
+    # ====================================================
+    # Model
+    # ====================================================
+    model = make_model(c, device)
+
+    criterion = make_criterion(c)
+    optimizer = make_optimizer(c, model)
+    scaler = amp.GradScaler(enabled=c.settings.amp)
+    # scheduler = make_scheduler(c, optimizer, train_ds)
+    scheduler = make_scheduler(c, optimizer, df)
+
+    es = EarlyStopping(c=c, fold=fold)
+
+    # ====================================================
+    # Loop
+    # ====================================================
+    for epoch in range(c.training_params.epoch):
+        start_time = time.time()
+
+        # ====================================================
+        # Training
+        # ====================================================
+        if c.settings.skip_training:
+            avg_train_loss = 0
+        else:
+            avg_train_loss = train_epoch(
+                c,
+                train_loader,
+                model,
+                criterion,
+                optimizer,
+                scheduler,
+                scaler,
+                epoch,
+                device,
+                verbose=True,
+            )
+
+        # ====================================================
+        # Validation
+        # ====================================================
+        if c.cv_params.n_fold == 0:
+            log.warning("Use training data for validation.")
+            avg_val_loss, preds = validate_epoch(c, train_loader, model, criterion, device, verbose=True)
+            # valid_labels = train_folds[c.settings.label_name].to_numpy()
+            valid_labels = train_folds[["label_CE", "label_LAA"]].to_numpy()
+        else:
+            avg_val_loss, preds = validate_epoch(c, valid_loader, model, criterion, device, verbose=True)
+            # valid_labels = valid_folds[c.settings.label_name].to_numpy()
+            valid_labels = valid_folds[["label_CE", "label_LAA"]].to_numpy()
+
+        if "LogitsLoss" in c.training_params.criterion:
+            preds = 1 / (1 + np.exp(-preds))
+
+        # scoring
+        if c.settings.n_class > 1:
+            # score = get_score(c.settings.scoring, valid_labels, preds.argmax(1))
+            score = get_score(c.settings.scoring, valid_labels, preds)
+        else:
+            raise Exception("Invalid n_class.")
+
+        elapsed = time.time() - start_time
+        log.info(
+            f"Epoch {epoch + 1} - "
+            f"train_loss: {avg_train_loss:.4f} "
+            f"valid_loss: {avg_val_loss:.4f} "
+            f"score: {score:.4f} "
+            f"time: {elapsed:.0f}s"
+        )
+        if c.wandb.enabled:
+            wandb.log(
+                {
+                    "epoch": epoch + 1,
+                    f"train_loss/fold{fold}": avg_train_loss,
+                    f"valid_loss/fold{fold}": avg_val_loss,
+                    f"score/fold{fold}": score,
+                }
+            )
+
+        es(avg_val_loss, score, model, preds)
+
+        if es.early_stop or os.path.exists(os.path.join(c.settings.dirs.working, "abort-training.flag")):
+            log.info("Early stopping")
+            break
+
+    if c.settings.n_class == 1:
+        valid_folds["preds"] = es.best_preds
+    elif c.settings.n_class > 1:
+        # valid_folds["preds"] = es.best_preds
+        valid_folds[[f"preds_{n}" for n in df[c.settings.label_name].unique()]] = es.best_preds
+        # valid_folds["preds"] = 0.0  # es.best_preds.argmax(1)
+    else:
+        raise Exception("Invalid n_class.")
+
+    return valid_folds, es.best_loss
 
 
 # def inference_lightgbm(df, models):

@@ -9,9 +9,11 @@ import torch
 import torch.cuda.amp as amp
 import torch.nn as nn
 import xgboost as xgb
-from sklearn.linear_model import Ridge
 from pytorch_tabnet.pretraining import TabNetPretrainer
 from pytorch_tabnet.tab_model import TabNetClassifier, TabNetRegressor
+from sklearn.linear_model import Ridge
+
+from .models.node import DenseBlock, Lambda, entmax15, entmoid15
 
 log = logging.getLogger(__name__)
 
@@ -20,6 +22,10 @@ def make_model(c, device=None, model_path=None):
     if c.model_params.model == "base":
         pretrained = True if model_path is None else False
         model = ImageBaseModel(c, pretrained)
+    elif c.model_params.model == "node":
+        model = nn.Sequential(
+            DenseBlock()
+        )
     else:
         raise Exception("Invalid model.")
 

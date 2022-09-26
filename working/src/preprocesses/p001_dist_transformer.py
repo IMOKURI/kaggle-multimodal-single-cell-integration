@@ -31,7 +31,7 @@ class _DistTransformer(BaseTransformer):
         elif self.t == "yeo-johnson":
             self.transformer = PowerTransformer(method="yeo-johnson")
         elif self.t == "rankgauss":
-            self.transformer = QuantileTransformer(n_quantiles=len(X), random_state=0, output_distribution="normal")
+            self.transformer = QuantileTransformer(random_state=440, output_distribution="normal")
         elif self.t == "ordinal":
             self.transformer = OrdinalEncoder()
         else:

@@ -225,7 +225,7 @@ params:
 
 global_params:
   seed: 440
-  method: xgboost  # tabnet, adversarial_tabnet  # ** adversarial
+  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
   data: cite  # cite, multi
 
 preprocess_params:
@@ -543,14 +543,14 @@ preprocess_params:
 cv_params:
   n_fold: 3
   n_validation: 1
-  fold: stratified_group
+  fold: stratified
   group_name: donor
   # time_name: ""
 
 training_params:
   epoch: 10
   es_patience: 0
-  batch_size: 24
+  batch_size: 2048
   gradient_acc_step: 1
   max_grad_norm: 1000
   # feature_set:
@@ -564,11 +564,10 @@ training_params:
   # label_smoothing: 1e-6
 
 model_params:
-  dataset: base
-  augmentation: light
-  model: base
-  model_input: 512
-  model_name: tf_efficientnet_b4_ns
+  dataset: table_base
+  model: node
+  model_name: node
+  model_input: 0
   # dropout: 0.0
 
 inference_params:
