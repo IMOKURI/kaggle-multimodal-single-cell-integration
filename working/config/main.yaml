@@ -583,8 +583,8 @@ inference_params:
     # 2022-09-20_14-06-40: 1  # ridge
     2022-09-22_06-30-23: 1  # tabnet
   pretrained:
-    multiome-with-keras-ensemble: 1
-    multimodal-single-cell-integration-ensembling: 1
+    # multiome-with-keras-ensemble: 1
+    # multimodal-single-cell-integration-ensembling: 1
   # pretrained:
   #   - dir: ""
   #     model: ""

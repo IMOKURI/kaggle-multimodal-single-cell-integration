@@ -419,18 +419,19 @@ class PostprocessData:
             else:
                 self.multi_inference += df.iloc[len(oof_df) :, :]
 
-        log.info("Load public submission.")
-        for dir, weight in c.inference_params.pretrained.items():
-            log.info(f"  -> {dir}")
-            path = os.path.join(c.settings.dirs.output, dir, "submission.csv")
-            df = pd.read_csv(path)
+        if c.inference_params.pretrained is not None:
+            log.info("Load public submission.")
+            for dir, weight in c.inference_params.pretrained.items():
+                log.info(f"  -> {dir}")
+                path = os.path.join(c.settings.dirs.output, dir, "submission.csv")
+                df = pd.read_csv(path)
 
-            df = pd.DataFrame(std(df.to_numpy()) * weight, columns=df.columns)
+                df = pd.DataFrame(std(df.to_numpy()) * weight, columns=df.columns)
 
-            if self.public_inference is None:
-                self.public_inference = df
-            else:
-                self.public_inference["target"] = self.public_inference["target"] + df["target"]
+                if self.public_inference is None:
+                    self.public_inference = df
+                else:
+                    self.public_inference["target"] = self.public_inference["target"] + df["target"]
 
 
 def sample_for_debug(c, df):
