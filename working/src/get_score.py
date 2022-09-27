@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import scipy.stats as stats
 import wandb
-from sklearn.metrics import accuracy_score, log_loss, mean_squared_error, auc
+from sklearn.metrics import accuracy_score, auc, log_loss, mean_squared_error
 
 log = logging.getLogger(__name__)
 

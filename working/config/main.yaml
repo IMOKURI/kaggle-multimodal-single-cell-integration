@@ -224,9 +224,9 @@ params:
   data: ${global_params.data}
 
 global_params:
-  seed: 440
+  seed: 1440
   method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
-  data: multi  # cite, multi
+  data: cite  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
@@ -572,15 +572,9 @@ model_params:
 
 inference_params:
   cite_pretrained:
-    2022-09-26_12-46-07: 1  # tabnet fold 7
-    2022-09-26_12-57-19: 1  # ridge fold 7
-    2022-09-26_12-59-14: 1  # xgboost fold 7
-    # 2022-09-23_10-54-55: 1  # tabnet group kfold
-    # 2022-09-23_11-01-46: 1  # xgboost group kfold
-    # 2022-09-23_10-51-54: 1  # ridge group kfold
+    2022-09-26_12-46-07: 1  # tabnet seed 440
   multi_pretrained:
-    # 2022-09-20_14-06-40: 1  # ridge
-    2022-09-26_13-16-32: 1  # tabnet fold 7
+    2022-09-26_13-16-32: 1  # tabnet
   pretrained:
     # multiome-with-keras-ensemble: 1
     # multimodal-single-cell-integration-ensembling: 1

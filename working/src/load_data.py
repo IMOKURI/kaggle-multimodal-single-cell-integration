@@ -321,12 +321,12 @@ class PostprocessData:
         self.metadata = pd.DataFrame()
         self.sample_submission = pd.DataFrame()
         self.cite_adversarial_oof = pd.DataFrame()
-        self.cite_inference = None
-        self.cite_oof = None
+        self.cite_inference = []
+        self.cite_oof = []
         self.multi_adversarial_oof = pd.DataFrame()
-        self.multi_inference = None
-        self.multi_oof = None
-        self.public_inference = None
+        self.multi_inference = []
+        self.multi_oof = []
+        self.public_inference = []
         self.train_cite_targets = pd.DataFrame()
         self.train_multi_targets = pd.DataFrame()
 
@@ -361,7 +361,7 @@ class PostprocessData:
 
             setattr(self, stem, df)
 
-        # inference_df から leak データを除外する
+        # leak データを抽出
         leak_27678_cell_id = self.metadata[
             (self.metadata["donor"] == 27678) & (self.metadata["technology"] == "citeseq") & (self.metadata["day"] == 2)
         ]["cell_id"]
@@ -375,31 +375,30 @@ class PostprocessData:
 
             path = os.path.join(c.settings.dirs.output, dir, "cite_inference.pickle")
             inf_df = pd.read_pickle(path)
+
+            # leak データを除外
             inf_df = inf_df.drop(leak_27678_cell_id)
 
             df = pd.concat([oof_df, inf_df])
             df = pd.DataFrame(std(df.to_numpy()) * weight, index=df.index, columns=df.columns)
 
-            if self.cite_oof is None:
-                self.cite_oof = df.iloc[: len(oof_df), :]
-            else:
-                self.cite_oof += df.iloc[: len(oof_df), :]
+            oof_df = df.iloc[: len(oof_df), :]
+            inf_df = df.iloc[len(oof_df) :, :]
 
-            if self.cite_inference is None:
-                self.cite_inference = df.iloc[len(oof_df) :, :]
-            else:
-                self.cite_inference += df.iloc[len(oof_df) :, :]
+            # leak データの行を推論値 0 で復元
+            inf_df = pd.concat(
+                [
+                    inf_df,
+                    pd.DataFrame(
+                        np.zeros((len(leak_27678_cell_id), len(inf_df.columns))),
+                        index=leak_27678_cell_id,
+                        columns=inf_df.columns,
+                    ),
+                ]
+            )
 
-        self.cite_inference = pd.concat(
-            [
-                self.cite_inference,
-                pd.DataFrame(
-                    np.zeros((len(leak_27678_cell_id), len(self.cite_inference.columns))),
-                    index=leak_27678_cell_id,
-                    columns=self.cite_inference.columns,
-                ),
-            ]
-        )
+            self.cite_oof.append(oof_df)
+            self.cite_inference.append(inf_df)
 
         log.info("Load Multiome inference data.")
         for dir, weight in c.inference_params.multi_pretrained.items():
@@ -418,15 +417,11 @@ class PostprocessData:
 
             df = pd.DataFrame(std(df.to_numpy()) * weight, index=df.index, columns=df.columns)
 
-            if self.multi_oof is None:
-                self.multi_oof = df.iloc[: len(oof_df), :]
-            else:
-                self.multi_oof += df.iloc[: len(oof_df), :]
+            oof_df = df.iloc[: len(oof_df), :]
+            inf_df = df.iloc[len(oof_df) :, :]
 
-            if self.multi_inference is None:
-                self.multi_inference = df.iloc[len(oof_df) :, :]
-            else:
-                self.multi_inference += df.iloc[len(oof_df) :, :]
+            self.multi_oof.append(oof_df)
+            self.multi_inference.append(inf_df)
 
         if c.inference_params.pretrained is not None:
             log.info("Load public submission.")
@@ -437,10 +432,7 @@ class PostprocessData:
 
                 df = pd.DataFrame(std(df.to_numpy()) * weight, columns=df.columns)
 
-                if self.public_inference is None:
-                    self.public_inference = df
-                else:
-                    self.public_inference["target"] = self.public_inference["target"] + df["target"]
+                self.public_inference.append(df)
 
 
 def sample_for_debug(c, df):
