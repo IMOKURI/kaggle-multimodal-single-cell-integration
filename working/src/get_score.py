@@ -11,6 +11,11 @@ log = logging.getLogger(__name__)
 
 
 def get_score(scoring, y_true, y_pred):
+    if type(y_true) == pd.DataFrame:
+        y_true = y_true.to_numpy()
+    if type(y_pred) == pd.DataFrame:
+        y_pred = y_pred.to_numpy()
+
     if scoring == "rmse":
         return np.sqrt(mean_squared_error(y_true, y_pred))
     elif scoring == "auc":
@@ -26,10 +31,6 @@ def get_score(scoring, y_true, y_pred):
         Returns the average of each sample's Pearson correlation coefficient
         https://www.kaggle.com/code/ambrosm/msci-citeseq-quickstart#The-scoring-function
         """
-        if type(y_true) == pd.DataFrame:
-            y_true = y_true.to_numpy()
-        if type(y_pred) == pd.DataFrame:
-            y_pred = y_pred.to_numpy()
         corrsum = 0
         for i in range(len(y_true)):
             corrsum += np.corrcoef(y_true[i], y_pred[i])[1, 0]
@@ -65,8 +66,36 @@ def pearson_coef(data):
     return data.corr()["target"]["preds"]
 
 
-def optimize_function(c, y_true, y_pred):
-    def optimize_score(x):
-        return -accuracy_score(y_true, y_pred > x)
+# def optimize_function(c, y_true, y_pred):
+#     def optimize_score(x):
+#         return -accuracy_score(y_true, y_pred > x)
+#
+#     return optimize_score
+
+
+def optimize_func(target, predictions, index=None):
+    """
+    最小化するパラメータを引数とし、最小化したい値を返す関数を生成する
+    """
+
+    def optimize_score(weights):
+        df = None
+        for weight, prediction in zip(weights, predictions):
+            if df is None:
+                df = prediction.sort_index() * weight
+            else:
+                df += prediction.sort_index() * weight
+
+        if index is not None:
+            df = df.loc[index, :]
+            target_df = target.loc[index, :]
+        else:
+            target_df = target
+
+        score = get_score("pearson", target_df.sort_index(), df.sort_index())
+        return -score
+
+        # score = get_score("rmse", target_df.sort_index(), df.sort_index())
+        # return score
 
     return optimize_score

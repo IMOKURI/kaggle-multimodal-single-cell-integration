@@ -224,7 +224,7 @@ params:
   data: ${global_params.data}
 
 global_params:
-  seed: 1440
+  seed: 440
   method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
   data: cite  # cite, multi
 
@@ -571,8 +571,13 @@ model_params:
   # dropout: 0.0
 
 inference_params:
+  ensemble_weight_optimization: true
   cite_pretrained:
+    2022-09-26_12-57-19: 1  # ridge
+    2022-09-26_12-59-14: 1  # xgboost
     2022-09-26_12-46-07: 1  # tabnet seed 440
+    2022-09-27_11-34-18: 1  # tabnet seed 1440
+    2022-09-27_11-44-46: 1  # tabnet seed 2440
   multi_pretrained:
     2022-09-26_13-16-32: 1  # tabnet
   pretrained:
