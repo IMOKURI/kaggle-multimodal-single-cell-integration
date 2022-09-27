@@ -410,6 +410,7 @@ def train_fold_tabnet(c, input, fold):
     # categorical_features.append(len(input.metadata_cell_type_num))
 
     # pre_model = make_pre_model_tabnet(c, c_index=categorical_index, c_features=categorical_features)
+    # pre_model = make_pre_model_tabnet(c)
     #
     # pre_model.fit(
     #     train_ds,

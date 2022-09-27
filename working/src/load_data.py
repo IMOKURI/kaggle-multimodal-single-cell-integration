@@ -279,6 +279,7 @@ class LoadData:
 
         # Standard Scaler
         if c.global_params.method in ["ridge"]:
+            log.info(f"Apply standard scaler.")
             dt = DistTransformer()
             dt.fit(pd.concat([train_inputs, test_inputs]))
             train_inputs = dt.transform(train_inputs)
@@ -286,6 +287,7 @@ class LoadData:
 
         # quantile transformer
         if c.global_params.method in ["nn"]:
+            log.info(f"Apply quantile transformer.")
             dt = DistTransformer("rankgauss")
             dt.fit(pd.concat([train_inputs, test_inputs]))
             train_inputs = dt.transform(train_inputs)

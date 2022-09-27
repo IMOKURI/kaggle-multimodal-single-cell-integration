@@ -23,9 +23,7 @@ def make_model(c, device=None, model_path=None):
         pretrained = True if model_path is None else False
         model = ImageBaseModel(c, pretrained)
     elif c.model_params.model == "node":
-        model = nn.Sequential(
-            DenseBlock()
-        )
+        model = nn.Sequential(DenseBlock())
     else:
         raise Exception("Invalid model.")
 
