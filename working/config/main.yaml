@@ -571,7 +571,7 @@ model_params:
   # dropout: 0.0
 
 inference_params:
-  ensemble_weight_optimization: true
+  ensemble_weight_optimization: false
   cite_pretrained:
     2022-09-26_12-57-19: 1  # ridge
     2022-09-26_12-59-14: 1  # xgboost

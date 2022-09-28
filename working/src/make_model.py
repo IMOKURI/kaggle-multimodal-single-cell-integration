@@ -13,6 +13,7 @@ from pytorch_tabnet.pretraining import TabNetPretrainer
 from pytorch_tabnet.tab_model import TabNetClassifier, TabNetRegressor
 from sklearn.linear_model import Ridge
 
+from .models.image import ImageBaseModel
 from .models.node import DenseBlock, Lambda, entmax15, entmoid15
 
 log = logging.getLogger(__name__)
@@ -174,14 +175,3 @@ def load_model(c, device, pretrained=None):
         models.append(model)
 
     return models
-
-
-class ImageBaseModel(nn.Module):
-    def __init__(self, c, pretrained=True):
-        super().__init__()
-        # self.model = timm.create_model(c.model_params.model_name, pretrained=pretrained, num_classes=c.settings.n_class)
-        self.model = None
-
-    def forward(self, x):
-        x = self.model(x)
-        return x
