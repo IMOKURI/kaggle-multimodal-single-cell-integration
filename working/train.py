@@ -9,7 +9,7 @@ from hydra.core.hydra_config import HydraConfig
 from omegaconf.errors import ConfigAttributeError
 from scipy.optimize import minimize
 from sklearn.metrics import confusion_matrix
-from src.get_score import optimize_function, record_result
+from src.get_score import record_result  # , optimize_function
 from src.load_data import LoadData
 from src.run_loop import (  # train_fold_lightgbm,
     adversarial_train_fold_tabnet,

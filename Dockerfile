@@ -1,4 +1,4 @@
-FROM gcr.io/kaggle-gpu-images/python:v120
+FROM gcr.io/kaggle-gpu-images/python:v121
 
 ARG PROXY
 
@@ -15,4 +15,5 @@ RUN conda install -c pytorch faiss-gpu
 RUN pip install \
     tables \
     pytorch-tabnet \
-    ivis[gpu]
+    ivis[gpu] \
+    scanpy

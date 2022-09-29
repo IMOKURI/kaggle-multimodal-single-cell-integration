@@ -15,6 +15,7 @@ from .preprocesses.p001_dist_transformer import DistTransformer
 from .preprocesses.p010_pca import CustomPCA
 from .preprocesses.p011_ivis import CustomIvis
 from .preprocesses.p012_faiss import FaissKNeighbors
+from .preprocesses.p020_scanpy import CustomScanPy
 
 log = logging.getLogger(__name__)
 
@@ -48,6 +49,16 @@ def preprocess_train_test(
     if c.preprocess_params.cols in ["GL", "KI"]:
         log.info("Skip preprocess.")
         preprocessor = CustomPCA(c)
+
+    elif "scanpy" in c.preprocess_params.methods:
+        method = "scanpy"
+        preprocessor = CustomScanPy(c)
+        df = transform_data(
+            c,
+            f"{c.global_params.data}_{c.preprocess_params.cols}_scanpy.pickle",
+            df,
+            preprocessor,
+        )
 
     elif "pca" in c.preprocess_params.methods:
         method = "pca"

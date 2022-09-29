@@ -157,8 +157,8 @@ def main(c):
         input.sample_submission.at[row_id, "target"] = inference.at[cell_id, gene_id]
 
     if c.inference_params.pretrained is not None:
-        ...
-        # input.sample_submission["target"] = input.sample_submission["target"] + input.public_inference["target"]
+        for df in input.public_inference:
+            input.sample_submission["target"] = input.sample_submission["target"] + df["target"]
 
     submission_path = os.path.join(HydraConfig.get().run.dir, "submission.csv")
     input.sample_submission.to_csv(submission_path, index=False)

@@ -22,7 +22,7 @@ from hydra.core.hydra_config import HydraConfig
 # from memory_profiler import profile
 from scipy.optimize import minimize
 
-from .get_score import get_score, optimize_function
+from .get_score import get_score  # , optimize_function
 from .make_dataset import make_dataloader, make_dataset, make_dataset_nn
 from .make_fold import train_test_split
 from .make_loss import make_criterion, make_optimizer, make_scheduler

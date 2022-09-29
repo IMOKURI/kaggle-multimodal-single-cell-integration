@@ -111,6 +111,7 @@ settings:
     - train_cite_no_pca_inputs.pickle
     - train_cite_all_inputs_ivis_240.pickle
     # - train_cite_all_inputs_ivis_supervised_240.pickle
+    - train_cite_all_inputs_scanpy_240.pickle
     # - train_cite_sum_by_rna_type_inputs.pickle
     # - train_cite_mean_by_rna_type_inputs.pickle
     # - train_cite_std_by_rna_type_inputs.pickle
@@ -123,6 +124,7 @@ settings:
     - test_cite_no_pca_inputs.pickle
     - test_cite_all_inputs_ivis_240.pickle
     # - test_cite_all_inputs_ivis_supervised_240.pickle
+    - test_cite_all_inputs_scanpy_240.pickle
     # - test_cite_sum_by_rna_type_inputs.pickle
     # - test_cite_mean_by_rna_type_inputs.pickle
     # - test_cite_std_by_rna_type_inputs.pickle
@@ -232,6 +234,7 @@ preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
   methods:
     # - pca
+    - scanpy
     # - ivis
     # - ivis_supervised
     # - faiss
@@ -576,8 +579,8 @@ inference_params:
     2022-09-26_12-57-19: 1  # ridge
     2022-09-26_12-59-14: 1  # xgboost
     2022-09-26_12-46-07: 1  # tabnet seed 440
-    2022-09-27_11-34-18: 1  # tabnet seed 1440
-    2022-09-27_11-44-46: 1  # tabnet seed 2440
+    # 2022-09-27_11-34-18: 1  # tabnet seed 1440
+    # 2022-09-27_11-44-46: 1  # tabnet seed 2440
   multi_pretrained:
     2022-09-26_13-16-32: 1  # tabnet
   pretrained:

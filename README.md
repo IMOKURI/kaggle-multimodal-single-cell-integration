@@ -21,6 +21,10 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 ### Training (CV Score)
 
+#### Common
+
+- Adversarial training で誤判断された細胞 1.3 万件ほどを正当ラベルとした StratifiedKFold
+
 #### Citeseq
 
 - Ridge (0.89366)
