@@ -6,6 +6,7 @@ import scanpy as sc
 from anndata import AnnData
 
 from .base import BaseTransformer
+from .p001_dist_transformer import DistTransformer
 
 log = logging.getLogger(__name__)
 
@@ -52,11 +53,24 @@ class CustomScanPy(BaseTransformer):
         sc.pp.highly_variable_genes(adata)
         adata = adata[:, adata.var["highly_variable"]]
 
-        sc.pp.scale(adata, max_value=10)
-
         sc.pp.pca(adata, n_comps=self.n_components, random_state=self.seed)
-        log.info(f"scanpy pca result: {type(adata.obsm['X_pca'])}, shape: {adata.obsm['X_pca'].shape}")
+        pca_df = pd.DataFrame(adata.obsm["X_pca"], index=adata.obs_names, columns=self.columns)
+
+        mt_cols = [
+            "total_counts_mt",
+            "total_counts_mt_a",
+            "total_counts_mt_c",
+            "total_counts_mt_n",
+            "total_counts_mt_r",
+            "total_counts_mt_t",
+        ]
+        mt_df = adata.obs[mt_cols]
+
+        dt = DistTransformer()
+        dt.fit(mt_df)
+        mt_df = dt.transform(mt_df)
+
+        df = pd.concat([pca_df, mt_df], axis=1)
 
         # df = pd.DataFrame(adata.X, index=adata.obs_names, columns=adata.var_names)
-        df = pd.DataFrame(adata.obsm["X_pca"], index=adata.obs_names, columns=self.columns)
         return df
