@@ -112,6 +112,7 @@ settings:
     - train_cite_all_inputs_ivis_240.pickle
     # - train_cite_all_inputs_ivis_supervised_240.pickle
     - train_cite_all_inputs_scanpy_240.pickle
+    # - train_cite_all_inputs_scanpy_0.pickle
     # - train_cite_sum_by_rna_type_inputs.pickle
     # - train_cite_mean_by_rna_type_inputs.pickle
     # - train_cite_std_by_rna_type_inputs.pickle
@@ -125,6 +126,7 @@ settings:
     - test_cite_all_inputs_ivis_240.pickle
     # - test_cite_all_inputs_ivis_supervised_240.pickle
     - test_cite_all_inputs_scanpy_240.pickle
+    # - test_cite_all_inputs_scanpy_0.pickle
     # - test_cite_sum_by_rna_type_inputs.pickle
     # - test_cite_mean_by_rna_type_inputs.pickle
     # - test_cite_std_by_rna_type_inputs.pickle
@@ -227,7 +229,7 @@ params:
 
 global_params:
   seed: 440
-  method: xgboost  # tabnet, adversarial_tabnet  # ** adversarial
+  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
   data: cite  # cite, multi
 
 preprocess_params:
@@ -552,7 +554,7 @@ cv_params:
 
 training_params:
   epoch: 10
-  es_patience: 0
+  es_patience: 20
   batch_size: 2048
   gradient_acc_step: 1
   max_grad_norm: 1000
@@ -577,8 +579,8 @@ inference_params:
   ensemble_weight_optimization: false
   cite_pretrained:
     2022-09-26_12-57-19: 1  # ridge 0.89373 by 680
-    2022-09-26_12-46-07: 1  # tabnet 0.89401 by 680
     2022-09-29_14-20-08: 1  # xgboost 0.89416 by 926
+    2022-09-30_00-55-28: 1  # tabnet 0.89482 by 680
   multi_pretrained:
     2022-09-26_13-16-32: 1  # tabnet 0.66752 by 3104
   pretrained:

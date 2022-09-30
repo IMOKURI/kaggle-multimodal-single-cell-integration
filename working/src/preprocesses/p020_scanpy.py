@@ -53,6 +53,8 @@ class CustomScanPy(BaseTransformer):
         sc.pp.highly_variable_genes(adata)
         adata = adata[:, adata.var["highly_variable"]]
 
+        # sc.pp.scale(train_cite_inputs_adata, max_value=10)
+
         sc.pp.pca(adata, n_comps=self.n_components, random_state=self.seed)
         pca_df = pd.DataFrame(adata.obsm["X_pca"], index=adata.obs_names, columns=self.columns)
 
@@ -70,7 +72,9 @@ class CustomScanPy(BaseTransformer):
         dt.fit(mt_df)
         mt_df = dt.transform(mt_df)
 
+        # adata_df = pd.DataFrame(adata.X, index=adata.obs_names, columns=adata.var_names)
+
+        # df = pd.concat([adata_df, mt_df], axis=1)
         df = pd.concat([pca_df, mt_df], axis=1)
 
-        # df = pd.DataFrame(adata.X, index=adata.obs_names, columns=adata.var_names)
         return df

@@ -91,7 +91,11 @@ def make_pre_model_tabnet(c, c_index=None, c_features=None):
         # cat_dims=c_features,
         # cat_emb_dim=[1],
         optimizer_fn=torch.optim.Adam,
-        optimizer_params=dict(lr=2e-2, weight_decay=1e-5),
+        optimizer_params=dict(lr=c.training_params.lr, weight_decay=c.training_params.weight_decay),
+        scheduler_fn=torch.optim.lr_scheduler.ReduceLROnPlateau,
+        scheduler_params=dict(
+            min_lr=c.training_params.min_lr, patience=c.training_params.es_patience // 5, verbose=True
+        ),
         mask_type="entmax",
         seed=c.global_params.seed,
         verbose=5,
@@ -116,22 +120,14 @@ def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None
         # cat_emb_dim=[1],
         optimizer_fn=torch.optim.Adam,
         optimizer_params=dict(lr=c.training_params.lr, weight_decay=c.training_params.weight_decay),
+        scheduler_fn=torch.optim.lr_scheduler.ReduceLROnPlateau,
+        scheduler_params=dict(
+            min_lr=c.training_params.min_lr, patience=c.training_params.es_patience // 5, verbose=True
+        ),
         mask_type="entmax",
         seed=c.global_params.seed,
         verbose=5,
     )  # type: dict[str, Any]
-
-    if ds is not None:
-        num_data = len(ds)
-        num_steps = (
-            num_data // (c.training_params.batch_size * c.training_params.gradient_acc_step) * c.training_params.epoch
-            + 5
-        )
-
-        tabnet_params["scheduler_params"] = dict(
-            T_0=num_steps, T_mult=1, eta_min=c.training_params.min_lr, last_epoch=-1
-        )
-        tabnet_params["scheduler_fn"] = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts
 
     if "adversarial" in c.global_params.method:
         clf = TabNetClassifier(**tabnet_params)

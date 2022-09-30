@@ -21,7 +21,7 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
     - さらに [ivis](https://bering-ivis.readthedocs.io/en/latest/index.html) の教師なし学習で 240 次元の特徴量を生成
 
 
-### Training (CV Score)
+### Training (CV Score, Num of Feature)
 
 #### Common
 
@@ -29,13 +29,13 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 #### Citeseq
 
-- Ridge (0.89373)
-- Tabnet (0.89401)
-- XGBoost (0.89416)
+- Ridge (0.89373, 680)
+- Tabnet (0.89401, 680)
+- XGBoost (0.89416, 926)
 
 #### Multiome
 
-- Tabnet (0.66752)
+- Tabnet (0.66752, 3104)
 
 
 ### Postprocess
@@ -57,4 +57,4 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 ## Score
 
-- CV: 0.83254 (cite: 0.89930, multi: 0.66752), LB: 0.xxx
+- CV: 0.83254 (cite: 0.89930, multi: 0.66752), LB: 0.809
