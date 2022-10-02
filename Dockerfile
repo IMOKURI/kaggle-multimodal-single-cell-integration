@@ -10,7 +10,7 @@ RUN pip install \
     hydra-core \
     iterative-stratification
 
-RUN conda install -c pytorch faiss-gpu
+# RUN conda install -c pytorch faiss-gpu
 
 RUN pip install \
     tables \

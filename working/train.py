@@ -65,7 +65,7 @@ def main(c):
             raise
         # elif c.global_params.method == "lightgbm":
         #     _oof_df, _label_df, loss = train_fold_lightgbm(c, input, fold)
-        elif c.global_params.method == "ridge":
+        elif c.global_params.method in ["linear_ridge", "kernel_ridge"]:
             _oof_df, _label_df, loss, _inference_df = train_fold_ridge(c, input, fold)
         elif c.global_params.method == "xgboost":
             _oof_df, _label_df, loss, _inference_df = train_fold_xgboost(c, input, fold)

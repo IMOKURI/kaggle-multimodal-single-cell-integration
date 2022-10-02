@@ -11,6 +11,8 @@ import torch.nn as nn
 import xgboost as xgb
 from pytorch_tabnet.pretraining import TabNetPretrainer
 from pytorch_tabnet.tab_model import TabNetClassifier, TabNetRegressor
+from sklearn.gaussian_process.kernels import RBF
+from sklearn.kernel_ridge import KernelRidge
 from sklearn.linear_model import Ridge
 
 from .models.image import ImageBaseModel
@@ -39,11 +41,18 @@ def make_model(c, device=None, model_path=None):
 
 def make_model_ridge(c, ds=None, model_path=None):
 
-    ridge_params = dict(
-        random_state=c.global_params.seed,
-    )  # type: dict[str, Any]
+    if c.global_params.method == "kernel_ridge":
+        kernel = RBF(length_scale=10.0)
+        kernel_ridge_params = dict(alpha=0.1, kernel=kernel)  # type: dict[str, Any]
 
-    clf = Ridge(**ridge_params)
+        clf = KernelRidge(**kernel_ridge_params)
+
+    else:
+        ridge_params = dict(
+            random_state=c.global_params.seed,
+        )  # type: dict[str, Any]
+
+        clf = Ridge(**ridge_params)
 
     # if model_path is not None:
     #     clf.load_model(model_path)

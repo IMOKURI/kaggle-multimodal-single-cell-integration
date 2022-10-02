@@ -80,7 +80,7 @@ class PreprocessData:
             else:
                 setattr(self, stem, df)
 
-        if c.global_params.data == "multi" and "inputs" in stem:
+        if c.global_params.data == "multi":
             setattr(self, f"train_{c.global_params.data}_inputs", train_inputs)
             setattr(self, f"test_{c.global_params.data}_inputs", test_inputs)
 
@@ -278,7 +278,7 @@ class LoadData:
         assert train_inputs.columns.equals(test_inputs.columns)
 
         # Standard Scaler
-        if c.global_params.method in ["ridge"]:
+        if c.global_params.method in ["linear_ridge", "kernel_ridge"]:
             log.info(f"Apply standard scaler.")
             dt = DistTransformer()
             dt.fit(pd.concat([train_inputs, test_inputs]))
