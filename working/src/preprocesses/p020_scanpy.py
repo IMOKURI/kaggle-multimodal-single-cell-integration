@@ -16,7 +16,7 @@ class CustomScanPy(BaseTransformer):
 
     def __init__(self, c):
         self.seed = c.global_params.seed
-        self.n_components = 240
+        self.n_components = 0
         self.columns = [f"scanpy_pca_{n}" for n in range(self.n_components)]
 
     def fit(self, df):
@@ -55,8 +55,8 @@ class CustomScanPy(BaseTransformer):
 
         # sc.pp.scale(train_cite_inputs_adata, max_value=10)
 
-        sc.pp.pca(adata, n_comps=self.n_components, random_state=self.seed)
-        pca_df = pd.DataFrame(adata.obsm["X_pca"], index=adata.obs_names, columns=self.columns)
+        # sc.pp.pca(adata, n_comps=self.n_components, random_state=self.seed)
+        # pca_df = pd.DataFrame(adata.obsm["X_pca"], index=adata.obs_names, columns=self.columns)
 
         mt_cols = [
             "total_counts_mt",
@@ -75,6 +75,7 @@ class CustomScanPy(BaseTransformer):
         # adata_df = pd.DataFrame(adata.X, index=adata.obs_names, columns=adata.var_names)
 
         # df = pd.concat([adata_df, mt_df], axis=1)
-        df = pd.concat([pca_df, mt_df], axis=1)
+        # df = pd.concat([pca_df, mt_df], axis=1)
+        df = mt_df
 
         return df

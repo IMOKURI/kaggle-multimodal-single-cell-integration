@@ -12,8 +12,7 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 - PCA で 240 次元に削減
 - ターゲットの列名を含む インプットの列名のデータを温存
 - [ivis](https://bering-ivis.readthedocs.io/en/latest/index.html) の教師なし学習で 240 次元の特徴量を生成
-- [scanpy](https://scanpy.readthedocs.io/en/stable/) で high variance な特徴量を抽出した上で PCA で 240 次元に削減
-    - 合わせてミトコンドリアのRNAの細胞ごとの和を特徴量に追加
+- 合わせてミトコンドリアのRNAの細胞ごとの和を特徴量に追加
 
 #### Multiome
 
@@ -30,7 +29,8 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 #### Citeseq
 
 - Ridge (0.89373, 680)
-- Tabnet (0.89401, 680)
+- Tabnet (0.89482, 680)
+- Tabnet (0.89468, 686)
 - XGBoost (0.89416, 926)
 
 #### Multiome
@@ -57,4 +57,4 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 ## Score
 
-- CV: 0.83254 (cite: 0.89930, multi: 0.66752), LB: 0.809
+- CV: 0.83293 (cite: 0.89983, multi: 0.66752), LB: 0.809
