@@ -250,16 +250,28 @@ class LoadData:
         # test_inputs = test_inputs.join(metadata["cell_type_num"])
 
         # RNA アノテーションによるカラム抽出
-        # rna_annot = pd.read_table(os.path.join(c.settings.dirs.input, "catrapid_rnas.txt"))
-        # rna_annot_human = rna_annot[rna_annot["species"] == "human"].reset_index(drop=True)
-        # rna_biotype_dict = {ens: biotype for ens, biotype in zip(rna_annot_human["ensg"], rna_annot_human["biotype"])}
-        # biotype_cols = [
-        #     col
-        #     for col in train_inputs.columns
-        #     if (col.split("_")[0] in rna_biotype_dict) and (rna_biotype_dict[col.split("_")[0]] == "protein_coding")
-        # ]
-        # train_inputs = train_inputs[biotype_cols]
-        # test_inputs = test_inputs[biotype_cols]
+        rna_annot = pd.read_table(os.path.join(c.settings.dirs.input, "catrapid_rnas.txt"))
+        rna_annot_human = rna_annot[rna_annot["species"] == "human"].reset_index(drop=True)
+        rna_biotype_dict = {ens: biotype for ens, biotype in zip(rna_annot_human["ensg"], rna_annot_human["biotype"])}
+        if c.preprocess_params.rna_biotype_cols is not None:
+            if c.global_params.data == "multi":
+                biotype_cols = [
+                    col
+                    for col in train_targets.columns
+                    if (col in rna_biotype_dict) and (rna_biotype_dict[col] in c.preprocess_params.rna_biotype_cols)
+                ]
+                train_targets = train_targets[biotype_cols]
+                log.info(f"Train target num of cols: {len(biotype_cols)}")
+            # elif c.global_params.data == "cite":
+            #     biotype_cols = [
+            #         col
+            #         for col in train_inputs.columns
+            #         if (col.split("_")[0] in rna_biotype_dict) and (rna_biotype_dict[col.split("_")[0]] in c.preprocess_params.rna_biotype_cols)
+            #     ]
+            #     train_inputs = train_inputs[biotype_cols]
+            #     test_inputs = test_inputs[biotype_cols]
+            else:
+                raise
 
         # 過学習のもとになりそうなカラムを削除
         if do_preprocess:

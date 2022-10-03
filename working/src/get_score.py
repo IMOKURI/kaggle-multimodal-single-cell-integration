@@ -1,11 +1,11 @@
 import logging
-import traceback
 
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
 import wandb
 from sklearn.metrics import accuracy_score, auc, log_loss, mean_squared_error
+from pytorch_tabnet.metrics import Metric
 
 log = logging.getLogger(__name__)
 
@@ -64,6 +64,15 @@ def record_result(c, df, fold, label_df=None, loss=None):
 
 def pearson_coef(data):
     return data.corr()["target"]["preds"]
+
+
+class PearsonCCTabNetScore(Metric):
+    def __init__(self):
+        self._name = "pearson"
+        self._maximize = True
+
+    def __call__(self, y_true, y_pred):
+        return get_score("pearson", y_true, y_pred)
 
 
 # def optimize_function(c, y_true, y_pred):

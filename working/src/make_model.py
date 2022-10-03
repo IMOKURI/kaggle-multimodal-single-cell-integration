@@ -131,7 +131,7 @@ def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None
         optimizer_params=dict(lr=c.training_params.lr, weight_decay=c.training_params.weight_decay),
         scheduler_fn=torch.optim.lr_scheduler.ReduceLROnPlateau,
         scheduler_params=dict(
-            min_lr=c.training_params.min_lr, patience=c.training_params.es_patience // 5, verbose=True
+            mode="max", min_lr=c.training_params.min_lr, patience=c.training_params.es_patience // 5, verbose=True
         ),
         mask_type="entmax",
         seed=c.global_params.seed,

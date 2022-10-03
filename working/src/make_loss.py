@@ -53,7 +53,8 @@ class PearsonCCLoss(nn.Module):
 
     def forward(self, inputs, targets):
         pcc = self.cos(inputs - inputs.mean(dim=1, keepdim=True), targets - targets.mean(dim=1, keepdim=True))
-        return 1.0 - pcc
+        # return 1.0 - pcc
+        return 1.0 - pcc.mean()
 
 
 # https://discuss.pytorch.org/t/use-pearson-correlation-coefficient-as-cost-function/8739/8
