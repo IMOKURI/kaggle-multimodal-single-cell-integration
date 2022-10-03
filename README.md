@@ -36,6 +36,7 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 #### Multiome
 
 - Tabnet (0.66752, 3104)
+- Tabnet (0.66712, 3104, seed 1440)
 
 
 ### Postprocess
@@ -57,4 +58,4 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 ## Score
 
-- CV: 0.83293 (cite: 0.89983, multi: 0.66752), LB: 0.809
+- CV: 0.83319 (cite: 0.89983, multi: 0.66843), LB: 0.809

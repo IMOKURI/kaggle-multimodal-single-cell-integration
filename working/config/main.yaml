@@ -578,12 +578,13 @@ model_params:
 inference_params:
   ensemble_weight_optimization: false
   cite_pretrained:
-    2022-09-26_12-57-19: 1  # ridge 0.89373 by 680
+    2022-09-26_12-57-19: 1  # linear ridge 0.89373 by 680
     2022-09-29_14-20-08: 1  # xgboost 0.89416 by 926
     2022-09-30_00-55-28: 1  # tabnet 0.89482 by 680
     2022-10-01_11-23-22: 1  # tabnet 0.89468 by 686
   multi_pretrained:
     2022-09-26_13-16-32: 1  # tabnet 0.66752 by 3104
+    2022-10-02_13-33-31: 1  # tabnet 0.66712 by 3104 seed 1440
   pretrained:
     # multiome-with-keras-ensemble: 1
     # multimodal-single-cell-integration-ensembling: 1
