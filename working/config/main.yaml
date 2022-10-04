@@ -112,7 +112,7 @@ settings:
     - train_cite_all_inputs_ivis_240.pickle
     # - train_cite_all_inputs_ivis_supervised_240.pickle
     # - train_cite_all_inputs_scanpy_240.pickle
-    - train_cite_all_inputs_scanpy_0.pickle
+    # - train_cite_all_inputs_scanpy_0.pickle
     # - train_cite_sum_by_rna_type_inputs.pickle
     # - train_cite_mean_by_rna_type_inputs.pickle
     # - train_cite_std_by_rna_type_inputs.pickle
@@ -126,7 +126,7 @@ settings:
     - test_cite_all_inputs_ivis_240.pickle
     # - test_cite_all_inputs_ivis_supervised_240.pickle
     # - test_cite_all_inputs_scanpy_240.pickle
-    - test_cite_all_inputs_scanpy_0.pickle
+    # - test_cite_all_inputs_scanpy_0.pickle
     # - test_cite_sum_by_rna_type_inputs.pickle
     # - test_cite_mean_by_rna_type_inputs.pickle
     # - test_cite_std_by_rna_type_inputs.pickle
@@ -229,8 +229,8 @@ params:
 
 global_params:
   seed: 440
-  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
-  data: multi  # cite, multi
+  method: xgboost  # tabnet, adversarial_tabnet  # ** adversarial
+  data: cite  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI

@@ -15,6 +15,7 @@ from sklearn.gaussian_process.kernels import RBF
 from sklearn.kernel_ridge import KernelRidge
 from sklearn.linear_model import Ridge
 
+from .get_score import pearson_cc_xgb_score
 from .models.image import ImageBaseModel
 from .models.node import DenseBlock, Lambda, entmax15, entmoid15
 
@@ -64,9 +65,10 @@ def make_model_xgboost(c, ds=None, model_path=None):
 
     xgb_params = dict(
         n_estimators=1000,
+        early_stopping_rounds=20,
         # learning_rate=0.05,
         objective="reg:squarederror",  # "binary:logistic", "reg:squarederror",
-        eval_metric="rmse",  # "logloss", "rmse",
+        eval_metric=pearson_cc_xgb_score,  # "logloss", "rmse",
         random_state=c.global_params.seed,
         tree_method="gpu_hist",
     )  # type: dict[str, Any]

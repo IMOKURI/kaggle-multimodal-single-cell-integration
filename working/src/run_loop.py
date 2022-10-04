@@ -22,10 +22,10 @@ from hydra.core.hydra_config import HydraConfig
 # from memory_profiler import profile
 from scipy.optimize import minimize
 
-from .get_score import get_score, PearsonCCTabNetScore  # , optimize_function
+from .get_score import PearsonCCTabNetScore, get_score  # , optimize_function
 from .make_dataset import make_dataloader, make_dataset, make_dataset_nn
 from .make_fold import train_test_split
-from .make_loss import make_criterion, make_optimizer, make_scheduler, PearsonCCLoss
+from .make_loss import PearsonCCLoss, make_criterion, make_optimizer, make_scheduler
 from .make_model import make_model, make_model_ridge, make_model_tabnet, make_model_xgboost, make_pre_model_tabnet
 from .run_epoch import inference_epoch, train_epoch, validate_epoch
 from .utils import AverageMeter, timeSince
@@ -269,7 +269,6 @@ def train_fold_xgboost(c, input, fold):
         train_labels,
         eval_set=[(valid_ds, valid_labels)],
         verbose=10,
-        early_stopping_rounds=20,
     )
 
     model_dir = os.path.join(HydraConfig.get().run.dir, f"fold{fold}")

@@ -1,11 +1,13 @@
 import logging
+from typing import Tuple
 
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
 import wandb
-from sklearn.metrics import accuracy_score, auc, log_loss, mean_squared_error
+import xgboost as xgb
 from pytorch_tabnet.metrics import Metric
+from sklearn.metrics import accuracy_score, auc, log_loss, mean_squared_error
 
 log = logging.getLogger(__name__)
 
@@ -73,6 +75,13 @@ class PearsonCCTabNetScore(Metric):
 
     def __call__(self, y_true, y_pred):
         return get_score("pearson", y_true, y_pred)
+
+
+def pearson_cc_xgb_score(y_pred: np.ndarray, y_true: np.ndarray) -> float:
+    # y_pred は 1次元で与えられるので reshape する
+    n_col = y_true.shape[1]
+    score = get_score("pearson", y_true, y_pred.reshape(-1, n_col))
+    return 1.0 - score
 
 
 # def optimize_function(c, y_true, y_pred):
