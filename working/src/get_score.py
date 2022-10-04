@@ -77,10 +77,10 @@ class PearsonCCTabNetScore(Metric):
         return get_score("pearson", y_true, y_pred)
 
 
-def pearson_cc_xgb_score(y_pred: np.ndarray, y_true: np.ndarray) -> float:
-    # y_pred は 1次元で与えられるので reshape する
-    n_col = y_true.shape[1]
-    score = get_score("pearson", y_true, y_pred.reshape(-1, n_col))
+def pearson_cc_xgb_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    # y_true は 1次元で与えられるので reshape する
+    n_col = y_pred.shape[1]
+    score = get_score("pearson", y_true.reshape(-1, n_col), y_pred)
     return 1.0 - score
 
 
