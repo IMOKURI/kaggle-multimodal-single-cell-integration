@@ -13,6 +13,7 @@ from src.get_score import record_result  # , optimize_function
 from src.load_data import LoadData
 from src.run_loop import (  # train_fold_lightgbm,
     adversarial_train_fold_tabnet,
+    cell_type_train_fold_tabnet,
     train_fold_nn,
     train_fold_ridge,
     train_fold_tabnet,
@@ -73,6 +74,8 @@ def main(c):
             _oof_df, _label_df, loss, _inference_df = train_fold_tabnet(c, input, fold)
         elif c.global_params.method == "adversarial_tabnet":
             _oof_df, _label_df, loss, _inference_df = adversarial_train_fold_tabnet(c, input, fold)
+        elif c.global_params.method == "cell_type_tabnet":
+            _oof_df, _label_df, loss, _inference_df = cell_type_train_fold_tabnet(c, input, fold)
         elif c.global_params.method == "nn":
             _oof_df, _label_df, loss, _inference_df = train_fold_nn(c, input, fold, device)
         else:

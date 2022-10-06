@@ -219,9 +219,9 @@ settings:
   skip_training: False
   skip_inference: False  # ** adversarial
 
-  label_name: label
+  label_name: cell_type_num  # label
   n_class: 1
-  scoring: pearson  # pearson, accuracy  # ** adversarial
+  scoring: accuracy  # pearson, accuracy  # ** adversarial
 
 params:
   seed: ${global_params.seed}
@@ -229,8 +229,8 @@ params:
 
 global_params:
   seed: 440
-  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
-  data: cite  # cite, multi
+  method: cell_type_tabnet  # tabnet, adversarial_tabnet  # ** adversarial
+  data: multi  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI

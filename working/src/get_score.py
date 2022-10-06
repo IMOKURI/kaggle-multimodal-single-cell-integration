@@ -1,11 +1,9 @@
 import logging
-from typing import Tuple
 
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
 import wandb
-import xgboost as xgb
 from pytorch_tabnet.metrics import Metric
 from sklearn.metrics import accuracy_score, auc, log_loss, mean_squared_error
 
