@@ -107,30 +107,30 @@ settings:
 
   preprocesses:
     # - train_cite_inputs.pickle
-    - train_cite_all_inputs_pca_240.pickle
     - train_cite_no_pca_inputs.pickle
-    - train_cite_all_inputs_ivis_240.pickle
-    # - train_cite_all_inputs_ivis_supervised_240.pickle
-    # - train_cite_all_inputs_scanpy_240.pickle
-    # - train_cite_all_inputs_scanpy_0.pickle
     # - train_cite_sum_by_rna_type_inputs.pickle
     # - train_cite_mean_by_rna_type_inputs.pickle
     # - train_cite_std_by_rna_type_inputs.pickle
     # - train_cite_skew_by_rna_type_inputs.pickle
+    - train_cite_all_inputs_pca_240.pickle
+    - train_cite_all_inputs_ivis_240.pickle
+    # - train_cite_all_inputs_ivis_supervised_240.pickle
+    # - train_cite_all_inputs_scanpy_240.pickle
+    - train_cite_all_inputs_scanpy_0.pickle
 
     - train_cite_targets.pickle
 
     # - test_cite_inputs.pickle
-    - test_cite_all_inputs_pca_240.pickle
     - test_cite_no_pca_inputs.pickle
-    - test_cite_all_inputs_ivis_240.pickle
-    # - test_cite_all_inputs_ivis_supervised_240.pickle
-    # - test_cite_all_inputs_scanpy_240.pickle
-    # - test_cite_all_inputs_scanpy_0.pickle
     # - test_cite_sum_by_rna_type_inputs.pickle
     # - test_cite_mean_by_rna_type_inputs.pickle
     # - test_cite_std_by_rna_type_inputs.pickle
     # - test_cite_skew_by_rna_type_inputs.pickle
+    - test_cite_all_inputs_pca_240.pickle
+    - test_cite_all_inputs_ivis_240.pickle
+    # - test_cite_all_inputs_ivis_supervised_240.pickle
+    # - test_cite_all_inputs_scanpy_240.pickle
+    - test_cite_all_inputs_scanpy_0.pickle
 
     - train_multi_GL_inputs__100.pickle
     - train_multi_KI_inputs__100.pickle
@@ -229,14 +229,14 @@ params:
 
 global_params:
   seed: 440
-  method: xgboost  # tabnet, adversarial_tabnet  # ** adversarial
+  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
   data: cite  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
   methods:
     # - pca
-    - scanpy
+    # - scanpy
     # - ivis
     # - ivis_supervised
     # - faiss
@@ -590,7 +590,9 @@ inference_params:
     # 2022-09-30_00-55-28: 1  # tabnet 0.89482 by 680
     # 2022-10-01_11-23-22: 1  # tabnet 0.89468 by 686
     2022-10-03_12-37-37: 1  # tabnet 0.90175 by 680 pearson loss
+    2022-10-06_04-34-58: 1  # tabnet 0.90170 by 681 pearson loss
     2022-10-03_12-58-59: 1  # tabnet 0.90186 by 686 pearson loss
+    2022-10-06_05-01-11: 1  # tabnet 0.90188 by 687 pearson loss
   multi_pretrained:
     2022-09-26_13-16-32: 1  # tabnet 0.66752 by 3104
     2022-10-02_13-33-31: 1  # tabnet 0.66712 by 3104 seed 1440
