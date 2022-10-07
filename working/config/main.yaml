@@ -219,7 +219,7 @@ settings:
   skip_training: False
   skip_inference: False  # ** adversarial
 
-  label_name: cell_type_num  # label  # ** cell_type_num
+  label_name: label  # label  # ** cell_type_num
   n_class: 1
   scoring: pearson  # pearson, accuracy  # ** adversarial
 

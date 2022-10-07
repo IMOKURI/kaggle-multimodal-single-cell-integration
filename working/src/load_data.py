@@ -303,11 +303,10 @@ class LoadData:
         log.debug(f"input columns: {train_inputs.columns}")
 
         if use_fold:
-            if "adversarial" in c.global_params.method:
-                good_validation = self.adversarial[(self.adversarial["label"] == 0) & (self.adversarial["preds"] == 1)]
-                train_inputs[c.settings.label_name] = 0
-                train_inputs.loc[good_validation.index, :][c.settings.label_name] = 1
-                test_inputs[c.settings.label_name] = 0
+            good_validation = self.adversarial[(self.adversarial["label"] == 0) & (self.adversarial["preds"] == 1)]
+            train_inputs[c.settings.label_name] = 0
+            train_inputs.loc[good_validation.index, :][c.settings.label_name] = 1
+            test_inputs[c.settings.label_name] = 0
 
             train_inputs = train_inputs.join(self.metadata["donor"])
             test_inputs = test_inputs.join(self.metadata["donor"])
