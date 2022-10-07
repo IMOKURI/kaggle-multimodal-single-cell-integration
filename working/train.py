@@ -122,7 +122,11 @@ def main(c):
     if not c.settings.skip_inference:
         log.info("========== inference result ==========")
 
-        inference_df = inference_df.groupby("cell_id").mean()
+        if "cell_type_" in c.global_params.method:
+            # vote ensemble
+            inference_df = inference_df.groupby("cell_id").agg(pd.Series.mode)
+        else:
+            inference_df = inference_df.groupby("cell_id").mean()
 
         inference_path = os.path.join(HydraConfig.get().run.dir, f"{c.global_params.data}_inference.pickle")
         inference_df.to_pickle(inference_path)
