@@ -275,6 +275,13 @@ def use_first_element_as_int(x):
         return int(x[0])
 
 
+def use_last_element_as_int(x):
+    try:
+        return int(x)
+    except:
+        return int(x[-1])
+
+
 def compute_grad_norm(parameters, norm_type=2.0):
     """Refer to torch.nn.utils.clip_grad_norm_"""
     if isinstance(parameters, torch.Tensor):

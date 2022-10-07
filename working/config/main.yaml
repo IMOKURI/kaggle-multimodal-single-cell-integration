@@ -585,19 +585,13 @@ model_params:
 inference_params:
   ensemble_weight_optimization: false
   cite_pretrained:
-    # 2022-09-26_12-57-19: 1  # linear ridge 0.89373 by 680
-    # 2022-09-29_14-20-08: 1  # xgboost 0.89416 by 926
-    # 2022-09-30_00-55-28: 1  # tabnet 0.89482 by 680
-    # 2022-10-01_11-23-22: 1  # tabnet 0.89468 by 686
     2022-10-03_12-37-37: 1  # tabnet 0.90175 by 680 pearson loss
     2022-10-06_04-34-58: 1  # tabnet 0.90170 by 681 pearson loss
     2022-10-03_12-58-59: 1  # tabnet 0.90186 by 686 pearson loss
     2022-10-06_05-01-11: 1  # tabnet 0.90188 by 687 pearson loss
   multi_pretrained:
-    # 2022-09-26_13-16-32: 1  # tabnet 0.66752 by 3104
-    # 2022-10-02_13-33-31: 1  # tabnet 0.66712 by 3104 seed 1440
-    2022-10-03_13-22-04: 1  # tabnet 0.65719 by 3104 pearson loss
-    2022-10-03_14-17-49: 1  # tabnet 0.65719 by 3104 seed 1440 pearson loss
+    2022-10-07_06-25-40: 1  # tabnet 0.66899 by 3104 pearson loss
+    2022-10-07_06-15-47: 1  # tabnet 0.66904 by 3105 pearson loss
   pretrained:
     # multiome-with-keras-ensemble: 1
     # multimodal-single-cell-integration-ensembling: 1
