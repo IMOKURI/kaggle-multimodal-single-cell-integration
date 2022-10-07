@@ -268,6 +268,13 @@ def timer(name, gpu=True):
         log.info(f"[{name}] {asMinutes(elapsed)} ({elapsed:.3f}s), RAM: {ram_message}")
 
 
+def use_first_element_as_int(x):
+    try:
+        return int(x)
+    except:
+        return int(x[0])
+
+
 def compute_grad_norm(parameters, norm_type=2.0):
     """Refer to torch.nn.utils.clip_grad_norm_"""
     if isinstance(parameters, torch.Tensor):

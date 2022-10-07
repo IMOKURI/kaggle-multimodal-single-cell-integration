@@ -9,7 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 from .make_fold import make_fold
 from .preprocess import preprocess, preprocess_train_test
 from .preprocesses.p001_dist_transformer import DistTransformer
-from .utils import reduce_mem_usage
+from .utils import reduce_mem_usage, use_first_element_as_int
 
 log = logging.getLogger(__name__)
 
@@ -239,6 +239,10 @@ class LoadData:
         train_inputs = train_inputs.join(metadata["cell_type_num"])
         test_inputs = test_inputs.join(metadata["cell_type_num"])
 
+        if c.global_params.data == "multi":
+            cell_type_preds = pd.read_pickle(os.path.join(c.settings.dirs.output, "2022-10-07_02-11-02", "multi_inference.pickle"))
+            test_inputs["cell_type_num"] = cell_type_preds.iloc[:, 0].map(use_first_element_as_int)
+
         # RNA アノテーションによるカラム抽出
         rna_annot = pd.read_table(os.path.join(c.settings.dirs.input, "catrapid_rnas.txt"))
         rna_annot_human = rna_annot[rna_annot["species"] == "human"].reset_index(drop=True)
@@ -415,8 +419,8 @@ class PostprocessData:
             df = pd.concat([oof_df, inf_df])
 
             # Multiome の target は 非負
-            df[df < 0] = 0
-            assert (df < 0).sum().sum() == 0
+            # df[df < 0] = 0
+            # assert (df < 0).sum().sum() == 0
 
             df = pd.DataFrame(std(df.to_numpy()) * weight, index=df.index, columns=df.columns)
 

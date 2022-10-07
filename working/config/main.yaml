@@ -219,9 +219,9 @@ settings:
   skip_training: False
   skip_inference: False  # ** adversarial
 
-  label_name: cell_type_num  # label
+  label_name: cell_type_num  # label  # ** cell_type_num
   n_class: 1
-  scoring: accuracy  # pearson, accuracy  # ** adversarial
+  scoring: pearson  # pearson, accuracy  # ** adversarial
 
 params:
   seed: ${global_params.seed}
@@ -229,7 +229,7 @@ params:
 
 global_params:
   seed: 440
-  method: cell_type_tabnet  # tabnet, adversarial_tabnet  # ** adversarial
+  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
   data: multi  # cite, multi
 
 preprocess_params:
@@ -594,10 +594,10 @@ inference_params:
     2022-10-03_12-58-59: 1  # tabnet 0.90186 by 686 pearson loss
     2022-10-06_05-01-11: 1  # tabnet 0.90188 by 687 pearson loss
   multi_pretrained:
-    2022-09-26_13-16-32: 1  # tabnet 0.66752 by 3104
-    2022-10-02_13-33-31: 1  # tabnet 0.66712 by 3104 seed 1440
-    # 2022-10-03_13-22-04: 1  # tabnet 0.65719 by 3104 pearson loss
-    # 2022-10-03_14-17-49: 1  # tabnet 0.65719 by 3104 seed 1440 pearson loss
+    # 2022-09-26_13-16-32: 1  # tabnet 0.66752 by 3104
+    # 2022-10-02_13-33-31: 1  # tabnet 0.66712 by 3104 seed 1440
+    2022-10-03_13-22-04: 1  # tabnet 0.65719 by 3104 pearson loss
+    2022-10-03_14-17-49: 1  # tabnet 0.65719 by 3104 seed 1440 pearson loss
   pretrained:
     # multiome-with-keras-ensemble: 1
     # multimodal-single-cell-integration-ensembling: 1
