@@ -23,7 +23,7 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
     - test data は 事前学習したモデルでの推論結果を使用
 
 
-### Training (CV Score, Num of Feature)
+### Training
 
 #### Common
 
@@ -33,7 +33,7 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 #### Citeseq
 
 
-##### Model
+##### Model (CV Score, Num of Feature)
 
 - Tabnet (0.90175, 680)
 - Tabnet (0.90170, 681)
@@ -43,7 +43,7 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 #### Multiome
 
 
-##### Model
+##### Model (CV Score, Num of Feature)
 
 - Tabnet (0.66899, 3104)
 - Tabnet (0.66904, 3105)

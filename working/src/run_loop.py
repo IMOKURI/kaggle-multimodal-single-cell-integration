@@ -440,10 +440,21 @@ def train_fold_tabnet(c, input, fold):
 
     df = getattr(input, f"train_{c.global_params.data}_inputs")
     label_df = getattr(input, f"train_{c.global_params.data}_targets")
+    inference_df = getattr(input, f"test_{c.global_params.data}_inputs")
+
+    # inference_df から leak データを除外する
+    leak_27678_cell_id = input.metadata[
+        (input.metadata["donor"] == 27678) & (input.metadata["technology"] == "citeseq") & (input.metadata["day"] == 2)
+    ].index
+    pre_inference_df = inference_df.drop(leak_27678_cell_id)
+
+    pre_df = pd.concat([df, pre_inference_df])
+
     inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop(
         ["fold", c.settings.label_name, c.cv_params.group_name], axis=1
     )
 
+    pre_train_df, pre_valid_df = train_test_split(c, pre_df, fold)
     train_df, valid_df = train_test_split(c, df, fold)
     # good_validation = input.adversarial[(input.adversarial["label"] == 0) & (input.adversarial["preds"] == 1)]
     # train_df = df[~df.index.isin(good_validation.index)]
@@ -473,6 +484,8 @@ def train_fold_tabnet(c, input, fold):
     #     fallback_to_none=False,
     # )
     # train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_folds, valid_folds)
+    pre_train_ds, _ = make_dataset(c, pre_train_df)
+    pre_valid_ds, _ = make_dataset(c, pre_valid_df)
     train_ds, train_labels = make_dataset(c, train_df, train_label_df)
     valid_ds, valid_labels = make_dataset(c, valid_df, valid_label_df)
 
@@ -482,21 +495,21 @@ def train_fold_tabnet(c, input, fold):
     categorical_index.append(df.columns.get_loc("cell_type_num"))
     categorical_features.append(len(input.metadata_cell_type_num))
 
-    # pre_model = make_pre_model_tabnet(c, c_index=categorical_index, c_features=categorical_features)
+    pre_model = make_pre_model_tabnet(c, c_index=categorical_index, c_features=categorical_features)
     # pre_model = make_pre_model_tabnet(c)
-    #
-    # pre_model.fit(
-    #     train_ds,
-    #     eval_set=[valid_ds, inference_df.to_numpy()],
-    #     eval_name=["valid", "test"],
-    #     max_epochs=1000,
-    #     patience=c.training_params.es_patience,
-    #     batch_size=c.training_params.batch_size,
-    #     virtual_batch_size=256,
-    #     num_workers=8,
-    #     drop_last=True,
-    #     pretraining_ratio=0.8,
-    # )
+
+    pre_model.fit(
+        pre_train_ds,
+        eval_set=[pre_valid_ds],
+        eval_name=["valid"],
+        max_epochs=1000,
+        patience=c.training_params.es_patience,
+        batch_size=c.training_params.batch_size,
+        virtual_batch_size=256,
+        num_workers=8,
+        drop_last=True,
+        pretraining_ratio=0.8,
+    )
 
     model = make_model_tabnet(c, train_ds, c_index=categorical_index, c_features=categorical_features)
     # model = make_model_tabnet(c, train_ds)
@@ -514,7 +527,7 @@ def train_fold_tabnet(c, input, fold):
         virtual_batch_size=256,
         num_workers=8,
         drop_last=True,
-        # from_unsupervised=pre_model,
+        from_unsupervised=pre_model,
     )
 
     model_dir = os.path.join(HydraConfig.get().run.dir, f"fold{fold}")

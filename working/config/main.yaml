@@ -230,7 +230,7 @@ params:
 global_params:
   seed: 440
   method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
-  data: multi  # cite, multi
+  data: cite  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
@@ -589,6 +589,8 @@ inference_params:
     2022-10-06_04-34-58: 1  # tabnet 0.90170 by 681 pearson loss
     2022-10-03_12-58-59: 1  # tabnet 0.90186 by 686 pearson loss
     2022-10-06_05-01-11: 1  # tabnet 0.90188 by 687 pearson loss
+    2022-10-11_01-09-07: 2  # tabnet 0.90213 by 687 pearson loss, pretrain with train data
+    2022-10-11_01-48-10: 2  # tabnet 0.90216 by 687 pearson loss, pretrain with all data
   multi_pretrained:
     2022-10-07_06-25-40: 1  # tabnet 0.66899 by 3104 pearson loss
     2022-10-07_06-15-47: 1  # tabnet 0.66904 by 3105 pearson loss

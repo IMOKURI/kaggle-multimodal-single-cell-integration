@@ -215,6 +215,10 @@ class LoadData:
             elif "metadata" in stem:
                 if c.global_params.data == "cite":
                     metadata = df[df["technology"] == "citeseq"].set_index("cell_id")
+                    additional_metadata = pd.read_csv(
+                        os.path.join(c.settings.dirs.input, "metadata_cite_day_2_donor_27678.csv")
+                    ).set_index("cell_id")
+                    metadata = pd.concat([metadata, additional_metadata])
                 elif c.global_params.data == "multi":
                     metadata = df[df["technology"] == "multiome"].set_index("cell_id")
 
@@ -240,7 +244,9 @@ class LoadData:
         test_inputs = test_inputs.join(metadata["cell_type_num"])
 
         if c.global_params.data == "multi":
-            cell_type_preds = pd.read_pickle(os.path.join(c.settings.dirs.output, "2022-10-07_02-11-02", "multi_inference.pickle"))
+            cell_type_preds = pd.read_pickle(
+                os.path.join(c.settings.dirs.output, "2022-10-07_02-11-02", "multi_inference.pickle")
+            )
             test_inputs["cell_type_num"] = cell_type_preds.iloc[:, 0].map(use_first_element_as_int)
 
         # RNA アノテーションによるカラム抽出
