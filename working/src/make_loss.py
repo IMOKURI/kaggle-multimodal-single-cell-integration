@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn.modules.loss import _WeightedLoss
 from torch.optim import Adam, AdamW, RAdam
-from torch.optim.lr_scheduler import CosineAnnealingLR, CosineAnnealingWarmRestarts
+from torch.optim.lr_scheduler import CosineAnnealingLR, CosineAnnealingWarmRestarts, ReduceLROnPlateau
 
 log = logging.getLogger(__name__)
 
@@ -175,6 +175,10 @@ def make_scheduler(c, optimizer, ds):
     if c.training_params.scheduler == "CosineAnnealingWarmRestarts":
         scheduler = CosineAnnealingWarmRestarts(
             optimizer, T_0=num_steps, T_mult=1, eta_min=c.training_params.min_lr, last_epoch=-1
+        )
+    elif c.training_params.scheduler == "ReduceLROnPlateau":
+        scheduler = ReduceLROnPlateau(
+            optimizer, min_lr=c.training_params.min_lr, patience=c.training_params.es_patience // 5, verbose=True
         )
     elif c.training_params.scheduler == "CosineAnnealingLR":
         scheduler = CosineAnnealingLR(optimizer, T_max=num_steps, eta_min=c.training_params.min_lr, last_epoch=-1)

@@ -102,7 +102,8 @@ def validate_epoch(c, valid_loader, model, criterion, device, verbose=False):
         if c.settings.n_class == 1:
             preds[begin:end] = y_preds.squeeze().to("cpu").numpy()
         elif c.settings.n_class > 1:
-            preds[begin:end, :] = y_preds.softmax(1).to("cpu").numpy()
+            preds[begin:end, :] = y_preds.to("cpu").numpy()
+            # preds[begin:end, :] = y_preds.softmax(1).to("cpu").numpy()
             # preds[begin:end] = y_preds[:, -1].squeeze().to("cpu").numpy()
         else:
             raise Exception("Invalid n_class.")
@@ -140,7 +141,8 @@ def inference_epoch(c, inference_loader, model, device):
         if c.settings.n_class == 1:
             preds[begin:end] = y_preds.squeeze().to("cpu").numpy()
         elif c.settings.n_class > 1:
-            preds[begin:end, :] = y_preds.softmax(1).to("cpu").numpy()
+            preds[begin:end, :] = y_preds.to("cpu").numpy()
+            # preds[begin:end, :] = y_preds.softmax(1).to("cpu").numpy()
             # preds[begin:end] = y_preds[:, -1].squeeze().to("cpu").numpy()
         else:
             raise Exception("Invalid n_class.")

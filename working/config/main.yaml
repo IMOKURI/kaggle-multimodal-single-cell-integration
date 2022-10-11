@@ -229,8 +229,8 @@ params:
 
 global_params:
   seed: 440
-  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
-  data: multi  # cite, multi
+  method: nn  # tabnet, adversarial_tabnet  # ** adversarial
+  data: cite  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
@@ -560,16 +560,16 @@ cv_params:
   # time_name: ""
 
 training_params:
-  epoch: 10
+  epoch: 1000
   es_patience: 20
   batch_size: 2048
   gradient_acc_step: 1
   max_grad_norm: 1000
   # feature_set:
   #   - "f000" # f000_open_close
-  criterion: CrossEntropyLoss
+  criterion: PearsonCCLoss
   optimizer: Adam
-  scheduler: CosineAnnealingWarmupRestarts
+  scheduler: ReduceLROnPlateau
   lr: 2e-2
   min_lr: 1e-5
   weight_decay: 1e-5  # AdamW: 0.01, others: 0
@@ -577,9 +577,10 @@ training_params:
 
 model_params:
   dataset: table_base
-  model: node
-  model_name: node
+  model: mlp_base
+  model_name: mlp_base
   model_input: 0
+  model_output: 0
   # dropout: 0.0
 
 inference_params:

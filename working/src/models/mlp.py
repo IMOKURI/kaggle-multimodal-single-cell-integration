@@ -11,14 +11,15 @@ class MlpBaseModel(nn.Module):
     def __init__(self, c, tf_initialization=False):
         super().__init__()
         self.amp = c.settings.amp
-        self.model_input = c.params.model_input
-        self.model_output = c.params.model_output
+        self.model_input = c.model_params.model_input
+        self.model_output = c.model_params.model_output
+        diff = (self.model_output - self.model_input) // 3
 
         self.bn_1 = nn.BatchNorm1d(self.model_input)
 
-        self.fc_1 = nn.Linear(self.model_input, self.model_input)
-        self.fc_2 = nn.Linear(self.model_input, self.model_input * 2)
-        self.fc_3 = nn.Linear(self.model_input * 2, self.model_output)
+        self.fc_1 = nn.Linear(self.model_input, self.model_input + diff)
+        self.fc_2 = nn.Linear(self.model_input + diff, self.model_input + diff * 2)
+        self.fc_3 = nn.Linear(self.model_input + diff * 2, self.model_output)
 
         if tf_initialization:
             self._tf_reinitialize()

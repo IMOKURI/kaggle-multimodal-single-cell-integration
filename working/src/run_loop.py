@@ -577,18 +577,20 @@ def train_fold_nn(c, input, fold, device):
     )
 
     train_folds, valid_folds = train_test_split(c, df, fold)
-    train_label_folds, valid_label_folds = train_test_split(c, label_df, fold)
+    train_labels, valid_labels = train_test_split(c, label_df, fold)
 
     # ====================================================
     # Data Loader
     # ====================================================
     # train_ds = make_dataset_nn(c, train_folds, transform="light")
     # valid_ds = make_dataset_nn(c, valid_folds, transform="simple")
-    train_ds = make_dataset_nn(c, train_folds, label_df=train_label_folds)
-    valid_ds = make_dataset_nn(c, valid_folds, label_df=valid_label_folds)
+    train_ds = make_dataset_nn(c, train_folds, label_df=train_labels)
+    valid_ds = make_dataset_nn(c, valid_folds, label_df=valid_labels)
+    inference_ds = make_dataset_nn(c, inference_df, label=False)
 
     train_loader = make_dataloader(c, train_ds, shuffle=True, drop_last=True)
     valid_loader = make_dataloader(c, valid_ds, shuffle=False, drop_last=False)
+    inference_loader = make_dataloader(c, inference_ds, shuffle=False, drop_last=False)
 
     # ====================================================
     # Model
@@ -635,11 +637,9 @@ def train_fold_nn(c, input, fold, device):
             log.warning("Use training data for validation.")
             avg_val_loss, preds = validate_epoch(c, train_loader, model, criterion, device, verbose=True)
             # valid_labels = train_folds[c.settings.label_name].to_numpy()
-            valid_labels = train_folds[["label_CE", "label_LAA"]].to_numpy()
         else:
             avg_val_loss, preds = validate_epoch(c, valid_loader, model, criterion, device, verbose=True)
             # valid_labels = valid_folds[c.settings.label_name].to_numpy()
-            valid_labels = valid_folds[["label_CE", "label_LAA"]].to_numpy()
 
         if "LogitsLoss" in c.training_params.criterion:
             preds = 1 / (1 + np.exp(-preds))
@@ -676,15 +676,27 @@ def train_fold_nn(c, input, fold, device):
             break
 
     if c.settings.n_class == 1:
-        valid_folds["preds"] = es.best_preds
+        # valid_folds["preds"] = es.best_preds
+        preds_df = pd.DataFrame(es.best_preds, columns=valid_labels.columns, index=valid_labels.index)
     elif c.settings.n_class > 1:
         # valid_folds["preds"] = es.best_preds
-        valid_folds[[f"preds_{n}" for n in df[c.settings.label_name].unique()]] = es.best_preds
         # valid_folds["preds"] = 0.0  # es.best_preds.argmax(1)
+        ...
+        preds_df = pd.DataFrame(es.best_preds, columns=valid_labels.columns, index=valid_labels.index)
     else:
         raise Exception("Invalid n_class.")
 
-    return valid_folds, es.best_loss
+    # ====================================================
+    # Inference
+    # ====================================================
+    preds = inference_epoch(c, inference_loader, model, device)
+
+    if "LogitsLoss" in c.training_params.criterion:
+        preds = 1 / (1 + np.exp(-preds))
+
+    inference_df = pd.DataFrame(preds, columns=valid_labels.columns, index=inference_df.index)
+
+    return valid_folds, valid_labels, es.best_loss, inference_df
 
 
 # def inference_lightgbm(df, models):
