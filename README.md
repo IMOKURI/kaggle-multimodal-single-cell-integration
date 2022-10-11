@@ -29,25 +29,28 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 - Adversarial training で誤判断された細胞 1.3 万件ほどを正当ラベルとした StratifiedKFold
 - Pearson Loss
+- TabNet の pre-training
 
 #### Citeseq
 
 
-##### Model (CV Score, Num of Feature)
+##### Model (CV Score, Num of Feature, Ensemble weight)
 
-- Tabnet (0.90175, 680)
-- Tabnet (0.90170, 681)
-- Tabnet (0.90186, 686)
-- Tabnet (0.90188, 687)
+- TabNet (0.90175, 680)
+- TabNet (0.90170, 681)
+- TabNet (0.90186, 686)
+- TabNet (0.90188, 687)
+- TabNet (0.90213, 687, x2, pre-training with training data)
+- TabNet (0.90216, 687, x2, pre-training with all data)
 
 #### Multiome
 
 
-##### Model (CV Score, Num of Feature)
+##### Model (CV Score, Num of Feature, Ensemble weight)
 
-- Tabnet (0.66899, 3104)
-- Tabnet (0.66904, 3105)
-- Tabnet (0.66900, 3105, seed 1440)
+- TabNet (0.66899, 3104)
+- TabNet (0.66904, 3105)
+- TabNet (0.66900, 3105, seed 1440)
 
 
 ### Postprocess
@@ -68,4 +71,4 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 ## Score
 
-- CV: 0.83564 (cite: 0.90282, multi: 0.66955), LB: 0.811
+- CV: 0.83579 (cite: 0.90304, multi: 0.66955), LB: 0.811

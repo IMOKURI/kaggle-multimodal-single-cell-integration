@@ -230,7 +230,7 @@ params:
 global_params:
   seed: 440
   method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
-  data: cite  # cite, multi
+  data: multi  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
