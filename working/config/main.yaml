@@ -592,6 +592,7 @@ inference_params:
   multi_pretrained:
     2022-10-07_06-25-40: 1  # tabnet 0.66899 by 3104 pearson loss
     2022-10-07_06-15-47: 1  # tabnet 0.66904 by 3105 pearson loss
+    2022-10-07_12-36-15: 1  # tabnet 0.66900 by 3105 pearson loss seed 1440
   pretrained:
     # multiome-with-keras-ensemble: 1
     # multimodal-single-cell-integration-ensembling: 1

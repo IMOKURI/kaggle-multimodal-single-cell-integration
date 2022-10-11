@@ -47,6 +47,7 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 - Tabnet (0.66899, 3104)
 - Tabnet (0.66904, 3105)
+- Tabnet (0.66900, 3105, seed 1440)
 
 
 ### Postprocess
@@ -67,4 +68,4 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 ## Score
 
-- CV: 0.83559 (cite: 0.90282, multi: 0.66939), LB: 0.811
+- CV: 0.83564 (cite: 0.90282, multi: 0.66955), LB: 0.811
