@@ -6,7 +6,7 @@ import os
 import pickle
 import re
 from functools import wraps
-from typing import Callable, Optional, Union, Tuple
+from typing import Callable, Optional, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -44,6 +44,15 @@ def preprocess_train_test(
     df = pd.concat([train_df, test_df])
     log.info(f"Shape before preprocess: {df.shape}")
 
+    if "neighbors" in c.preprocess_params.methods:
+        method += "neighbors_"
+        neighbor_df = pd.DataFrame(index=df.index)
+        for n_col in range(len(df.columns) - 2):
+            neighbor_df = pd.concat([neighbor_df, df.iloc[:, n_col : n_col + 3].mean(axis=1)], axis=1)
+
+        neighbor_df.columns = [f"neighbor_{n}" for n in range(len(df.columns) - 2)]
+        df = neighbor_df
+
     # 列の中に1つの値しかない列は削除
     df = df.loc[:, df.nunique() != 1]
 
@@ -52,27 +61,27 @@ def preprocess_train_test(
         preprocessor = CustomPCA(c)
 
     elif "scanpy" in c.preprocess_params.methods:
-        method = "scanpy"
+        method += "scanpy"
         preprocessor = CustomScanPy(c)
         df = transform_data(
             c,
-            f"{c.global_params.data}_{c.preprocess_params.cols}_scanpy.pickle",
+            f"{c.global_params.data}_{c.preprocess_params.cols}_{method}.pickle",
             df,
             preprocessor,
         )
 
     elif "pca" in c.preprocess_params.methods:
-        method = "pca"
+        method += "pca"
         preprocessor = CustomPCA(c)
         df = transform_data(
             c,
-            f"{c.global_params.data}_{c.preprocess_params.cols}_pca_{preprocessor.n_components}.pickle",
+            f"{c.global_params.data}_{c.preprocess_params.cols}_{method}_{preprocessor.n_components}.pickle",
             df,
             preprocessor,
         )
 
     elif "ivis" in c.preprocess_params.methods:
-        method = "ivis"
+        method += "ivis"
         preprocessor = DistTransformer(transform="min-max")
         df = transform_data(
             c,
@@ -83,13 +92,13 @@ def preprocess_train_test(
         preprocessor = CustomIvis(c)
         df = transform_data(
             c,
-            f"{c.global_params.data}_{c.preprocess_params.cols}_ivis_{preprocessor.n_components}.pickle",
+            f"{c.global_params.data}_{c.preprocess_params.cols}_{method}_{preprocessor.n_components}.pickle",
             df,
             preprocessor,
         )
 
     elif "ivis_supervised" in c.preprocess_params.methods:
-        method = "ivis_supervised"
+        method += "ivis_supervised"
         preprocessor = DistTransformer(transform="min-max")
         df = transform_data(
             c,
@@ -104,14 +113,14 @@ def preprocess_train_test(
         preprocessor = CustomIvis(c)
         train_df = transform_data(
             c,
-            f"train-{c.global_params.data}_{c.preprocess_params.cols}_ivis_supervised_{preprocessor.n_components}.pickle",
+            f"train-{c.global_params.data}_{c.preprocess_params.cols}_{method}_{preprocessor.n_components}.pickle",
             train_df,
             preprocessor,
             label_df,
         )
         test_df = transform_data(
             c,
-            f"test-{c.global_params.data}_{c.preprocess_params.cols}_ivis_supervised_{preprocessor.n_components}.pickle",
+            f"test-{c.global_params.data}_{c.preprocess_params.cols}_{method}_{preprocessor.n_components}.pickle",
             test_df,
             preprocessor,
         )

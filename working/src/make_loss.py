@@ -169,8 +169,9 @@ def make_optimizer(c, model):
 def make_scheduler(c, optimizer, ds):
     num_data = len(ds)
     num_steps = (
-        num_data // (c.training_params.batch_size * c.training_params.gradient_acc_step) * c.training_params.epoch + 2
+        num_data // (c.training_params.batch_size * c.training_params.gradient_acc_step) * c.training_params.epoch + 1
     )
+    log.info(f"Scheduler total steps: {num_steps}")
 
     if c.training_params.scheduler == "CosineAnnealingWarmRestarts":
         scheduler = CosineAnnealingWarmRestarts(
@@ -190,7 +191,7 @@ def make_scheduler(c, optimizer, ds):
             first_cycle_steps=num_steps,
             max_lr=c.training_params.lr,
             min_lr=c.training_params.min_lr,
-            warmup_steps=(num_steps // 10),
+            warmup_steps=(num_steps // 20),
         )
 
     else:

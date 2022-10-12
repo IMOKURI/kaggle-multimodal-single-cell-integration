@@ -55,7 +55,7 @@ class PreprocessData:
                 continue
 
             if c.preprocess_params.cols != "all":
-                cols = [co for co in df.columns if co.startswith(c.preprocess_params.cols)]
+                cols = [co for co in df.columns if co.startswith(c.preprocess_params.cols + ":")]
                 df = df[cols]
 
             # if c.settings.debug:
@@ -240,14 +240,15 @@ class LoadData:
 
             # setattr(self, stem, df)
 
-        train_inputs = train_inputs.join(metadata["cell_type_num"])
-        test_inputs = test_inputs.join(metadata["cell_type_num"])
+        if c.global_params.method != "nn":
+            train_inputs = train_inputs.join(metadata["cell_type_num"])
+            test_inputs = test_inputs.join(metadata["cell_type_num"])
 
-        if c.global_params.data == "multi":
-            cell_type_preds = pd.read_pickle(
-                os.path.join(c.settings.dirs.output, "2022-10-07_02-11-02", "multi_inference.pickle")
-            )
-            test_inputs["cell_type_num"] = cell_type_preds.iloc[:, 0].map(use_first_element_as_int)
+            if c.global_params.data == "multi":
+                cell_type_preds = pd.read_pickle(
+                    os.path.join(c.settings.dirs.output, "2022-10-07_02-11-02", "multi_inference.pickle")
+                )
+                test_inputs["cell_type_num"] = cell_type_preds.iloc[:, 0].map(use_first_element_as_int)
 
         # RNA アノテーションによるカラム抽出
         rna_annot = pd.read_table(os.path.join(c.settings.dirs.input, "catrapid_rnas.txt"))

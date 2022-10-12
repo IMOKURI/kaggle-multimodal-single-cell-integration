@@ -235,15 +235,16 @@ global_params:
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
   methods:
+    # - neighbors
     # - pca
     # - scanpy
     # - ivis
     # - ivis_supervised
     # - faiss
   pca_n_components_cite: 240
-  pca_n_components_multi: 240
+  pca_n_components_multi: 100
   ivis_n_components_cite: 240
-  ivis_n_components_multi: 240
+  ivis_n_components_multi: 100
   cite_no_pca_cols:
     # processed_pseudogene
     # ENSG00000255909_PDCD5P1
@@ -560,7 +561,7 @@ cv_params:
   # time_name: ""
 
 training_params:
-  epoch: 1000
+  epoch: 20
   es_patience: 20
   batch_size: 2048
   gradient_acc_step: 1
@@ -569,7 +570,7 @@ training_params:
   #   - "f000" # f000_open_close
   criterion: PearsonCCLoss
   optimizer: Adam
-  scheduler: ReduceLROnPlateau
+  scheduler: CosineAnnealingWarmupRestarts
   lr: 2e-2
   min_lr: 1e-5
   weight_decay: 1e-5  # AdamW: 0.01, others: 0
@@ -595,7 +596,9 @@ inference_params:
   multi_pretrained:
     2022-10-07_06-25-40: 1  # tabnet 0.66899 by 3104 pearson loss
     2022-10-07_06-15-47: 1  # tabnet 0.66904 by 3105 pearson loss
-    2022-10-07_12-36-15: 1  # tabnet 0.66900 by 3105 pearson loss seed 1440
+    2022-10-07_12-36-15: 1  # tabnet 0.66900 by 3105 pearson loss, seed 1440
+    2022-10-11_03-22-34: 1  # tabnet 0.66918 by 3105 pearson loss, pretrain with train data
+    2022-10-11_03-26-46: 1  # tabnet 0.66902 by 3105 pearson loss, pretrain with all data
   pretrained:
     # multiome-with-keras-ensemble: 1
     # multimodal-single-cell-integration-ensembling: 1
