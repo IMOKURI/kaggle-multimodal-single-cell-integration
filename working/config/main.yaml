@@ -581,7 +581,6 @@ model_params:
   model: mlp_base
   model_name: mlp_base
   model_input: 0
-  model_output: 0
   # dropout: 0.0
 
 inference_params:

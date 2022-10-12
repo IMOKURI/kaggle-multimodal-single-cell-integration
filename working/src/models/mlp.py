@@ -12,7 +12,7 @@ class MlpBaseModel(nn.Module):
         super().__init__()
         self.amp = c.settings.amp
         self.model_input = c.model_params.model_input
-        self.model_output = c.model_params.model_output
+        self.model_output = c.settings.n_class
         diff = (self.model_output - self.model_input) // 3
 
         self.bn_1 = nn.BatchNorm1d(self.model_input)

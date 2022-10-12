@@ -19,6 +19,7 @@ from .get_score import pearson_cc_xgb_score
 from .models.image import ImageBaseModel
 from .models.mlp import MlpBaseModel
 from .models.node import DenseBlock, Lambda, entmax15, entmoid15
+from .models.one_d_cnn import OneDCNNModel, SmallOneDCNNModel
 
 log = logging.getLogger(__name__)
 
@@ -28,6 +29,10 @@ def make_model(c, device=None, model_path=None):
         model = ImageBaseModel(c)
     elif c.model_params.model == "mlp_base":
         model = MlpBaseModel(c)
+    elif c.model_params.model == "small_one_d_cnn":
+        model = SmallOneDCNNModel(c)
+    elif c.model_params.model == "one_d_cnn":
+        model = OneDCNNModel(c)
     elif c.model_params.model == "node":
         model = nn.Sequential(DenseBlock())
     else:

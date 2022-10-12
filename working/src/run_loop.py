@@ -599,9 +599,8 @@ def train_fold_nn(c, input, fold, device):
     # Model
     # ====================================================
     c.model_params.model_input = train_ds.ds.shape[1]
-    c.model_params.model_output = train_ds.labels.shape[1]
     c.settings.n_class = train_ds.labels.shape[1]
-    log.info(f"model input: {c.model_params.model_input}, model output: {c.model_params.model_output}")
+    log.info(f"model input: {c.model_params.model_input}, model output: {c.settings.n_class}")
 
     model = make_model(c, device)
 
