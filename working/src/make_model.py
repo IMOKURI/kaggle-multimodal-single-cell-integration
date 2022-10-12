@@ -29,14 +29,32 @@ def make_model(c, device=None, model_path=None):
         model = ImageBaseModel(c)
     elif c.model_params.model == "mlp_base":
         model = MlpBaseModel(c)
+    elif c.model_params.model == "mlp_base_tf":
+        model = MlpBaseModel(c, tf_initialization=True)
     elif c.model_params.model == "small_one_d_cnn":
         model = SmallOneDCNNModel(c)
     elif c.model_params.model == "one_d_cnn":
         model = OneDCNNModel(c)
     elif c.model_params.model == "node":
-        model = nn.Sequential(DenseBlock())
+        model = nn.Sequential(
+            DenseBlock(
+                c.model_params.model_input,
+                layer_dim=512,
+                num_layers=2,
+                tree_dim=c.settings.n_class + 1,
+                flatten_output=False,
+                depth=4,
+                choice_function=entmax15,
+                bin_function=entmoid15,
+            ),
+            Lambda(lambda x: x[..., :c.settings.n_class].mean(dim=-2))
+        )
     else:
         raise Exception("Invalid model.")
+
+    if c.settings.debug:
+        model_state_dict = model.state_dict()
+        log.debug(f"Model layers: {model_state_dict.keys()}")
 
     if c.settings.multi_gpu:
         model = nn.DataParallel(model)

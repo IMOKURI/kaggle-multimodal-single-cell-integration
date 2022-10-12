@@ -42,6 +42,8 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 - TabNet (0.90188, 687)
 - TabNet (0.90213, 687, x2, pre-training with training data)
 - TabNet (0.90216, 687, x2, pre-training with all data)
+- Simple MLP (0.90098, 686)
+- Simple MLP (0.90107, 686, tf-like initialization)
 
 #### Multiome
 
@@ -51,6 +53,8 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 - TabNet (0.66899, 3104)
 - TabNet (0.66904, 3105)
 - TabNet (0.66900, 3105, seed 1440)
+- TabNet (0.66918, 3105, pre-training with training data)
+- TabNet (0.66902, 3105, pre-training with all data)
 
 
 ### Postprocess
@@ -71,4 +75,4 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
 
 ## Score
 
-- CV: 0.83579 (cite: 0.90304, multi: 0.66955), LB: 0.811
+- CV: 0.83599 (cite: 0.90327, multi: 0.66967), LB: 0.811
