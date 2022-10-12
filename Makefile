@@ -26,7 +26,7 @@ postprocess: ## Postprocess.
 
 # --gpus '"device=0,1,2,3,6,7"'
 train: ## Run training.
-	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=7,6"' \
+	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=7,6,2,3"' \
 		-v ~/.netrc:/home/jupyter/.netrc \
 		-v $(shell pwd):/app -w /app/working \
 		--shm-size=256g \

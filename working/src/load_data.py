@@ -240,7 +240,7 @@ class LoadData:
 
             # setattr(self, stem, df)
 
-        if c.global_params.method != "nn":
+        if c.global_params.method != "nn" and c.preprocess_params.use_cell_type:
             train_inputs = train_inputs.join(metadata["cell_type_num"])
             test_inputs = test_inputs.join(metadata["cell_type_num"])
 

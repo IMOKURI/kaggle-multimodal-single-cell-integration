@@ -1,7 +1,6 @@
 # Open Problems - Multimodal Single-Cell Integration
 
-Predict how DNA, RNA & protein measurements co-vary in single cells
-
+![image](https://user-images.githubusercontent.com/1638500/195366837-9048d24c-86ca-42d6-99a8-414a019a5048.png)
 
 ## Solution
 
@@ -74,5 +73,7 @@ Predict how DNA, RNA & protein measurements co-vary in single cells
     - OOF と 推論結果をまとめて Standardize する
 
 ## Score
+
+CV weight -> cite:multi = 0.712:0.288
 
 - CV: 0.83599 (cite: 0.90327, multi: 0.66967), LB: 0.811

@@ -17,9 +17,14 @@ class MlpBaseModel(nn.Module):
 
         self.bn_1 = nn.BatchNorm1d(self.model_input)
 
-        self.fc_1 = nn.Linear(self.model_input, self.model_input + diff)
-        self.fc_2 = nn.Linear(self.model_input + diff, self.model_input + diff * 2)
-        self.fc_3 = nn.Linear(self.model_input + diff * 2, self.model_output)
+        if c.global_params.data == "multi":
+            self.fc_1 = nn.Linear(self.model_input, self.model_input)
+            self.fc_2 = nn.Linear(self.model_input, self.model_input + diff)
+            self.fc_3 = nn.Linear(self.model_input + diff, self.model_output)
+        else:
+            self.fc_1 = nn.Linear(self.model_input, self.model_input + diff)
+            self.fc_2 = nn.Linear(self.model_input + diff, self.model_input + diff * 2)
+            self.fc_3 = nn.Linear(self.model_input + diff * 2, self.model_output)
 
         if tf_initialization:
             self._tf_reinitialize()

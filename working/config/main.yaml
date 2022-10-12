@@ -228,9 +228,9 @@ params:
   data: ${global_params.data}
 
 global_params:
-  seed: 440
-  method: nn  # tabnet, adversarial_tabnet  # ** adversarial
-  data: cite  # cite, multi
+  seed: 3440
+  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
+  data: multi  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
@@ -552,6 +552,8 @@ preprocess_params:
     # - retained_intron  # 0.64
     # - antisense_RNA  # 0.44614
     # - lincRNA  # 0.58
+
+  use_cell_type: False
 
 cv_params:
   n_fold: 7

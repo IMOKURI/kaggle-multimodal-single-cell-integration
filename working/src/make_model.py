@@ -123,9 +123,9 @@ def make_pre_model_tabnet(c, c_index=None, c_features=None):
         n_shared=2,  # same above
         gamma=1.3,
         lambda_sparse=0,
-        cat_idxs=c_index,
-        cat_dims=c_features,
-        cat_emb_dim=[1],
+        # cat_idxs=c_index,
+        # cat_dims=c_features,
+        # cat_emb_dim=[1],
         optimizer_fn=torch.optim.Adam,
         optimizer_params=dict(lr=c.training_params.lr, weight_decay=c.training_params.weight_decay),
         scheduler_fn=torch.optim.lr_scheduler.ReduceLROnPlateau,
@@ -136,6 +136,11 @@ def make_pre_model_tabnet(c, c_index=None, c_features=None):
         seed=c.global_params.seed,
         verbose=5,
     )  # type: dict[str, Any]
+
+    if c.preprocess_params.use_cell_type:
+        tabnet_params["cat_idxs"] = c_index
+        tabnet_params["cat_dims"] = c_features
+        tabnet_params["cat_emb_dim"] = [1]
 
     clf = TabNetPretrainer(**tabnet_params)
     return clf
@@ -151,9 +156,9 @@ def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None
         n_shared=2,  # same above
         gamma=1.3,
         lambda_sparse=0,
-        cat_idxs=c_index,
-        cat_dims=c_features,
-        cat_emb_dim=[1],
+        # cat_idxs=c_index,
+        # cat_dims=c_features,
+        # cat_emb_dim=[1],
         optimizer_fn=torch.optim.Adam,
         optimizer_params=dict(lr=c.training_params.lr, weight_decay=c.training_params.weight_decay),
         scheduler_fn=torch.optim.lr_scheduler.ReduceLROnPlateau,
@@ -164,6 +169,11 @@ def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None
         seed=c.global_params.seed,
         verbose=5,
     )  # type: dict[str, Any]
+
+    if c.preprocess_params.use_cell_type:
+        tabnet_params["cat_idxs"] = c_index
+        tabnet_params["cat_dims"] = c_features
+        tabnet_params["cat_emb_dim"] = [1]
 
     if "adversarial" in c.global_params.method or "cell_type_" in c.global_params.method:
         clf = TabNetClassifier(**tabnet_params)
