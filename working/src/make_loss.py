@@ -1,5 +1,7 @@
 import logging
+from typing import Callable
 
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -146,6 +148,41 @@ class LabelSmoothBCEWithLogitsLoss(_WeightedLoss):
             loss = loss.mean()
 
         return loss
+
+
+def pearson_cc_loss(inputs, targets):
+    try:
+        assert inputs.shape == targets.shape
+    except AssertionError:
+        # log.debug(f"shape for inputs: {inputs.shape}, targets: {targets.shape}")
+        inputs = inputs.view(targets.shape)
+
+    pcc = F.cosine_similarity(inputs, targets)
+    return 1.0 - pcc
+
+
+# https://towardsdatascience.com/jax-vs-pytorch-automatic-differentiation-for-xgboost-10222e1404ec
+def torch_autodiff_grad_hess(
+    loss_function: Callable[[torch.Tensor, torch.Tensor], torch.Tensor], y_true: np.ndarray, y_pred: np.ndarray
+):
+    """
+    Perform automatic differentiation to get the
+    Gradient and the Hessian of `loss_function`.
+    """
+    y_true = torch.tensor(y_true, dtype=torch.float, requires_grad=False)
+    y_pred = torch.tensor(y_pred, dtype=torch.float, requires_grad=True)
+    loss_function_sum = lambda y_pred: loss_function(y_true, y_pred).sum()
+
+    loss_function_sum(y_pred).backward()
+    grad = y_pred.grad.reshape(-1)
+
+    # hess_matrix = torch.autograd.functional.hessian(loss_function_sum, y_pred, vectorize=True)
+    # hess = torch.diagonal(hess_matrix)
+    # log.debug(f"shape for grad: {grad.shape}, hess: {hess.shape}")
+
+    hess = np.ones(grad.shape)
+
+    return grad, hess
 
 
 # ====================================================

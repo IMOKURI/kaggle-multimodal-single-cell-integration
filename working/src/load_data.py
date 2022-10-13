@@ -94,6 +94,12 @@ class PreprocessData:
                 test = test.dropna(axis=1)
                 setattr(self, "test_cite_inputs", test)
 
+            # if c.preprocess_params.use_raw_data:
+            #     log.info(f"Use raw data.")
+            #     train = getattr(self, f"train_{c.global_params.data}_inputs_raw")
+            #     test = getattr(self, f"test_{c.global_params.data}_inputs_raw")
+            #     label = getattr(self, f"train_{c.global_params.data}_targets_raw")
+
             # 過学習のもとになりそうなカラムを削除
             # if c.global_params.data == "cite":
             #     train = train.drop(c.preprocess_params.cite_drop_cols, axis=1)
@@ -108,61 +114,79 @@ class PreprocessData:
             if c.global_params.data == "cite":
                 ...
                 # cite: target の column名を含む inputs の column を抽出する
-                cols = []
-                for target_col in self.train_cite_targets.columns:
-                    cols += [col for col in self.train_cite_inputs.columns if target_col in col]
-
-                # 明示的に温存する column を抽出する
-                if c.preprocess_params.cite_no_pca_cols != []:
-                    cols += c.preprocess_params.cite_no_pca_cols
-
-                cols = list(set(cols))
-
-                train = self.train_cite_inputs[cols]
-                test = self.test_cite_inputs[cols]
-
-                log.info(f"cite no pca data: {train.shape}")
-
-                train.to_pickle(
-                    os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_no_pca_inputs.pickle")
-                )
-                test.to_pickle(
-                    os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_no_pca_inputs.pickle")
-                )
+                # cols = []
+                # for target_col in self.train_cite_targets.columns:
+                #     cols += [col for col in self.train_cite_inputs.columns if target_col in col]
+                #
+                # # 明示的に温存する column を抽出する
+                # if c.preprocess_params.cite_no_pca_cols != []:
+                #     cols += c.preprocess_params.cite_no_pca_cols
+                #
+                # cols = list(set(cols))
+                #
+                # train = self.train_cite_inputs[cols]
+                # test = self.test_cite_inputs[cols]
+                #
+                # log.info(f"cite no pca data: {train.shape}")
+                #
+                # train.to_pickle(
+                #     os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_no_pca_inputs.pickle")
+                # )
+                # test.to_pickle(
+                #     os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_no_pca_inputs.pickle")
+                # )
 
                 # cite: RNA Type ごとの平均を特徴量とする
-                type_cols = [col.split("_")[1] for col in self.train_cite_inputs.columns]
-                initials = [col[:3] if col.startswith("AC") else col[:2] for col in type_cols]  # AC だけ数が多いので、もう一文字
+                # type_cols = [col.split("_")[1] for col in self.train_cite_inputs.columns]
+                # initials = [col[:3] if col.startswith("AC") else col[:2] for col in type_cols]  # AC だけ数が多いので、もう一文字
+                #
+                # train = self.train_cite_inputs
+                # test = self.test_cite_inputs
+                #
+                # train.columns = initials
+                # test.columns = initials
+                # train.columns.name = "gene_id"
+                # test.columns.name = "gene_id"
+                #
+                # train = train.T.groupby("gene_id").mean().T
+                # test = test.T.groupby("gene_id").mean().T
+                #
+                # train.columns = [f"{col}_mean" for col in train.columns]
+                # test.columns = [f"{col}_mean" for col in test.columns]
+                #
+                # train = train.dropna(axis=1)
+                # test = test.dropna(axis=1)
+                #
+                # log.info(f"cite sum by RNA type: {train.shape}")
+                #
+                # train.to_pickle(
+                #     os.path.join(
+                #         c.settings.dirs.preprocess, f"train_{c.global_params.data}_mean_by_rna_type_inputs.pickle"
+                #     )
+                # )
+                # test.to_pickle(
+                #     os.path.join(
+                #         c.settings.dirs.preprocess, f"test_{c.global_params.data}_mean_by_rna_type_inputs.pickle"
+                #     )
+                # )
 
-                train = self.train_cite_inputs
-                test = self.test_cite_inputs
+            elif c.global_params.data == "multi":
+                ...
 
-                train.columns = initials
-                test.columns = initials
-                train.columns.name = "gene_id"
-                test.columns.name = "gene_id"
-
-                train = train.T.groupby("gene_id").mean().T
-                test = test.T.groupby("gene_id").mean().T
-
-                train.columns = [f"{col}_mean" for col in train.columns]
-                test.columns = [f"{col}_mean" for col in test.columns]
-
-                train = train.dropna(axis=1)
-                test = test.dropna(axis=1)
-
-                log.info(f"cite sum by RNA type: {train.shape}")
-
-                train.to_pickle(
-                    os.path.join(
-                        c.settings.dirs.preprocess, f"train_{c.global_params.data}_mean_by_rna_type_inputs.pickle"
-                    )
-                )
-                test.to_pickle(
-                    os.path.join(
-                        c.settings.dirs.preprocess, f"test_{c.global_params.data}_mean_by_rna_type_inputs.pickle"
-                    )
-                )
+                # input_ids = []
+                # for row in self.multiome_target2input["input_id"]:
+                #     input_ids += eval(row)
+                #
+                # train = train.loc[:, input_ids]
+                # test = test.loc[:, input_ids]
+                # log.info(f"No PCA columns: {train.shape[1]}")
+                #
+                # train.to_pickle(
+                #     os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_no_pca_inputs.pickle")
+                # )
+                # test.to_pickle(
+                #     os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_no_pca_inputs.pickle")
+                # )
 
 
 class LoadData:

@@ -2,6 +2,7 @@ import io
 import logging
 import os
 import zipfile
+from functools import partial
 from typing import Any
 
 import joblib
@@ -20,6 +21,7 @@ from .models.image import ImageBaseModel
 from .models.mlp import MlpBaseModel
 from .models.node import DenseBlock, Lambda, entmax15, entmoid15
 from .models.one_d_cnn import OneDCNNModel, SmallOneDCNNModel
+from .make_loss import pearson_cc_loss, torch_autodiff_grad_hess
 
 log = logging.getLogger(__name__)
 
@@ -47,7 +49,7 @@ def make_model(c, device=None, model_path=None):
                 choice_function=entmax15,
                 bin_function=entmoid15,
             ),
-            Lambda(lambda x: x[..., :c.settings.n_class].mean(dim=-2))
+            Lambda(lambda x: x[..., : c.settings.n_class].mean(dim=-2)),
         )
     else:
         raise Exception("Invalid model.")
@@ -88,11 +90,13 @@ def make_model_ridge(c, ds=None, model_path=None):
 
 def make_model_xgboost(c, ds=None, model_path=None):
 
+    custom_objective = partial(torch_autodiff_grad_hess, pearson_cc_loss)
+
     xgb_params = dict(
         n_estimators=1000,
         early_stopping_rounds=20,
         # learning_rate=0.05,
-        objective="reg:squarederror",  # "binary:logistic", "reg:squarederror",
+        objective=custom_objective,  # "binary:logistic", "reg:squarederror",
         eval_metric=pearson_cc_xgb_score,  # "logloss", "rmse",
         random_state=c.global_params.seed,
         tree_method="gpu_hist",

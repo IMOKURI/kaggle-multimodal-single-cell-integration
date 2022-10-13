@@ -44,14 +44,14 @@ def preprocess_train_test(
     df = pd.concat([train_df, test_df])
     log.info(f"Shape before preprocess: {df.shape}")
 
-    if "neighbors" in c.preprocess_params.methods:
-        method += "neighbors_"
-        neighbor_df = pd.DataFrame(index=df.index)
-        for n_col in range(len(df.columns) - 2):
-            neighbor_df = pd.concat([neighbor_df, df.iloc[:, n_col : n_col + 3].mean(axis=1)], axis=1)
-
-        neighbor_df.columns = [f"neighbor_{n}" for n in range(len(df.columns) - 2)]
-        df = neighbor_df
+    # if "neighbors" in c.preprocess_params.methods:
+    #     method += "neighbors_"
+    #     neighbor_df = pd.DataFrame(index=df.index)
+    #     for n_col in range(len(df.columns) - 2):
+    #         neighbor_df = pd.concat([neighbor_df, df.iloc[:, n_col : n_col + 3].mean(axis=1)], axis=1)
+    #
+    #     neighbor_df.columns = [f"neighbor_{n}" for n in range(len(df.columns) - 2)]
+    #     df = neighbor_df
 
     # 列の中に1つの値しかない列は削除
     df = df.loc[:, df.nunique() != 1]
@@ -148,13 +148,13 @@ def preprocess_train_test(
     train_df.to_pickle(
         os.path.join(
             c.settings.dirs.preprocess,
-            f"train_{c.global_params.data}_{c.preprocess_params.cols}_inputs_{method}_{preprocessor.n_components}.pickle",
+            f"train_{c.global_params.data}_{c.preprocess_params.cols}_inputs_{method}_{preprocessor.n_components}{'_raw' if c.preprocess_params.use_raw_data else ''}.pickle",
         )
     )
     test_df.to_pickle(
         os.path.join(
             c.settings.dirs.preprocess,
-            f"test_{c.global_params.data}_{c.preprocess_params.cols}_inputs_{method}_{preprocessor.n_components}.pickle",
+            f"test_{c.global_params.data}_{c.preprocess_params.cols}_inputs_{method}_{preprocessor.n_components}{'_raw' if c.preprocess_params.use_raw_data else ''}.pickle",
         )
     )
 
