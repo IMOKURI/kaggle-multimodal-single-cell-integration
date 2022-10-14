@@ -140,3 +140,5 @@ postprocess
 notebook/inference.ipynb
 submission.csv
 *.zip
+
+catboost_info

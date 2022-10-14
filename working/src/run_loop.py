@@ -24,7 +24,14 @@ from .get_score import PearsonCCTabNetScore, get_score  # , optimize_function
 from .make_dataset import make_dataloader, make_dataset, make_dataset_nn
 from .make_fold import train_test_split
 from .make_loss import PearsonCCLoss, make_criterion, make_optimizer, make_scheduler
-from .make_model import make_model, make_model_ridge, make_model_tabnet, make_model_xgboost, make_pre_model_tabnet
+from .make_model import (
+    make_model,
+    make_model_catboost,
+    make_model_ridge,
+    make_model_tabnet,
+    make_model_xgboost,
+    make_pre_model_tabnet,
+)
 from .run_epoch import inference_epoch, train_epoch, validate_epoch
 from .utils import AverageMeter, timeSince
 
@@ -224,6 +231,74 @@ def train_fold_ridge(c, input, fold):
     inference_df = pd.DataFrame(inference_preds, columns=valid_label_df.columns, index=inference_df.index)
 
     return preds_df, valid_label_df, model.score(valid_ds, valid_labels), inference_df
+    # return valid_folds, model.best_score
+
+
+def train_fold_catboost(c, input, fold):
+    # df = input.train
+    df = getattr(input, f"train_{c.global_params.data}_inputs")
+    label_df = getattr(input, f"train_{c.global_params.data}_targets")
+    inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop(
+        ["fold", c.settings.label_name, c.cv_params.group_name], axis=1
+    )
+
+    train_df, valid_df = train_test_split(c, df, fold)
+    train_label_df, valid_label_df = train_test_split(c, label_df, fold)
+    # train_store = Store.training(c, train_df, "train", fold=fold)
+    # valid_store = Store.training(c, valid_df, "valid", fold=fold)
+    # train_folds = make_feature(
+    #     train_df,
+    #     train_store,
+    #     feature_list=c.training_params.feature_set,
+    #     feature_store=c.settings.dirs.feature,
+    #     with_target=True,
+    #     fallback_to_none=False,
+    # )
+    # valid_folds = make_feature(
+    #     valid_df,
+    #     valid_store,
+    #     feature_list=c.training_params.feature_set,
+    #     feature_store=c.settings.dirs.feature,
+    #     with_target=True,
+    #     fallback_to_none=False,
+    # )
+
+    # train_ds, train_labels, valid_ds, valid_labels = make_dataset(c, train_folds, valid_folds)
+    train_ds, train_labels = make_dataset(c, train_df, train_label_df)
+    valid_ds, valid_labels = make_dataset(c, valid_df, valid_label_df)
+
+    model = make_model_catboost(c, train_ds)
+
+    model.fit(
+        train_ds,
+        train_labels,
+        eval_set=[(valid_ds, valid_labels)],
+        verbose=10,
+    )
+
+    model_dir = os.path.join(HydraConfig.get().run.dir, f"fold{fold}")
+    os.makedirs(model_dir, exist_ok=True)
+    model.save_model(f"{model_dir}/catboost.pkl")
+
+    valid_preds = model.predict(valid_ds)
+    inference_preds = model.predict(inference_df.to_numpy())
+    # valid_folds["preds"] = model.predict(valid_ds)
+    # valid_folds["base_preds"] = model.predict(valid_ds)
+
+    # minimize_result = minimize(
+    #     optimize_function(c, valid_folds[c.settings.label_name].to_numpy(), valid_folds["base_preds"].to_numpy()),
+    #     np.array([0.5]),
+    #     method="Nelder-Mead",
+    # )
+    # log.info(f"optimize result. -> \n{minimize_result}")
+    # wandb.log({"border": minimize_result["x"].item(), "fold": fold})
+    # valid_folds["preds"] = (valid_folds["base_preds"] > minimize_result["x"].item()).astype(np.int8)
+
+    valid_label_df = valid_label_df.drop("fold", axis=1)
+    preds_df = pd.DataFrame(valid_preds, columns=valid_label_df.columns, index=valid_label_df.index)
+    inference_df = pd.DataFrame(inference_preds, columns=valid_label_df.columns, index=inference_df.index)
+
+    return preds_df, valid_label_df, model.best_score, inference_df
     # return valid_folds, model.best_score
 
 

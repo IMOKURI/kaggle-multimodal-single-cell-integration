@@ -10,6 +10,7 @@ import torch
 import torch.cuda.amp as amp
 import torch.nn as nn
 import xgboost as xgb
+from catboost import CatBoostClassifier, CatBoostRegressor
 from pytorch_tabnet.pretraining import TabNetPretrainer
 from pytorch_tabnet.tab_model import TabNetClassifier, TabNetRegressor
 from sklearn.gaussian_process.kernels import RBF
@@ -86,6 +87,34 @@ def make_model_ridge(c, ds=None, model_path=None):
 
     # if model_path is not None:
     #     clf.load_model(model_path)
+
+    return clf
+
+
+def make_model_catboost(c, ds=None, model_path=None):
+
+    cat_params = dict(
+        iterations=10000,
+        early_stopping_rounds=20,
+        # learning_rate=0.05,
+        objective="MultiRMSE",
+        eval_metric="MultiRMSE",
+        random_state=c.global_params.seed,
+        # task_type="GPU",  # Catboost does not support multitarget on GPU yet
+    )  # type: dict[str, Any]
+
+    # if ds is not None:
+    #     num_data = len(ds)
+    #     num_steps = num_data // (c.training_params.batch_size * c.training_params.gradient_acc_step) * c.training_params.epoch + 5
+    #
+    #     cat_params["scheduler_params"] = dict(T_0=num_steps, T_mult=1, eta_min=c.training_params.min_lr, last_epoch=-1)
+    #     cat_params["scheduler_fn"] = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts
+
+    clf = CatBoostRegressor(**cat_params)
+    # clf = CatBoostClassifier(**cat_params)
+
+    if model_path is not None:
+        clf.load_model(model_path)
 
     return clf
 
