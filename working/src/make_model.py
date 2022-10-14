@@ -17,11 +17,14 @@ from sklearn.kernel_ridge import KernelRidge
 from sklearn.linear_model import Ridge
 
 from .get_score import pearson_cc_xgb_score
+from .make_loss import pearson_cc_loss, torch_autodiff_grad_hess
 from .models.image import ImageBaseModel
 from .models.mlp import MlpBaseModel
 from .models.node import DenseBlock, Lambda, entmax15, entmoid15
 from .models.one_d_cnn import OneDCNNModel, SmallOneDCNNModel
-from .make_loss import pearson_cc_loss, torch_autodiff_grad_hess
+
+# import jax
+
 
 log = logging.getLogger(__name__)
 
@@ -91,11 +94,12 @@ def make_model_ridge(c, ds=None, model_path=None):
 def make_model_xgboost(c, ds=None, model_path=None):
 
     custom_objective = partial(torch_autodiff_grad_hess, pearson_cc_loss)
+    # jax_custom_objective = jax.jit(partial(jax_autodiff_grad_hess, jax_pearson_cc_loss))
 
     xgb_params = dict(
-        n_estimators=1000,
+        n_estimators=10000,
         early_stopping_rounds=20,
-        # learning_rate=0.05,
+        learning_rate=0.2,
         objective=custom_objective,  # "binary:logistic", "reg:squarederror",
         eval_metric=pearson_cc_xgb_score,  # "logloss", "rmse",
         random_state=c.global_params.seed,
