@@ -94,11 +94,11 @@ class PreprocessData:
                 test = test.dropna(axis=1)
                 setattr(self, "test_cite_inputs", test)
 
-            # if c.preprocess_params.use_raw_data:
-            #     log.info(f"Use raw data.")
-            #     train = getattr(self, f"train_{c.global_params.data}_inputs_raw")
-            #     test = getattr(self, f"test_{c.global_params.data}_inputs_raw")
-            #     label = getattr(self, f"train_{c.global_params.data}_targets_raw")
+            if c.preprocess_params.use_raw_data:
+                log.info(f"Use raw data.")
+                train = getattr(self, f"train_{c.global_params.data}_inputs_raw")
+                test = getattr(self, f"test_{c.global_params.data}_inputs_raw")
+                label = getattr(self, f"train_{c.global_params.data}_targets_raw")
 
             # 過学習のもとになりそうなカラムを削除
             # if c.global_params.data == "cite":

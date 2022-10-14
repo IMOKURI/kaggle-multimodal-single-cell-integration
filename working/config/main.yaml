@@ -49,8 +49,8 @@ settings:
 
     # - test_multi_inputs.h5
     # - train_multi_inputs.h5
-    # - train_multi_targets.h5
-    #
+    - train_multi_targets.h5
+
     # - test_multi_inputs_raw.h5
     # - train_multi_inputs_raw.h5
     # - train_multi_targets_raw.h5
@@ -172,6 +172,7 @@ settings:
     - train_multi_chrY_inputs_pca_100.pickle
 
     - train_multi_all_inputs_ivis_240.pickle
+    - train_multi_nopca_inputs_ivis_240.pickle
 
     - train_multi_targets.pickle
 
@@ -203,6 +204,7 @@ settings:
     - test_multi_chrY_inputs_pca_100.pickle
 
     - test_multi_all_inputs_ivis_240.pickle
+    - test_multi_nopca_inputs_ivis_240.pickle
 
     - metadata.pickle
 
@@ -243,7 +245,7 @@ params:
 
 global_params:
   seed: 440
-  method: catboost  # tabnet, adversarial_tabnet  # ** adversarial
+  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
   data: cite  # cite, multi
 
 preprocess_params:
@@ -258,7 +260,7 @@ preprocess_params:
   pca_n_components_cite: 240
   pca_n_components_multi: 100
   ivis_n_components_cite: 240
-  ivis_n_components_multi: 100
+  ivis_n_components_multi: 240
   cite_no_pca_cols:
     # processed_pseudogene
     # ENSG00000255909_PDCD5P1

@@ -16,6 +16,7 @@ from pytorch_tabnet.tab_model import TabNetClassifier, TabNetRegressor
 from sklearn.gaussian_process.kernels import RBF
 from sklearn.kernel_ridge import KernelRidge
 from sklearn.linear_model import Ridge
+from sklearn.multioutput import MultiOutputRegressor
 
 from .get_score import pearson_cc_xgb_score
 from .make_loss import pearson_cc_loss, torch_autodiff_grad_hess
@@ -97,10 +98,10 @@ def make_model_catboost(c, ds=None, model_path=None):
         iterations=10000,
         early_stopping_rounds=20,
         # learning_rate=0.05,
-        objective="MultiRMSE",
-        eval_metric="MultiRMSE",
+        objective="RMSE",
+        eval_metric="RMSE",
         random_state=c.global_params.seed,
-        # task_type="GPU",  # Catboost does not support multitarget on GPU yet
+        task_type="GPU",  # Catboost does not support multitarget on GPU yet
     )  # type: dict[str, Any]
 
     # if ds is not None:
@@ -110,7 +111,7 @@ def make_model_catboost(c, ds=None, model_path=None):
     #     cat_params["scheduler_params"] = dict(T_0=num_steps, T_mult=1, eta_min=c.training_params.min_lr, last_epoch=-1)
     #     cat_params["scheduler_fn"] = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts
 
-    clf = CatBoostRegressor(**cat_params)
+    clf = MultiOutputRegressor(CatBoostRegressor(**cat_params), n_jobs=-1)
     # clf = CatBoostClassifier(**cat_params)
 
     if model_path is not None:
