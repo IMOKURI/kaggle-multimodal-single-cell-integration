@@ -217,11 +217,10 @@ def torch_autodiff_grad_hess(
 #     loss_function_sum = lambda y_pred: loss_function(y_true, y_pred).sum()
 #
 #     grad_fn = jax.grad(loss_function_sum)
-#     grad = grad_fn(y_pred)
-#     grad = grad.reshape(-1)
+#     grad = grad_fn(y_pred).reshape(-1)
 #
 #     # hess = hvp(loss_function_sum, (y_pred,), (jnp.ones_like(y_pred),))
-#     hess = np.ones(grad.shape)
+#     hess = jnp.ones_like(grad)
 #
 #     return grad, hess
 

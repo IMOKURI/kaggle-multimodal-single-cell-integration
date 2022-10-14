@@ -25,7 +25,6 @@ from .models.one_d_cnn import OneDCNNModel, SmallOneDCNNModel
 
 # import jax
 
-
 log = logging.getLogger(__name__)
 
 
@@ -99,7 +98,7 @@ def make_model_xgboost(c, ds=None, model_path=None):
     xgb_params = dict(
         n_estimators=10000,
         early_stopping_rounds=20,
-        learning_rate=0.2,
+        # learning_rate=0.05,
         objective=custom_objective,  # "binary:logistic", "reg:squarederror",
         eval_metric=pearson_cc_xgb_score,  # "logloss", "rmse",
         random_state=c.global_params.seed,
