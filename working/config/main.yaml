@@ -129,6 +129,7 @@ settings:
     # - train_cite_all_inputs_ivis_supervised_240.pickle
     # - train_cite_all_inputs_scanpy_240.pickle
     - train_cite_all_inputs_scanpy_0.pickle
+    # - train_cite_all_inputs_scanpy_240_raw.pickle
 
     - train_cite_targets.pickle
 
@@ -143,6 +144,7 @@ settings:
     # - test_cite_all_inputs_ivis_supervised_240.pickle
     # - test_cite_all_inputs_scanpy_240.pickle
     - test_cite_all_inputs_scanpy_0.pickle
+    # - test_cite_all_inputs_scanpy_240_raw.pickle
 
     - train_multi_GL_inputs__100.pickle
     - train_multi_KI_inputs__100.pickle
@@ -254,7 +256,7 @@ preprocess_params:
     # - neighbors
     # - pca
     # - scanpy
-    - ivis
+    # - ivis
     # - ivis_supervised
     # - faiss
   pca_n_components_cite: 240
