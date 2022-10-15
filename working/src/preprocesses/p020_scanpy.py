@@ -32,28 +32,26 @@ class CustomScanPy(BaseTransformer):
 
         sc.pp.filter_genes(adata, min_cells=300)
 
-        # adata.var["mt"] = adata.var_names.str.contains("_MT-")
-        # adata.var["mt_a"] = adata.var_names.str.contains("_MT-A")
-        # adata.var["mt_c"] = adata.var_names.str.contains("_MT-C")
-        # adata.var["mt_n"] = adata.var_names.str.contains("_MT-N")
-        # adata.var["mt_r"] = adata.var_names.str.contains("_MT-R")
-        # adata.var["mt_t"] = adata.var_names.str.contains("_MT-T")
+        adata.var["mt"] = adata.var_names.str.contains("_MT-")
+        adata.var["mt_a"] = adata.var_names.str.contains("_MT-A")
+        adata.var["mt_c"] = adata.var_names.str.contains("_MT-C")
+        adata.var["mt_n"] = adata.var_names.str.contains("_MT-N")
+        adata.var["mt_r"] = adata.var_names.str.contains("_MT-R")
+        adata.var["mt_t"] = adata.var_names.str.contains("_MT-T")
 
-        # sc.pp.calculate_qc_metrics(
-        #     adata,
-        #     qc_vars=["mt", "mt_a", "mt_c", "mt_n", "mt_r", "mt_t"],
-        #     percent_top=None,
-        #     log1p=False,
-        #     inplace=True,
-        # )
+        sc.pp.calculate_qc_metrics(
+            adata,
+            qc_vars=["mt", "mt_a", "mt_c", "mt_n", "mt_r", "mt_t"],
+            percent_top=None,
+            log1p=False,
+            inplace=True,
+        )
 
         sc.pp.normalize_total(adata, target_sum=1e4)
         sc.pp.log1p(adata)
 
         sc.pp.highly_variable_genes(adata)
         adata = adata[:, adata.var["highly_variable"]]
-
-        # sc.pp.scale(train_cite_inputs_adata, max_value=10)
 
         sc.pp.pca(adata, n_comps=self.n_components, random_state=self.seed)
         pca_df = pd.DataFrame(adata.obsm["X_pca"], index=adata.obs_names, columns=self.columns)

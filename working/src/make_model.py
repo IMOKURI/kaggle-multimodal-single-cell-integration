@@ -7,7 +7,6 @@ from typing import Any
 
 import joblib
 import torch
-import torch.cuda.amp as amp
 import torch.nn as nn
 import xgboost as xgb
 from catboost import CatBoostClassifier, CatBoostRegressor
@@ -20,8 +19,9 @@ from sklearn.multioutput import MultiOutputRegressor
 
 from .get_score import pearson_cc_xgb_score
 from .make_loss import pearson_cc_loss, torch_autodiff_grad_hess
+from .models.auto_encoder import DenoisingAutoEncoder
 from .models.image import ImageBaseModel
-from .models.mlp import MlpBaseModel
+from .models.mlp import MlpBaseModel, MlpDropoutModel, MlpResnetModel
 from .models.node import DenseBlock, Lambda, entmax15, entmoid15
 from .models.one_d_cnn import OneDCNNModel, SmallOneDCNNModel
 
@@ -37,6 +37,16 @@ def make_model(c, device=None, model_path=None):
         model = MlpBaseModel(c)
     elif c.model_params.model == "mlp_base_tf":
         model = MlpBaseModel(c, tf_initialization=True)
+    elif c.model_params.model == "mlp_dropout":
+        model = MlpDropoutModel(c)
+    elif c.model_params.model == "mlp_dropout_tf":
+        model = MlpDropoutModel(c, tf_initialization=True)
+    elif c.model_params.model == "mlp_resnet":
+        model = MlpResnetModel(c)
+    elif c.model_params.model == "mlp_resnet_tf":
+        model = MlpResnetModel(c, tf_initialization=True)
+    elif c.model_params.model == "denoising_auto_encoder":
+        model = DenoisingAutoEncoder(c)
     elif c.model_params.model == "small_one_d_cnn":
         model = SmallOneDCNNModel(c)
     elif c.model_params.model == "one_d_cnn":
