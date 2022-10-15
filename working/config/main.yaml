@@ -247,7 +247,7 @@ params:
 
 global_params:
   # seed: 440
-  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
+  method: nn  # tabnet, adversarial_tabnet  # ** adversarial
   data: cite  # cite, multi
 
 preprocess_params:
@@ -599,8 +599,8 @@ training_params:
 
 model_params:
   dataset: table_base
-  model: mlp_dropout_tf
-  model_name: mlp_dropout_tf
+  model: one_d_cnn
+  model_name: one_d_cnn
   model_input: 0
   # dropout: 0.0
 
@@ -619,6 +619,8 @@ inference_params:
     2022-10-15_01-16-43: 1  # MLP_tf dropout 0.90198 by 686, seed 1440
     2022-10-15_01-34-34: 1  # MLP resnet 0.90139 by 686
     2022-10-15_01-44-29: 1  # MLP_tf resnet 0.90147 by 686, seed 1440
+    2022-10-15_12-39-39: 1  # 1D CNN 0.90189 by 686
+    2022-10-15_12-50-55: 1  # 1D CNN 0.90175 by 686, seed 8269
   multi_pretrained:
     2022-10-07_06-25-40: 1  # tabnet 0.66899 by 3104
     2022-10-07_06-15-47: 1  # tabnet 0.66904 by 3105
@@ -628,6 +630,7 @@ inference_params:
     2022-10-14_09-27-14: 1  # tabnet 0.66902 by 3345, pretrain with all data
     2022-10-14_12-20-29: 1  # tabnet 0.66903 by 3345, pretrain with all data, seed 2440
     2022-10-15_02-21-08: 1  # MLP dropout 0.66791 by 3344
+    2022-10-15_04-06-30: 1  # MLP_tf dropout 0.66786 by 3344
   pretrained:
     # multiome-with-keras-ensemble: 1
     # multimodal-single-cell-integration-ensembling: 1

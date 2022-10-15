@@ -23,7 +23,7 @@ from .models.auto_encoder import DenoisingAutoEncoder
 from .models.image import ImageBaseModel
 from .models.mlp import MlpBaseModel, MlpDropoutModel, MlpResnetModel
 from .models.node import DenseBlock, Lambda, entmax15, entmoid15
-from .models.one_d_cnn import OneDCNNModel, SmallOneDCNNModel
+from .models.one_d_cnn import OneDCNNModel
 
 # import jax
 
@@ -47,8 +47,6 @@ def make_model(c, device=None, model_path=None):
         model = MlpResnetModel(c, tf_initialization=True)
     elif c.model_params.model == "denoising_auto_encoder":
         model = DenoisingAutoEncoder(c)
-    elif c.model_params.model == "small_one_d_cnn":
-        model = SmallOneDCNNModel(c)
     elif c.model_params.model == "one_d_cnn":
         model = OneDCNNModel(c)
     elif c.model_params.model == "node":
