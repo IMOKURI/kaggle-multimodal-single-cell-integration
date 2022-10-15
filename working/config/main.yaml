@@ -599,8 +599,8 @@ training_params:
 
 model_params:
   dataset: table_base
-  model: one_d_cnn
-  model_name: one_d_cnn
+  model: one_d_cnn_tf
+  model_name: one_d_cnn_tf
   model_input: 0
   # dropout: 0.0
 

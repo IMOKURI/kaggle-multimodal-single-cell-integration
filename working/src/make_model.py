@@ -49,6 +49,8 @@ def make_model(c, device=None, model_path=None):
         model = DenoisingAutoEncoder(c)
     elif c.model_params.model == "one_d_cnn":
         model = OneDCNNModel(c)
+    elif c.model_params.model == "one_d_cnn_tf":
+        model = OneDCNNModel(c, tf_initialization=True)
     elif c.model_params.model == "node":
         model = nn.Sequential(
             DenseBlock(

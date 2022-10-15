@@ -49,6 +49,8 @@
 - MLP with Dropout (0.90198, 686, tf-like initialization)
 - ResNet (0.90139, 686)
 - ResNet (0.90147, 686, tf-like initialization)
+- 1D CNN (0.90189, 686)
+- 1D CNN (0.90175, 686)
 
 #### Multiome
 
@@ -62,6 +64,8 @@
 - TabNet (0.66902, 3105, pre-training with all data)
 - TabNet (0.66902, 3345, pre-training with all data)
 - TabNet (0.66903, 3345, pre-training with all data, seed 2440)
+- MLP with Dropout (0.66791, 3344)
+- MLP with Dropout (0.66786, 3344, tf-like initialization)
 
 
 ### Postprocess
@@ -84,4 +88,4 @@
 
 CV weight -> cite:multi = 0.712:0.288
 
-- CV: 0.83626 (cite: 0.90363, multi: 0.66971), LB: 0.811
+- CV: 0.83634 (cite: 0.90370, multi: 0.66982), LB: 0.811
