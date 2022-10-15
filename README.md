@@ -18,6 +18,8 @@
 
 - 列名の接頭文字が同じグルーごとに PCA で およそ 各 100 次元に削減
     - さらに [ivis](https://bering-ivis.readthedocs.io/en/latest/index.html) の教師なし学習で 240 次元の特徴量を生成
+- [targets (ENSG番号) が含まれる inputsの配列名を抽出](https://github.com/vfr800hu/Multimodal_Single-Cell_Integration/blob/main/preprocess/gff3/MULTIOME%E3%82%BF%E3%83%BC%E3%82%B2%E3%83%83%E3%83%88%E9%81%BA%E4%BC%9D%E5%AD%90%E3%81%8C%E5%AD%98%E5%9C%A8%E3%81%99%E3%82%8B%E9%85%8D%E5%88%97.ipynb)
+    - さらに [ivis](https://bering-ivis.readthedocs.io/en/latest/index.html) の教師なし学習で 240 次元の特徴量を生成
 - metadata の cell type (1次元)
     - test data は 事前学習したモデルでの推論結果を使用
 
@@ -43,6 +45,10 @@
 - TabNet (0.90216, 687, x2, pre-training with all data)
 - Simple MLP (0.90098, 686)
 - Simple MLP (0.90107, 686, tf-like initialization)
+- MLP with Dropout (0.90199, 686)
+- MLP with Dropout (0.90198, 686, tf-like initialization)
+- ResNet (0.90139, 686)
+- ResNet (0.90147, 686, tf-like initialization)
 
 #### Multiome
 
@@ -54,6 +60,8 @@
 - TabNet (0.66900, 3105, seed 1440)
 - TabNet (0.66918, 3105, pre-training with training data)
 - TabNet (0.66902, 3105, pre-training with all data)
+- TabNet (0.66902, 3345, pre-training with all data)
+- TabNet (0.66903, 3345, pre-training with all data, seed 2440)
 
 
 ### Postprocess
@@ -76,4 +84,4 @@
 
 CV weight -> cite:multi = 0.712:0.288
 
-- CV: 0.83599 (cite: 0.90327, multi: 0.66967), LB: 0.811
+- CV: 0.83626 (cite: 0.90363, multi: 0.66971), LB: 0.811

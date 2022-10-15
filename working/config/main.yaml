@@ -248,7 +248,7 @@ params:
 global_params:
   seed: 440
   method: nn  # tabnet, adversarial_tabnet  # ** adversarial
-  data: cite  # cite, multi
+  data: multi  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
@@ -589,7 +589,7 @@ training_params:
   max_grad_norm: 1000
   # feature_set:
   #   - "f000" # f000_open_close
-  criterion: PearsonCCLoss
+  criterion: PearsonCCLoss  # PearsonCCLoss, RMSELoss
   optimizer: Adam
   scheduler: CosineAnnealingWarmupRestarts
   lr: 2e-2
@@ -599,8 +599,8 @@ training_params:
 
 model_params:
   dataset: table_base
-  model: mlp_resnet_tf
-  model_name: mlp_resnet_tf
+  model: mlp_dropout
+  model_name: mlp_dropout
   model_input: 0
   # dropout: 0.0
 
