@@ -242,13 +242,13 @@ settings:
   scoring: pearson  # pearson, accuracy  # ** adversarial
 
 params:
-  seed: ${global_params.seed}
+  # seed: ${global_params.seed}
   data: ${global_params.data}
 
 global_params:
-  seed: 440
-  method: nn  # tabnet, adversarial_tabnet  # ** adversarial
-  data: multi  # cite, multi
+  # seed: 440
+  method: tabnet  # tabnet, adversarial_tabnet  # ** adversarial
+  data: cite  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
@@ -599,8 +599,8 @@ training_params:
 
 model_params:
   dataset: table_base
-  model: mlp_dropout
-  model_name: mlp_dropout
+  model: mlp_dropout_tf
+  model_name: mlp_dropout_tf
   model_input: 0
   # dropout: 0.0
 
@@ -627,6 +627,7 @@ inference_params:
     2022-10-11_03-26-46: 1  # tabnet 0.66902 by 3105, pretrain with all data
     2022-10-14_09-27-14: 1  # tabnet 0.66902 by 3345, pretrain with all data
     2022-10-14_12-20-29: 1  # tabnet 0.66903 by 3345, pretrain with all data, seed 2440
+    2022-10-15_02-21-08: 1  # MLP dropout 0.66791 by 3344
   pretrained:
     # multiome-with-keras-ensemble: 1
     # multimodal-single-cell-integration-ensembling: 1
