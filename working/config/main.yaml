@@ -591,7 +591,7 @@ training_params:
   #   - "f000" # f000_open_close
   criterion: PearsonCCLoss  # PearsonCCLoss, RMSELoss
   optimizer: Adam
-  scheduler: CosineAnnealingWarmupRestarts
+  scheduler: CosineAnnealingWarmRestarts
   lr: 2e-2
   min_lr: 1e-5
   weight_decay: 1e-5  # AdamW: 0.01, others: 0
@@ -599,9 +599,10 @@ training_params:
 
 model_params:
   dataset: table_base
-  model: one_d_cnn_tf
-  model_name: one_d_cnn_tf
+  model: one_d_cnn
+  model_name: one_d_cnn
   model_input: 0
+  tf_initialization: False
   # dropout: 0.0
 
 inference_params:

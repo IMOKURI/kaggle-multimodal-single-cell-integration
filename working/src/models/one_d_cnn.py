@@ -10,7 +10,7 @@ log = logging.getLogger(__name__)
 # https://www.kaggle.com/c/lish-moa/discussion/202256
 # https://github.com/baosenguo/Kaggle-MoA-2nd-Place-Solution/blob/main/training/1d-cnn-train.ipynb
 class OneDCNNModel(nn.Module):
-    def __init__(self, c, tf_initialization=False):
+    def __init__(self, c):
         super().__init__()
         self.amp = c.settings.amp
         self.input = c.model_params.model_input
@@ -62,7 +62,7 @@ class OneDCNNModel(nn.Module):
             nn.utils.weight_norm(nn.Linear(self.ch_po_2, c.settings.n_class)),
         )
 
-        if tf_initialization:
+        if c.model_params.tf_initialization:
             self._tf_reinitialize()
 
     def _tf_reinitialize(self):

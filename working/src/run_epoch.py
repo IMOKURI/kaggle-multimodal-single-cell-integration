@@ -9,9 +9,10 @@ import pandas as pd
 import torch
 import torch.cuda.amp as amp
 
+from .utils import AverageMeter, compute_grad_norm, timeSince
+
 # from memory_profiler import profile
 
-from .utils import AverageMeter, compute_grad_norm, timeSince
 
 log = logging.getLogger(__name__)
 
@@ -34,6 +35,9 @@ def train_epoch(c, train_loader, model, criterion, optimizer, scheduler, scaler,
 
             losses.update(loss.item(), batch_size)
             loss = loss / c.training_params.gradient_acc_step
+
+        assert not torch.isnan(y_preds).any()
+        assert not torch.isnan(loss).any()
 
         scaler.scale(loss).backward()
 
@@ -95,6 +99,10 @@ def validate_epoch(c, valid_loader, model, criterion, device, verbose=False):
             y_preds = model(features)
 
         loss = criterion(y_preds, labels)
+
+        assert not torch.isnan(y_preds).any()
+        assert not torch.isnan(loss).any()
+
         losses.update(loss.item(), batch_size)
 
         begin = step * c.training_params.batch_size

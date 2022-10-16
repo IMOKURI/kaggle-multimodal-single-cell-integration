@@ -35,22 +35,14 @@ def make_model(c, device=None, model_path=None):
         model = ImageBaseModel(c)
     elif c.model_params.model == "mlp_base":
         model = MlpBaseModel(c)
-    elif c.model_params.model == "mlp_base_tf":
-        model = MlpBaseModel(c, tf_initialization=True)
     elif c.model_params.model == "mlp_dropout":
         model = MlpDropoutModel(c)
-    elif c.model_params.model == "mlp_dropout_tf":
-        model = MlpDropoutModel(c, tf_initialization=True)
     elif c.model_params.model == "mlp_resnet":
         model = MlpResnetModel(c)
-    elif c.model_params.model == "mlp_resnet_tf":
-        model = MlpResnetModel(c, tf_initialization=True)
     elif c.model_params.model == "denoising_auto_encoder":
         model = DenoisingAutoEncoder(c)
     elif c.model_params.model == "one_d_cnn":
         model = OneDCNNModel(c)
-    elif c.model_params.model == "one_d_cnn_tf":
-        model = OneDCNNModel(c, tf_initialization=True)
     elif c.model_params.model == "node":
         model = nn.Sequential(
             DenseBlock(

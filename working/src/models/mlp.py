@@ -9,7 +9,7 @@ def swish(x):
 
 
 class MlpBaseModel(nn.Module):
-    def __init__(self, c, tf_initialization=False):
+    def __init__(self, c):
         super().__init__()
         self.amp = c.settings.amp
         self.model_input = c.model_params.model_input
@@ -27,7 +27,7 @@ class MlpBaseModel(nn.Module):
             self.fc_2 = nn.Linear(self.model_input + diff, self.model_input + diff * 2)
             self.fc_3 = nn.Linear(self.model_input + diff * 2, self.model_output)
 
-        if tf_initialization:
+        if c.model_params.tf_initialization:
             self._tf_reinitialize()
 
     def _tf_reinitialize(self):
@@ -53,7 +53,7 @@ class MlpBaseModel(nn.Module):
 
 
 class MlpDropoutModel(nn.Module):
-    def __init__(self, c, tf_initialization=False):
+    def __init__(self, c):
         super().__init__()
         self.amp = c.settings.amp
         self.model_input = c.model_params.model_input
@@ -71,7 +71,7 @@ class MlpDropoutModel(nn.Module):
         self.dropout3 = nn.Dropout(0.3)
         self.dense3 = nn.utils.weight_norm(nn.Linear(hidden_size, self.model_output))
 
-        if tf_initialization:
+        if c.model_params.tf_initialization:
             self._tf_reinitialize()
 
     def _tf_reinitialize(self):
@@ -102,7 +102,7 @@ class MlpDropoutModel(nn.Module):
 
 
 class MlpResnetModel(nn.Module):
-    def __init__(self, c, tf_initialization=False):
+    def __init__(self, c):
         super().__init__()
         self.amp = c.settings.amp
         self.model_input = c.model_params.model_input
@@ -124,7 +124,7 @@ class MlpResnetModel(nn.Module):
         self.dropout4 = nn.Dropout(0.3)
         self.dense4 = nn.utils.weight_norm(nn.Linear(hidden_size * 2, self.model_output))
 
-        if tf_initialization:
+        if c.model_params.tf_initialization:
             self._tf_reinitialize()
 
     def _tf_reinitialize(self):
