@@ -72,12 +72,12 @@ def main(c):
     ################################################################################
     # Optimize ensemble weights
     ################################################################################
-    if len(input.cite_oof) > 1 and c.inference_params.ensemble_weight_optimization:
+    if len(input.cite_oof) > 1 and c.inference_params.cite_ensemble_weight_optimization:
         log.info(f"Optimize cite ensemble weight.")
 
         objective = Objective(input.train_cite_targets, input.cite_oof, cite_good_validation.index)
         study = optuna.create_study(direction="maximize")
-        study.optimize(objective, n_trials=50)
+        study.optimize(objective, n_trials=100)
 
         optimized_cv_cite = study.best_trial.value
         best_weight_cite = list(study.best_trial.params.values())
@@ -86,7 +86,7 @@ def main(c):
         optimized_cv_cite = cv_cite
         best_weight_cite = [1.0] * len(input.cite_oof)
 
-    if len(input.multi_oof) > 1 and c.inference_params.ensemble_weight_optimization:
+    if len(input.multi_oof) > 1 and c.inference_params.multi_ensemble_weight_optimization:
         log.info(f"Optimize multi ensemble weight.")
         objective = Objective(input.train_multi_targets, input.multi_oof, multi_good_validation.index)
         study = optuna.create_study(direction="maximize")
@@ -99,7 +99,7 @@ def main(c):
         optimized_cv_multi = cv_multi
         best_weight_multi = [1.0] * len(input.multi_oof)
 
-    if c.inference_params.ensemble_weight_optimization:
+    if c.inference_params.cite_ensemble_weight_optimization or c.inference_params.multi_ensemble_weight_optimization:
         cv = 0.712 * (optimized_cv_cite) + 0.288 * (optimized_cv_multi)
         log.info(f"training data that similar test data optimized CV: {cv:.5f}")
 
