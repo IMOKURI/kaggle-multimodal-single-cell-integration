@@ -866,7 +866,7 @@ class EarlyStopping:
             if self.patience <= 0:
                 return
             self.counter += 1
-            log.info(f"EarlyStopping counter: {self.counter} out of {self.patience}")
+            log.warning(f"EarlyStopping counter: {self.counter} out of {self.patience}")
             if self.counter >= self.patience:
                 self.early_stop = True
         else:

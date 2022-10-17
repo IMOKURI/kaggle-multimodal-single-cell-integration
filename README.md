@@ -66,6 +66,8 @@
 - TabNet (0.66903, 3345, pre-training with all data, seed 2440)
 - MLP with Dropout (0.66791, 3344)
 - MLP with Dropout (0.66786, 3344, tf-like initialization)
+- 1D CNN (0.67085, 3344)
+- 1D CNN (0.67086, 3344, tf-like initialization)
 
 
 ### Postprocess
@@ -88,4 +90,4 @@
 
 CV weight -> cite:multi = 0.712:0.288
 
-- CV: 0.83634 (cite: 0.90370, multi: 0.66982), LB: 0.811
+- CV: 0.83647 (cite: 0.90370, multi: 0.67029), LB: 0.811
