@@ -1,14 +1,13 @@
 import logging
 import os
-from typing import List
 
 import hydra
 import numpy as np
+import optuna
 import pandas as pd
 import src.utils as utils
 from hydra.core.hydra_config import HydraConfig
-from scipy.optimize import minimize
-from src.get_score import get_score, optimize_func
+from src.get_score import get_score
 from src.load_data import PostprocessData
 
 log = logging.getLogger(__name__)
@@ -73,63 +72,35 @@ def main(c):
     ################################################################################
     # Optimize ensemble weights
     ################################################################################
-    # weight の合計が 1 になるようにする
-    cons = {"type": "eq", "fun": lambda w: 1 - sum(w)}
-
     if len(input.cite_oof) > 1 and c.inference_params.ensemble_weight_optimization:
         log.info(f"Optimize cite ensemble weight.")
-        scores = []
-        weights = []
-        for i in range(10):
-            starting_values = np.random.uniform(size=len(input.cite_oof))
-            bounds = [(0, 1)] * len(input.cite_oof)
 
-            res = minimize(
-                optimize_func(input.train_cite_targets, input.cite_oof, cite_good_validation.index),
-                starting_values,
-                method="SLSQP",
-                bounds=bounds,
-                constraints=cons,
-            )
-            scores.append(res["fun"])
-            weights.append(res["x"])
-            log.info(f"optimization epoch {i+1}, score: {-res['fun']}, weight: {res['x']}")
+        objective = Objective(input.train_cite_targets, input.cite_oof, cite_good_validation.index)
+        study = optuna.create_study(direction="maximize")
+        study.optimize(objective, n_trials=50)
 
-        optimized_cv_cite = np.min(scores)
-        best_weight_cite = weights[np.argmin(scores)]
-        log.info(f"cite optimization result. CV: {-optimized_cv_cite:.5f}, weight: {best_weight_cite}")
+        optimized_cv_cite = study.best_trial.value
+        best_weight_cite = list(study.best_trial.params.values())
+        log.info(f"cite optimization result. CV: {optimized_cv_cite:.5f}, weight: {best_weight_cite}")
     else:
-        optimized_cv_cite = -cv_cite
+        optimized_cv_cite = cv_cite
         best_weight_cite = [1.0] * len(input.cite_oof)
 
     if len(input.multi_oof) > 1 and c.inference_params.ensemble_weight_optimization:
         log.info(f"Optimize multi ensemble weight.")
-        scores = []
-        weights = []
-        for i in range(10):
-            starting_values = np.random.uniform(size=len(input.multi_oof))
-            bounds = [(0, 1)] * len(input.multi_oof)
+        objective = Objective(input.train_multi_targets, input.multi_oof, multi_good_validation.index)
+        study = optuna.create_study(direction="maximize")
+        study.optimize(objective, n_trials=50)
 
-            res = minimize(
-                optimize_func(input.train_multi_targets, input.multi_oof, multi_good_validation.index),
-                starting_values,
-                method="SLSQP",
-                bounds=bounds,
-                constraints=cons,
-            )
-            scores.append(res["fun"])
-            weights.append(res["x"])
-            log.info(f"optimization epoch {i+1}, score: {-res['fun']}, weight: {res['x']}")
-
-        optimized_cv_multi = np.min(scores)
-        best_weight_multi = weights[np.argmin(scores)]
-        log.info(f"multi optimization result. CV: {-optimized_cv_multi:.5f}, weight: {best_weight_multi}")
+        optimized_cv_multi = study.best_trial.value
+        best_weight_multi = list(study.best_trial.params.values())
+        log.info(f"multi optimization result. CV: {optimized_cv_multi:.5f}, weight: {best_weight_multi}")
     else:
-        optimized_cv_multi = -cv_multi
+        optimized_cv_multi = cv_multi
         best_weight_multi = [1.0] * len(input.multi_oof)
 
     if c.inference_params.ensemble_weight_optimization:
-        cv = 0.712 * (-optimized_cv_cite) + 0.288 * (-optimized_cv_multi)
+        cv = 0.712 * (optimized_cv_cite) + 0.288 * (optimized_cv_multi)
         log.info(f"training data that similar test data optimized CV: {cv:.5f}")
 
     ################################################################################
@@ -164,6 +135,36 @@ def main(c):
     input.sample_submission.to_csv(submission_path, index=False)
 
     log.info("Done.")
+
+
+class Objective:
+    def __init__(self, target, predictions, index=None):
+        self.num = len(predictions)
+        self.target = target
+        self.predictions = predictions
+        self.index = index
+
+    def __call__(self, trial):
+        weights = [0] * self.num
+
+        for n in range(self.num):
+            weights[n] = trial.suggest_float(f"weight_{n}", 0, 1)
+
+        df = None
+        for weight, prediction in zip(weights, self.predictions):
+            if df is None:
+                df = prediction.sort_index() * weight
+            else:
+                df += prediction.sort_index() * weight
+
+        if self.index is not None:
+            df = df.loc[self.index, :]
+            target_df = self.target.loc[self.index, :]
+        else:
+            target_df = self.target
+
+        score = get_score("pearson", target_df.sort_index(), df.sort_index())
+        return score
 
 
 if __name__ == "__main__":
