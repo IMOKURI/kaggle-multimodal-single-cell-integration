@@ -9,8 +9,6 @@ import warnings
 import joblib
 import lightgbm as lgb
 import numpy as np
-import optuna
-import optuna.integration.lightgbm as opt_lgb
 import pandas as pd
 import torch
 import torch.cuda.amp as amp
@@ -39,7 +37,6 @@ from .utils import AverageMeter, timeSince
 # from wandb.lightgbm import log_summary, wandb_callback
 
 log = logging.getLogger(__name__)
-optuna.logging.set_verbosity(optuna.logging.ERROR)
 
 
 def train_fold_lightgbm(c, input, fold, tuning=False):
@@ -564,37 +561,39 @@ def train_fold_tabnet(c, input, fold):
     train_ds, train_labels = make_dataset(c, train_df, train_label_df)
     valid_ds, valid_labels = make_dataset(c, valid_df, valid_label_df)
 
+    model_params = dict()
     if c.preprocess_params.use_cell_type:
+        # TODO: カテゴリ変数が複数になるなら要リファクタ
         categorical_index = []
         categorical_features = []
 
         categorical_index.append(df.columns.get_loc("cell_type_num"))
         categorical_features.append(len(input.metadata_cell_type_num))
 
-        pre_model = make_pre_model_tabnet(c, c_index=categorical_index, c_features=categorical_features)
-    else:
-        pre_model = make_pre_model_tabnet(c)
+        model_params["c_index"] = categorical_index
+        model_params["c_features"] = categorical_features
 
-    pre_model.fit(
-        pre_train_ds,
-        eval_set=[pre_valid_ds],
-        eval_name=["valid"],
-        # train_ds,
-        # eval_set=[valid_ds, inference_df.to_numpy()],
-        # eval_name=["valid", "test"],
-        max_epochs=1000,
-        patience=c.training_params.es_patience,
-        batch_size=c.training_params.batch_size,
-        virtual_batch_size=256,
-        num_workers=8,
-        drop_last=True,
-        pretraining_ratio=0.8,
-    )
+    training_params = dict()
+    if c.training_params.tabnet.pre_training:
+        pre_model = make_pre_model_tabnet(c, **model_params)
+        pre_model.fit(
+            pre_train_ds,
+            eval_set=[pre_valid_ds],
+            eval_name=["valid"],
+            # train_ds,
+            # eval_set=[valid_ds, inference_df.to_numpy()],
+            # eval_name=["valid", "test"],
+            max_epochs=1000,
+            patience=c.training_params.es_patience,
+            batch_size=c.training_params.batch_size,
+            virtual_batch_size=256,
+            num_workers=8,
+            drop_last=True,
+            pretraining_ratio=0.8,
+        )
+        training_params["from_unsupervised"] = pre_model
 
-    if c.preprocess_params.use_cell_type:
-        model = make_model_tabnet(c, train_ds, c_index=categorical_index, c_features=categorical_features)
-    else:
-        model = make_model_tabnet(c, train_ds)
+    model = make_model_tabnet(c, train_ds, **model_params)
 
     model.fit(
         train_ds,
@@ -609,7 +608,7 @@ def train_fold_tabnet(c, input, fold):
         virtual_batch_size=256,
         num_workers=8,
         drop_last=True,
-        from_unsupervised=pre_model,
+        **training_params,
     )
 
     model_dir = os.path.join(HydraConfig.get().run.dir, f"fold{fold}")

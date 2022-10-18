@@ -247,8 +247,8 @@ params:
 
 global_params:
   # seed: 440
-  method: xgboost  # tabnet, adversarial_tabnet  # ** adversarial
-  data: multi  # cite, multi
+  method: tuning_tabnet  # tabnet, adversarial_tabnet  # ** adversarial
+  data: cite  # cite, multi
 
 preprocess_params:
   cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
@@ -596,6 +596,8 @@ training_params:
   min_lr: 1e-5
   weight_decay: 1e-5  # AdamW: 0.01, others: 0
   # label_smoothing: 1e-6
+  tabnet:
+    pre_training: False
 
 model_params:
   dataset: table_base
@@ -603,11 +605,16 @@ model_params:
   model_name: one_d_cnn
   model_input: 0
   tf_initialization: True
-  # dropout: 0.0
+  tabnet:
+    n_d: 32
+    n_steps: 1
+    n_independent: 2
+    gamma: 1.3
+    mask_type: entmax
 
 inference_params:
-  cite_ensemble_weight_optimization: true
-  multi_ensemble_weight_optimization: false
+  cite_ensemble_weight_optimization: True
+  multi_ensemble_weight_optimization: False
   cite_pretrained:
     2022-10-03_12-37-37: 1  # tabnet 0.90175 by 680
     2022-10-06_04-34-58: 1  # tabnet 0.90170 by 681

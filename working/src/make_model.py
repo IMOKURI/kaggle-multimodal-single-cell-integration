@@ -155,12 +155,12 @@ def make_model_xgboost(c, ds=None, model_path=None):
 
 def make_pre_model_tabnet(c, c_index=None, c_features=None):
     tabnet_params = dict(
-        n_d=32,
-        n_a=32,
-        n_steps=1,
-        n_independent=2,  # 2 is better CV than 1, but need more time
-        n_shared=2,  # same above
-        gamma=1.3,
+        n_d=c.model_params.tabnet.n_d,
+        n_a=c.model_params.tabnet.n_d,
+        n_steps=c.model_params.tabnet.n_steps,
+        n_independent=c.model_params.tabnet.n_independent,
+        n_shared=c.model_params.tabnet.n_independent,
+        gamma=c.model_params.tabnet.gamma,
         lambda_sparse=0,
         # cat_idxs=c_index,
         # cat_dims=c_features,
@@ -171,7 +171,7 @@ def make_pre_model_tabnet(c, c_index=None, c_features=None):
         scheduler_params=dict(
             min_lr=c.training_params.min_lr, patience=c.training_params.es_patience // 5, verbose=True
         ),
-        mask_type="entmax",
+        mask_type=c.model_params.tabnet.mask_type,
         seed=c.global_params.seed,
         verbose=5,
     )  # type: dict[str, Any]
@@ -188,12 +188,12 @@ def make_pre_model_tabnet(c, c_index=None, c_features=None):
 def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None):
 
     tabnet_params = dict(
-        n_d=32,
-        n_a=32,
-        n_steps=1,
-        n_independent=2,  # 2 is better CV than 1, but need more time
-        n_shared=2,  # same above
-        gamma=1.3,
+        n_d=c.model_params.tabnet.n_d,
+        n_a=c.model_params.tabnet.n_d,
+        n_steps=c.model_params.tabnet.n_steps,
+        n_independent=c.model_params.tabnet.n_independent,
+        n_shared=c.model_params.tabnet.n_independent,
+        gamma=c.model_params.tabnet.gamma,
         lambda_sparse=0,
         # cat_idxs=c_index,
         # cat_dims=c_features,
@@ -204,7 +204,7 @@ def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None
         scheduler_params=dict(
             mode="max", min_lr=c.training_params.min_lr, patience=c.training_params.es_patience // 5, verbose=True
         ),
-        mask_type="entmax",
+        mask_type=c.model_params.tabnet.mask_type,
         seed=c.global_params.seed,
         verbose=5,
     )  # type: dict[str, Any]

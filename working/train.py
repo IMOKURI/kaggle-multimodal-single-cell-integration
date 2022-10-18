@@ -3,6 +3,7 @@ import os
 
 import hydra
 import numpy as np
+import optuna
 import pandas as pd
 import src.utils as utils
 from hydra.core.hydra_config import HydraConfig
@@ -20,6 +21,7 @@ from src.run_loop import (  # train_fold_lightgbm,
     train_fold_tabnet,
     train_fold_xgboost,
 )
+from src.run_tuning import ObjectiveTabnet
 
 log = logging.getLogger(__name__)
 
@@ -79,6 +81,14 @@ def main(c):
             _oof_df, _label_df, loss, _inference_df = adversarial_train_fold_tabnet(c, input, fold)
         elif c.global_params.method == "cell_type_tabnet":
             _oof_df, _label_df, loss, _inference_df = cell_type_train_fold_tabnet(c, input, fold)
+        elif c.global_params.method == "tuning_tabnet":
+            objective = ObjectiveTabnet(c, input, fold)
+            study = optuna.create_study(direction="maximize")
+            study.optimize(objective, n_trials=50, callbacks=[objective.callback])
+            loss = study.best_trial.value
+            _oof_df = objective.best_preds_df
+            _label_df = objective.best_valid_label_df
+            _inference_df = objective.best_inference_df
         elif c.global_params.method == "nn":
             _oof_df, _label_df, loss, _inference_df = train_fold_nn(c, input, fold, device)
         else:
