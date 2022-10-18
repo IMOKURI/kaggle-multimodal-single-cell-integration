@@ -148,7 +148,7 @@ class Objective:
         weights = [0] * self.num
 
         for n in range(self.num):
-            weights[n] = trial.suggest_float(f"weight_{n}", 0, 1)
+            weights[n] = trial.suggest_float(f"weight_{n}", 0, 1, step=1e-5)
 
         df = None
         for weight, prediction in zip(weights, self.predictions):
