@@ -174,7 +174,7 @@ settings:
     - train_multi_chrY_inputs_pca_100.pickle
 
     - train_multi_all_inputs_ivis_240.pickle
-    # - train_multi_nopca_inputs_ivis_240.pickle
+    - train_multi_nopca_inputs_ivis_240.pickle
 
     - train_multi_targets.pickle
 
@@ -206,7 +206,7 @@ settings:
     - test_multi_chrY_inputs_pca_100.pickle
 
     - test_multi_all_inputs_ivis_240.pickle
-    # - test_multi_nopca_inputs_ivis_240.pickle
+    - test_multi_nopca_inputs_ivis_240.pickle
 
     - metadata.pickle
 
@@ -247,7 +247,7 @@ params:
 
 global_params:
   # seed: 440
-  method: nn  # tabnet, adversarial_tabnet  # ** adversarial
+  method: xgboost  # tabnet, adversarial_tabnet  # ** adversarial
   data: multi  # cite, multi
 
 preprocess_params:
@@ -636,6 +636,7 @@ inference_params:
     2022-10-16_13-08-46: 1  # 1D CNN_tf 0.67085 by 3344
     2022-10-16_13-30-35: 1  # 1D CNN 0.67086 by 3344
     2022-10-17_00-25-56: 1  # 1D CNN 0.67076 by 3104
+    2022-10-17_13-19-49: 1  # 1D CNN_tf 0.67069 by 3104
   pretrained:
     # multiome-with-keras-ensemble: 1
     # multimodal-single-cell-integration-ensembling: 1
