@@ -1,4 +1,4 @@
-FROM gcr.io/kaggle-gpu-images/python:v121
+FROM gcr.io/kaggle-gpu-images/python:v122
 
 ARG PROXY
 
@@ -6,13 +6,10 @@ ENV http_proxy=$PROXY \
     https_proxy=$PROXY
 
 RUN pip install \
-    'git+https://github.com/katsura-jp/pytorch-cosine-annealing-with-warmup' \
     hydra-core \
     iterative-stratification
 
 # RUN conda install -c pytorch faiss-gpu
-
-# RUN pip install "jax[cuda11_cudnn82]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
 RUN pip install \
     tables \

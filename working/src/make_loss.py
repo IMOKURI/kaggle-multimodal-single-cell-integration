@@ -9,10 +9,6 @@ from torch.nn.modules.loss import _WeightedLoss
 from torch.optim import Adam, AdamW, RAdam
 from torch.optim.lr_scheduler import CosineAnnealingLR, CosineAnnealingWarmRestarts, ReduceLROnPlateau
 
-# import jax
-# import jax.numpy as jnp
-# import optax
-
 log = logging.getLogger(__name__)
 
 
@@ -165,17 +161,6 @@ def pearson_cc_loss(inputs, targets):
     return 1.0 - pcc
 
 
-# def jax_pearson_cc_loss(inputs, targets):
-#     # log.debug(f"shape for inputs: {inputs.shape}, targets: {targets.shape}")
-#     try:
-#         assert inputs.shape == targets.shape
-#     except AssertionError:
-#         inputs = inputs.reshape(targets.shape)
-#
-#     pcc = optax.cosine_similarity(inputs, targets)
-#     return 1.0 - pcc
-
-
 # https://towardsdatascience.com/jax-vs-pytorch-automatic-differentiation-for-xgboost-10222e1404ec
 def torch_autodiff_grad_hess(
     loss_function: Callable[[torch.Tensor, torch.Tensor], torch.Tensor], y_true: np.ndarray, y_pred: np.ndarray
@@ -198,31 +183,6 @@ def torch_autodiff_grad_hess(
     hess = np.ones(grad.shape)
 
     return grad, hess
-
-
-# def hvp(f, inputs, vectors):
-#     """
-#     Hessian-vector product.
-#     """
-#     return jax.jvp(jax.grad(f), inputs, vectors)[1]
-#
-#
-# def jax_autodiff_grad_hess(
-#     loss_function: Callable[[np.ndarray, np.ndarray], np.ndarray], y_true: np.ndarray, y_pred: np.ndarray
-# ):
-#     """
-#     Perform automatic differentiation to get the
-#     Gradient and the Hessian of `loss_function`.
-#     """
-#     loss_function_sum = lambda y_pred: loss_function(y_true, y_pred).sum()
-#
-#     grad_fn = jax.grad(loss_function_sum)
-#     grad = grad_fn(y_pred).reshape(-1)
-#
-#     # hess = hvp(loss_function_sum, (y_pred,), (jnp.ones_like(y_pred),))
-#     hess = jnp.ones_like(grad)
-#
-#     return grad, hess
 
 
 # ====================================================
@@ -260,17 +220,6 @@ def make_scheduler(c, optimizer, ds):
         )
     elif c.training_params.scheduler == "CosineAnnealingLR":
         scheduler = CosineAnnealingLR(optimizer, T_max=num_steps, eta_min=c.training_params.min_lr, last_epoch=-1)
-    elif c.training_params.scheduler == "CosineAnnealingWarmupRestarts":
-        from cosine_annealing_warmup import CosineAnnealingWarmupRestarts
-
-        scheduler = CosineAnnealingWarmupRestarts(
-            optimizer,
-            first_cycle_steps=num_steps,
-            max_lr=c.training_params.lr,
-            min_lr=c.training_params.min_lr,
-            warmup_steps=(num_steps // 20),
-        )
-
     else:
         raise Exception("Invalid scheduler.")
     return scheduler

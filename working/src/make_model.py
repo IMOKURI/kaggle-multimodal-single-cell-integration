@@ -25,8 +25,6 @@ from .models.mlp import MlpBaseModel, MlpDropoutModel, MlpResnetModel
 from .models.node import DenseBlock, Lambda, entmax15, entmoid15
 from .models.one_d_cnn import OneDCNNModel
 
-# import jax
-
 log = logging.getLogger(__name__)
 
 
@@ -125,7 +123,6 @@ def make_model_catboost(c, ds=None, model_path=None):
 def make_model_xgboost(c, ds=None, model_path=None):
 
     custom_objective = partial(torch_autodiff_grad_hess, pearson_cc_loss)
-    # jax_custom_objective = jax.jit(partial(jax_autodiff_grad_hess, jax_pearson_cc_loss))
 
     xgb_params = dict(
         n_estimators=10000,
