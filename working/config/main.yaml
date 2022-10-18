@@ -247,7 +247,7 @@ params:
 
 global_params:
   # seed: 440
-  method: tuning_tabnet  # tabnet, adversarial_tabnet  # ** adversarial
+  method: tabnet  # tuning_tabnet, adversarial_tabnet  # ** adversarial
   data: cite  # cite, multi
 
 preprocess_params:
@@ -597,7 +597,7 @@ training_params:
   weight_decay: 1e-5  # AdamW: 0.01, others: 0
   # label_smoothing: 1e-6
   tabnet:
-    pre_training: False
+    pre_training: True
 
 model_params:
   dataset: table_base
@@ -606,10 +606,10 @@ model_params:
   model_input: 0
   tf_initialization: True
   tabnet:
-    n_d: 32
+    n_d: 56
     n_steps: 1
     n_independent: 2
-    gamma: 1.3
+    gamma: 1.6
     mask_type: entmax
 
 inference_params:
