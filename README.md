@@ -28,7 +28,7 @@
 
 #### Common
 
-- Adversarial training で誤判断された細胞 1.3 万件ほどを正当ラベルとした StratifiedKFold
+- Adversarial training で誤判断された細胞 3 万件ほどを正当ラベルとした StratifiedKFold
 - Pearson Loss
 - TabNet の pre-training
 
@@ -37,37 +37,14 @@
 
 ##### Model (CV Score, Num of Feature, Ensemble weight)
 
-- TabNet (0.90175, 680)
-- TabNet (0.90170, 681)
-- TabNet (0.90186, 686)
-- TabNet (0.90188, 687)
-- TabNet (0.90213, 687, x2, pre-training with training data)
-- TabNet (0.90216, 687, x2, pre-training with all data)
-- Simple MLP (0.90098, 686)
-- Simple MLP (0.90107, 686, tf-like initialization)
-- MLP with Dropout (0.90199, 686)
-- MLP with Dropout (0.90198, 686, tf-like initialization)
-- ResNet (0.90139, 686)
-- ResNet (0.90147, 686, tf-like initialization)
-- 1D CNN (0.90189, 686)
-- 1D CNN (0.90175, 686)
+To be updated...
 
 #### Multiome
 
 
 ##### Model (CV Score, Num of Feature, Ensemble weight)
 
-- TabNet (0.66899, 3104)
-- TabNet (0.66904, 3105)
-- TabNet (0.66900, 3105, seed 1440)
-- TabNet (0.66918, 3105, pre-training with training data)
-- TabNet (0.66902, 3105, pre-training with all data)
-- TabNet (0.66902, 3345, pre-training with all data)
-- TabNet (0.66903, 3345, pre-training with all data, seed 2440)
-- MLP with Dropout (0.66791, 3344)
-- MLP with Dropout (0.66786, 3344, tf-like initialization)
-- 1D CNN (0.67085, 3344)
-- 1D CNN (0.67086, 3344, tf-like initialization)
+To be updated...
 
 
 ### Postprocess
@@ -85,9 +62,40 @@
 
 - 各推論を Standardize してからアンサンブルする
     - OOF と 推論結果をまとめて Standardize する
+- Optuna でアンサンブルの重み最適化
+    - 評価指標には、Adversarial training で誤判断された細胞 3 万件ほど使用
 
 ## Score
 
 CV weight -> cite:multi = 0.712:0.288
 
-- CV: 0.83647 (cite: 0.90370, multi: 0.67029), LB: 0.811
+```
+2022-10-17 12:20:04,729 [INFO][load_data] Load CITEseq inference data.
+2022-10-17 12:20:04,730 [INFO][load_data]   -> 2022-10-03_12-37-37
+2022-10-17 12:20:05,026 [INFO][load_data]   -> 2022-10-06_04-34-58
+2022-10-17 12:20:05,306 [INFO][load_data]   -> 2022-10-03_12-58-59
+2022-10-17 12:20:05,590 [INFO][load_data]   -> 2022-10-06_05-01-11
+2022-10-17 12:20:05,870 [INFO][load_data]   -> 2022-10-11_01-09-07
+2022-10-17 12:20:06,149 [INFO][load_data]   -> 2022-10-11_01-48-10
+2022-10-17 12:20:06,429 [INFO][load_data]   -> 2022-10-12_00-50-18
+2022-10-17 12:20:06,873 [INFO][load_data]   -> 2022-10-12_11-11-39
+2022-10-17 12:20:07,327 [INFO][load_data]   -> 2022-10-15_01-02-59
+2022-10-17 12:20:07,778 [INFO][load_data]   -> 2022-10-15_01-16-43
+2022-10-17 12:20:08,205 [INFO][load_data]   -> 2022-10-15_01-34-34
+2022-10-17 12:20:08,655 [INFO][load_data]   -> 2022-10-15_01-44-29
+2022-10-17 12:20:09,080 [INFO][load_data]   -> 2022-10-15_12-39-39
+2022-10-17 12:20:09,504 [INFO][load_data]   -> 2022-10-15_12-50-55
+2022-10-17 12:20:09,930 [INFO][load_data]   -> 2022-10-17_00-13-14
+2022-10-17 12:20:10,357 [INFO][load_data]   -> 2022-10-14_03-16-10
+2022-10-17 12:20:10,603 [INFO][load_data] Load Multiome inference data.
+2022-10-17 12:20:10,604 [INFO][load_data]   -> 2022-10-16_13-08-46
+2022-10-17 12:22:02,761 [INFO][load_data]   -> 2022-10-16_13-30-35
+2022-10-17 12:23:42,025 [INFO][load_data]   -> 2022-10-17_00-25-56
+2022-10-17 12:29:00,501 [INFO][postprocess] All training data CV: 0.83684 (cite: 0.90382, multi: 0.67123)
+2022-10-17 12:29:20,723 [INFO][postprocess] training data that similar test data CV: 0.83392 (cite: 0.90136(size: 13112), multi: 0.66720(size: 16702))
+2022-10-17 12:29:20,724 [INFO][postprocess] Optimize cite ensemble weight.
+2022-10-17 12:36:13,997 [INFO][postprocess] cite optimization result. CV: 0.90150, weight: [0.007376409412677783, 0.1166870161126573, 0.7801007217121276, 0.10170586956956369, 0.09139796603729966, 0.694426794195483, 0.6115378192689488, 0.20512529286503275, 0.3575475
+7164433537, 0.32747650873586587, 0.42382351693118503, 0.48927543570485044, 0.9574686713449889, 0.8123202475805951, 0.11832344635996042, 0.9984121079364743]
+2022-10-17 12:36:13,998 [INFO][postprocess] training data that similar test data optimized CV: 0.83402
+2022-10-17 13:16:10,969 [INFO][postprocess] Done.
+```
