@@ -1,9 +1,7 @@
 import gc
 import logging
 import os
-import sys
 import time
-import traceback
 import warnings
 
 import joblib
@@ -12,9 +10,7 @@ import numpy as np
 import pandas as pd
 import torch
 import torch.cuda.amp as amp
-import torch.nn.functional as F
 import wandb
-import xgboost as xgb
 from hydra.core.hydra_config import HydraConfig
 from scipy.optimize import minimize
 
@@ -392,8 +388,8 @@ def adversarial_train_fold_tabnet(c, input, fold):
     # categorical_index.append(df.columns.get_loc("cell_type_num"))
     # categorical_features.append(len(input.metadata_cell_type_num))
     #
-    # model = make_model_tabnet(c, train_ds, c_index=categorical_index, c_features=categorical_features)
-    model = make_model_tabnet(c, train_ds)
+    # model = make_model_tabnet(c, c_index=categorical_index, c_features=categorical_features)
+    model = make_model_tabnet(c)
 
     model.fit(
         train_ds,
@@ -466,8 +462,8 @@ def cell_type_train_fold_tabnet(c, input, fold):
     #     pretraining_ratio=0.8,
     # )
 
-    # model = make_model_tabnet(c, train_ds, c_index=categorical_index, c_features=categorical_features)
-    model = make_model_tabnet(c, train_ds)
+    # model = make_model_tabnet(c, c_index=categorical_index, c_features=categorical_features)
+    model = make_model_tabnet(c)
 
     model.fit(
         train_ds,
@@ -562,7 +558,7 @@ def train_fold_tabnet(c, input, fold):
     valid_ds, valid_labels = make_dataset(c, valid_df, valid_label_df)
 
     model_params = dict()
-    if c.preprocess_params.use_cell_type:
+    if c.training_params.use_cell_type:
         # TODO: カテゴリ変数が複数になるなら要リファクタ
         categorical_index = []
         categorical_features = []
@@ -593,7 +589,7 @@ def train_fold_tabnet(c, input, fold):
         )
         training_params["from_unsupervised"] = pre_model
 
-    model = make_model_tabnet(c, train_ds, **model_params)
+    model = make_model_tabnet(c, **model_params)
 
     model.fit(
         train_ds,

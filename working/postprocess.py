@@ -128,8 +128,14 @@ def main(c):
         input.sample_submission.at[row_id, "target"] = inference.at[cell_id, gene_id]
 
     if c.inference_params.pretrained is not None:
+
+        def std(x):
+            return (x - np.mean(x)) / np.std(x)
+
+        target = std(input.sample_submission["target"].to_numpy())
         for df in input.public_inference:
-            input.sample_submission["target"] = input.sample_submission["target"] + df["target"]
+            target = target + df["target"].to_numpy()
+        input.sample_submission["target"] = target
 
     submission_path = os.path.join(HydraConfig.get().run.dir, "submission.csv")
     input.sample_submission.to_csv(submission_path, index=False)

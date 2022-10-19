@@ -264,7 +264,7 @@ class LoadData:
 
             # setattr(self, stem, df)
 
-        if c.global_params.method != "nn" and c.preprocess_params.use_cell_type:
+        if c.global_params.method != "nn" and c.training_params.use_cell_type:
             train_inputs = train_inputs.join(metadata["cell_type_num"])
             test_inputs = test_inputs.join(metadata["cell_type_num"])
 
@@ -447,11 +447,6 @@ class PostprocessData:
             inf_df = pd.read_pickle(path)
 
             df = pd.concat([oof_df, inf_df])
-
-            # Multiome の target は 非負
-            # df[df < 0] = 0
-            # assert (df < 0).sum().sum() == 0
-
             df = pd.DataFrame(std(df.to_numpy()) * weight, index=df.index, columns=df.columns)
 
             oof_df = df.iloc[: len(oof_df), :]

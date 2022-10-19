@@ -151,6 +151,8 @@ def make_model_xgboost(c, ds=None, model_path=None):
 
 
 def make_pre_model_tabnet(c, c_index=None, c_features=None):
+    c.model_params.tabnet = c.model_params.tabnet[c.global_params.data]
+
     tabnet_params = dict(
         n_d=c.model_params.tabnet.n_d,
         n_a=c.model_params.tabnet.n_d,
@@ -159,9 +161,6 @@ def make_pre_model_tabnet(c, c_index=None, c_features=None):
         n_shared=c.model_params.tabnet.n_independent,
         gamma=c.model_params.tabnet.gamma,
         lambda_sparse=0,
-        # cat_idxs=c_index,
-        # cat_dims=c_features,
-        # cat_emb_dim=[1],
         optimizer_fn=torch.optim.Adam,
         optimizer_params=dict(lr=c.training_params.lr, weight_decay=c.training_params.weight_decay),
         scheduler_fn=torch.optim.lr_scheduler.ReduceLROnPlateau,
@@ -173,7 +172,7 @@ def make_pre_model_tabnet(c, c_index=None, c_features=None):
         verbose=5,
     )  # type: dict[str, Any]
 
-    if c.preprocess_params.use_cell_type:
+    if c.training_params.use_cell_type:
         tabnet_params["cat_idxs"] = c_index
         tabnet_params["cat_dims"] = c_features
         tabnet_params["cat_emb_dim"] = [1]
@@ -182,7 +181,8 @@ def make_pre_model_tabnet(c, c_index=None, c_features=None):
     return clf
 
 
-def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None):
+def make_model_tabnet(c, model_path=None, c_index=None, c_features=None):
+    c.model_params.tabnet = c.model_params.tabnet[c.global_params.data]
 
     tabnet_params = dict(
         n_d=c.model_params.tabnet.n_d,
@@ -192,9 +192,6 @@ def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None
         n_shared=c.model_params.tabnet.n_independent,
         gamma=c.model_params.tabnet.gamma,
         lambda_sparse=0,
-        # cat_idxs=c_index,
-        # cat_dims=c_features,
-        # cat_emb_dim=[1],
         optimizer_fn=torch.optim.Adam,
         optimizer_params=dict(lr=c.training_params.lr, weight_decay=c.training_params.weight_decay),
         scheduler_fn=torch.optim.lr_scheduler.ReduceLROnPlateau,
@@ -206,7 +203,7 @@ def make_model_tabnet(c, ds=None, model_path=None, c_index=None, c_features=None
         verbose=5,
     )  # type: dict[str, Any]
 
-    if c.preprocess_params.use_cell_type:
+    if c.training_params.use_cell_type:
         tabnet_params["cat_idxs"] = c_index
         tabnet_params["cat_dims"] = c_features
         tabnet_params["cat_emb_dim"] = [1]
