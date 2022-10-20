@@ -151,7 +151,11 @@ def make_model_xgboost(c, ds=None, model_path=None):
 
 
 def make_pre_model_tabnet(c, c_index=None, c_features=None):
-    c.model_params.tabnet = c.model_params.tabnet[c.global_params.data]
+    c.model_params.tabnet.n_d = c.model_params.tabnet[c.global_params.data].n_d
+    c.model_params.tabnet.n_steps = c.model_params.tabnet[c.global_params.data].n_steps
+    c.model_params.tabnet.n_independent = c.model_params.tabnet[c.global_params.data].n_independent
+    c.model_params.tabnet.gamma = c.model_params.tabnet[c.global_params.data].gamma
+    c.model_params.tabnet.mask_type = c.model_params.tabnet[c.global_params.data].mask_type
 
     tabnet_params = dict(
         n_d=c.model_params.tabnet.n_d,
@@ -182,7 +186,11 @@ def make_pre_model_tabnet(c, c_index=None, c_features=None):
 
 
 def make_model_tabnet(c, model_path=None, c_index=None, c_features=None):
-    c.model_params.tabnet = c.model_params.tabnet[c.global_params.data]
+    c.model_params.tabnet.n_d = c.model_params.tabnet[c.global_params.data].n_d
+    c.model_params.tabnet.n_steps = c.model_params.tabnet[c.global_params.data].n_steps
+    c.model_params.tabnet.n_independent = c.model_params.tabnet[c.global_params.data].n_independent
+    c.model_params.tabnet.gamma = c.model_params.tabnet[c.global_params.data].gamma
+    c.model_params.tabnet.mask_type = c.model_params.tabnet[c.global_params.data].mask_type
 
     tabnet_params = dict(
         n_d=c.model_params.tabnet.n_d,
