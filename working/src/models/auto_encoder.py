@@ -8,7 +8,7 @@ class DenoisingAutoEncoder(nn.Module):
         super().__init__()
         self.amp = c.settings.amp
         in_out_channels = c.model_params.model_input
-        hidden_channels = in_out_channels * 0.8
+        hidden_channels = in_out_channels * 3 // 5
 
         self.encoder = nn.Sequential(
             nn.Linear(in_out_channels, hidden_channels),

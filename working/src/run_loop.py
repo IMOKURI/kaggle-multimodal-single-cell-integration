@@ -645,7 +645,10 @@ def train_fold_nn(c, input, fold, device):
     # df = input.train
     # df = pd.concat([input.train, input.other])
     df = getattr(input, f"train_{c.global_params.data}_inputs")
-    label_df = getattr(input, f"train_{c.global_params.data}_targets")
+    if c.global_params.method == "nn_auto_encoder":
+        label_df = getattr(input, f"train_{c.global_params.data}_inputs")
+    else:
+        label_df = getattr(input, f"train_{c.global_params.data}_targets")
     inference_df = getattr(input, f"test_{c.global_params.data}_inputs").drop(
         ["fold", c.settings.label_name, c.cv_params.group_name], axis=1
     )

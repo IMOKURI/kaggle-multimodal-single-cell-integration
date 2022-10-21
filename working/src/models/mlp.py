@@ -107,7 +107,7 @@ class MlpResnetModel(nn.Module):
         self.amp = c.settings.amp
         self.model_input = c.model_params.model_input
         self.model_output = c.settings.n_class
-        hidden_size = self.model_input * 3 // 2
+        hidden_size = self.model_input // 3
 
         self.batch_norm1 = nn.BatchNorm1d(self.model_input)
         self.dense1 = nn.utils.weight_norm(nn.Linear(self.model_input, hidden_size))

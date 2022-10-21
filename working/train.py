@@ -91,6 +91,8 @@ def main(c):
             _inference_df = objective.best_inference_df
         elif c.global_params.method == "nn":
             _oof_df, _label_df, loss, _inference_df = train_fold_nn(c, input, fold, device)
+        elif c.global_params.method == "nn_auto_encoder":
+            _oof_df, _label_df, loss, _inference_df = train_fold_nn(c, input, fold, device)
         else:
             raise Exception(f"Invalid training method. {c.global_params.method}")
 
