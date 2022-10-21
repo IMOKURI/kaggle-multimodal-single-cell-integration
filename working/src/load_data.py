@@ -457,12 +457,12 @@ class PostprocessData:
 
         if c.inference_params.pretrained is not None:
             log.info("Load public submission.")
+            cell_ids = self.evaluation_ids["cell_id"]
             for dir, weight in c.inference_params.pretrained.items():
                 log.info(f"  -> {dir}")
                 path = os.path.join(c.settings.dirs.output, dir, "submission.csv")
                 df = pd.read_csv(path)
-
-                df = pd.DataFrame(std(df.to_numpy()) * weight, columns=df.columns)
+                df["target"] = gen_std_submission(df, cell_ids) * weight
 
                 self.public_inference.append(df)
 
@@ -475,3 +475,15 @@ def sample_for_debug(c, df):
 
 def std(x):
     return (x - np.mean(x)) / np.std(x)
+
+
+def gen_std_submission(df, cell_ids):
+    """
+    Standardize submission per cell_id
+    """
+    df["cell_id"] = cell_ids
+    vals = []
+    for _, g in df.groupby("cell_id", sort=False):
+        vals.append(std(g.target).values)
+    vals = np.concatenate(vals)
+    return vals

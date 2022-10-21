@@ -342,8 +342,8 @@ inference_params:
     # 2022-10-19_06-59-06: 1  # tabnet 0.66951 by 3345, pretrain with all data
     # 2022-10-19_22-19-09: 1  # tabnet 0.66945 by 3345, pretrain with all data
   pretrained:
-    # 5-5-msci22-ensembling-citeseq: 1 # 0.812
-    # all-in-one-citeseq-multiome-with-keras: 1 # 0.812
+    5-5-msci22-ensembling-citeseq: 1 # 0.812
+    all-in-one-citeseq-multiome-with-keras: 1 # 0.812
     # multimodal-single-cell-integration-ensembling: 1 # 0.811
   # pretrained:
   #   - dir: ""

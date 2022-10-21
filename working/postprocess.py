@@ -8,7 +8,7 @@ import pandas as pd
 import src.utils as utils
 from hydra.core.hydra_config import HydraConfig
 from src.get_score import get_score
-from src.load_data import PostprocessData
+from src.load_data import PostprocessData, gen_std_submission
 
 log = logging.getLogger(__name__)
 
@@ -128,11 +128,8 @@ def main(c):
         input.sample_submission.at[row_id, "target"] = inference.at[cell_id, gene_id]
 
     if c.inference_params.pretrained is not None:
-
-        def std(x):
-            return (x - np.mean(x)) / np.std(x)
-
-        target = std(input.sample_submission["target"].to_numpy())
+        cell_ids = input.evaluation_ids["cell_id"]
+        target = gen_std_submission(input.sample_submission["target"], cell_ids)
         for df in input.public_inference:
             target = target + df["target"].to_numpy()
         input.sample_submission["target"] = target
