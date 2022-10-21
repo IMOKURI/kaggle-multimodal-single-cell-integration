@@ -77,7 +77,7 @@ def main(c):
 
         objective = Objective(input.train_cite_targets, input.cite_oof, cite_good_validation.index)
         study = optuna.create_study(direction="maximize")
-        study.optimize(objective, n_trials=200)
+        study.optimize(objective, n_trials=300)
 
         optimized_cv_cite = study.best_trial.value
         best_weight_cite = list(study.best_trial.params.values())
