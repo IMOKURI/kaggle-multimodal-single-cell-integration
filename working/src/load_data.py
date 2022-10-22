@@ -406,7 +406,7 @@ class PostprocessData:
 
         log.info("Load CITEseq inference data.")
         for dir, weight in c.inference_params.cite_pretrained.items():
-            log.info(f"  -> {dir}")
+            log.info(f"  -> {dir}: {weight}")
             path = os.path.join(c.settings.dirs.output, dir, "oof.pickle")
             oof_df = pd.read_pickle(path)
 
@@ -439,7 +439,7 @@ class PostprocessData:
 
         log.info("Load Multiome inference data.")
         for dir, weight in c.inference_params.multi_pretrained.items():
-            log.info(f"  -> {dir}")
+            log.info(f"  -> {dir}: {weight}")
             path = os.path.join(c.settings.dirs.output, dir, "oof.pickle")
             oof_df = pd.read_pickle(path)
 
@@ -459,10 +459,12 @@ class PostprocessData:
             log.info("Load public submission.")
             cell_ids = self.evaluation_ids["cell_id"]
             for dir, weight in c.inference_params.pretrained.items():
-                log.info(f"  -> {dir}")
+                log.info(f"  -> {dir}: {weight}")
                 path = os.path.join(c.settings.dirs.output, dir, "submission.csv")
                 df = pd.read_csv(path)
                 df["target"] = gen_std_submission(df, cell_ids) * weight
+                assert len(df) == 65744180
+                assert df["target"].isnull().sum() == 0
 
                 self.public_inference.append(df)
 

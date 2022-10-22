@@ -8,7 +8,7 @@ import pandas as pd
 import src.utils as utils
 from hydra.core.hydra_config import HydraConfig
 from src.get_score import get_score
-from src.load_data import PostprocessData, gen_std_submission
+from src.load_data import PostprocessData, std
 
 log = logging.getLogger(__name__)
 
@@ -38,6 +38,9 @@ def main(c):
         else:
             multi_oof += df.sort_index()
 
+    assert cite_oof is not None
+    assert multi_oof is not None
+
     cite_oof = cite_oof / len(input.cite_oof)
     multi_oof = multi_oof / len(input.multi_oof)
 
@@ -54,6 +57,10 @@ def main(c):
     multi_good_validation = input.multi_adversarial_oof[
         (input.multi_adversarial_oof["label"] == 0) & (input.multi_adversarial_oof["preds"] == 1)
     ]
+
+    assert cite_good_validation is not None
+    assert multi_good_validation is not None
+
     cv_cite = get_score(
         c.settings.scoring,
         input.train_cite_targets.loc[cite_good_validation.index, :].sort_index(),
@@ -100,6 +107,9 @@ def main(c):
         best_weight_multi = [1.0] * len(input.multi_oof)
 
     if c.inference_params.cite_ensemble_weight_optimization or c.inference_params.multi_ensemble_weight_optimization:
+        assert optimized_cv_cite is not None
+        assert optimized_cv_multi is not None
+
         cv = 0.712 * (optimized_cv_cite) + 0.288 * (optimized_cv_multi)
         log.info(f"training data that similar test data optimized CV: {cv:.5f}")
 
@@ -120,6 +130,12 @@ def main(c):
         else:
             multi_inf += df * weight
 
+    assert cite_inf is not None
+    assert multi_inf is not None
+
+    cite_inf = pd.DataFrame(std(cite_inf.to_numpy()), index=cite_inf.index, columns=cite_inf.columns)
+    multi_inf = pd.DataFrame(std(multi_inf.to_numpy()), index=multi_inf.index, columns=multi_inf.columns)
+
     inference = pd.concat([cite_inf, multi_inf])
 
     for row_id, cell_id, gene_id in zip(
@@ -128,11 +144,13 @@ def main(c):
         input.sample_submission.at[row_id, "target"] = inference.at[cell_id, gene_id]
 
     if c.inference_params.pretrained is not None:
-        cell_ids = input.evaluation_ids["cell_id"]
-        target = gen_std_submission(input.sample_submission["target"], cell_ids)
+        target = input.sample_submission["target"]
         for df in input.public_inference:
             target = target + df["target"].to_numpy()
         input.sample_submission["target"] = target
+
+    assert input.sample_submission["target"].isnull().sum() == 0
+    assert input.sample_submission.columns == ["row_id", "target"]
 
     submission_path = os.path.join(HydraConfig.get().run.dir, "submission.csv")
     input.sample_submission.to_csv(submission_path, index=False)
@@ -159,6 +177,8 @@ class Objective:
                 df = prediction.sort_index() * weight
             else:
                 df += prediction.sort_index() * weight
+
+        assert df is not None
 
         if self.index is not None:
             df = df.loc[self.index, :]

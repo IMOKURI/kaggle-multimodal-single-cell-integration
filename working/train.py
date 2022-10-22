@@ -96,6 +96,10 @@ def main(c):
         else:
             raise Exception(f"Invalid training method. {c.global_params.method}")
 
+        assert _oof_df is not None
+        assert _label_df is not None
+        assert _inference_df is not None
+
         log.info(f"========== fold {fold} training result ==========")
         log.debug(f"_oof_df: {_oof_df.shape}, _label_df: {_label_df.shape}")
         record_result(c, _oof_df, fold, _label_df, loss)
