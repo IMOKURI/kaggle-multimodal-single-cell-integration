@@ -41,8 +41,8 @@ def main(c):
     assert cite_oof is not None
     assert multi_oof is not None
 
-    cite_oof = cite_oof / len(input.cite_oof)
-    multi_oof = multi_oof / len(input.multi_oof)
+    # cite_oof = cite_oof / len(input.cite_oof)
+    # multi_oof = multi_oof / len(input.multi_oof)
 
     # https://www.kaggle.com/competitions/open-problems-multimodal/discussion/349591
     cv_cite = get_score(c.settings.scoring, input.train_cite_targets.sort_index(), cite_oof.sort_index())
@@ -133,8 +133,8 @@ def main(c):
     assert cite_inf is not None
     assert multi_inf is not None
 
-    cite_inf = pd.DataFrame(std(cite_inf.to_numpy()), index=cite_inf.index, columns=cite_inf.columns)
-    multi_inf = pd.DataFrame(std(multi_inf.to_numpy()), index=multi_inf.index, columns=multi_inf.columns)
+    # cite_inf = pd.DataFrame(std(cite_inf.to_numpy()), index=cite_inf.index, columns=cite_inf.columns)
+    # multi_inf = pd.DataFrame(std(multi_inf.to_numpy()), index=multi_inf.index, columns=multi_inf.columns)
 
     inference = pd.concat([cite_inf, multi_inf])
 
@@ -150,7 +150,6 @@ def main(c):
         input.sample_submission["target"] = target
 
     assert input.sample_submission["target"].isnull().sum() == 0
-    assert input.sample_submission.columns == ["row_id", "target"]
 
     submission_path = os.path.join(HydraConfig.get().run.dir, "submission.csv")
     input.sample_submission.to_csv(submission_path, index=False)
