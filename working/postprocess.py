@@ -133,8 +133,8 @@ def main(c):
     assert cite_inf is not None
     assert multi_inf is not None
 
-    # cite_inf = pd.DataFrame(std(cite_inf.to_numpy()), index=cite_inf.index, columns=cite_inf.columns)
-    # multi_inf = pd.DataFrame(std(multi_inf.to_numpy()), index=multi_inf.index, columns=multi_inf.columns)
+    cite_inf = pd.DataFrame(std(cite_inf.to_numpy()), index=cite_inf.index, columns=cite_inf.columns)
+    multi_inf = pd.DataFrame(std(multi_inf.to_numpy()), index=multi_inf.index, columns=multi_inf.columns)
 
     inference = pd.concat([cite_inf, multi_inf])
 

@@ -250,7 +250,7 @@ params:
 global_params:
   # seed: 440
   method: nn # tuning_tabnet, adversarial_tabnet  # ** adversarial
-  data: cite # cite, multi
+  data: multi # cite, multi
 
 cv_params:
   n_fold: 7
@@ -281,8 +281,8 @@ training_params:
 
 model_params:
   dataset: table_base
-  model: mlp_resnet
-  model_name: mlp_resnet
+  model: one_d_cnn
+  model_name: one_d_cnn
   model_input: 0
   tf_initialization: True
   tabnet:
@@ -336,7 +336,6 @@ inference_params:
   pretrained:
     5-5-msci22-ensembling-citeseq: 1 # 0.812
     all-in-one-citeseq-multiome-with-keras: 1 # 0.812
-    # multimodal-single-cell-integration-ensembling: 1 # 0.811
   # pretrained:
   #   - dir: ""
   #     model: ""
