@@ -249,8 +249,8 @@ params:
 
 global_params:
   # seed: 440
-  method: tuning_nn # tuning_tabnet, adversarial_tabnet  # ** adversarial
-  data: cite # cite, multi
+  method: nn # tuning_tabnet, adversarial_tabnet  # ** adversarial
+  data: multi # cite, multi
 
 cv_params:
   n_fold: 7
@@ -317,8 +317,8 @@ model_params:
       ch_1: 128
       ch_2: 384
       ch_3: 384
-      dropout_1: 0.1
-      dropout_2: 0.2
+      dropout_1: 0.05
+      dropout_2: 0.25
       dropout_3: 0.1
       weight_norm: True
     multi:
@@ -326,9 +326,9 @@ model_params:
       ch_1: 256
       ch_2: 512
       ch_3: 512
-      dropout_1: 0.1
-      dropout_2: 0.2
-      dropout_3: 0.1
+      dropout_1: 0.15
+      dropout_2: 0.35
+      dropout_3: 0.15
       weight_norm: True
 
 inference_params:
