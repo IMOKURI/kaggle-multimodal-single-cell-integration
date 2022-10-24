@@ -21,7 +21,7 @@ from src.run_loop import (  # train_fold_lightgbm,
     train_fold_tabnet,
     train_fold_xgboost,
 )
-from src.run_tuning import ObjectiveTabnet
+from src.run_tuning import ObjectiveTabnet, ObjectiveNN
 
 log = logging.getLogger(__name__)
 
@@ -84,7 +84,15 @@ def main(c):
         elif c.global_params.method == "tuning_tabnet":
             objective = ObjectiveTabnet(c, input, fold)
             study = optuna.create_study(direction="maximize")
-            study.optimize(objective, n_trials=50, callbacks=[objective.callback])
+            study.optimize(objective, n_trials=100, callbacks=[objective.callback])
+            loss = study.best_trial.value
+            _oof_df = objective.best_preds_df
+            _label_df = objective.best_valid_label_df
+            _inference_df = objective.best_inference_df
+        elif c.global_params.method == "tuning_nn":
+            objective = ObjectiveNN(c, input, fold, device)
+            study = optuna.create_study()
+            study.optimize(objective, n_trials=100, callbacks=[objective.callback])
             loss = study.best_trial.value
             _oof_df = objective.best_preds_df
             _label_df = objective.best_valid_label_df
