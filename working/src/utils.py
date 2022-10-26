@@ -16,6 +16,7 @@ import pandas as pd
 import psutil
 import torch
 import wandb
+from hydra.core.hydra_config import HydraConfig
 from omegaconf import OmegaConf, open_dict
 from omegaconf.errors import ConfigAttributeError
 
@@ -84,6 +85,7 @@ def fix_seed(seed=42):
 
 
 def basic_environment_info():
+    log.info(f"Output directory: {HydraConfig.get().run.dir}")
     log.info(f"Python version: {sys.version}")
     try:
         log.info(f"PyTorch version: {torch.__version__}")

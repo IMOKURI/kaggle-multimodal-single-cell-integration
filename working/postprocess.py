@@ -97,7 +97,7 @@ def main(c):
         log.info(f"Optimize multi ensemble weight.")
         objective = Objective(input.train_multi_targets, input.multi_oof, multi_good_validation.index)
         study = optuna.create_study(direction="maximize")
-        study.optimize(objective, n_trials=50)
+        study.optimize(objective, n_trials=100)
 
         optimized_cv_multi = study.best_trial.value
         best_weight_multi = list(study.best_trial.params.values())
