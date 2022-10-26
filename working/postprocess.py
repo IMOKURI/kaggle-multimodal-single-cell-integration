@@ -136,7 +136,8 @@ def main(c):
     cite_inf = pd.DataFrame(std(cite_inf.to_numpy()), index=cite_inf.index, columns=cite_inf.columns)
     multi_inf = pd.DataFrame(std(multi_inf.to_numpy()), index=multi_inf.index, columns=multi_inf.columns)
 
-    inference = pd.concat([cite_inf, multi_inf])
+    inference = pd.concat([cite_inf, multi_inf]) * c.inference_params.main_submission_weight
+    log.info(f"Main submission weight: {c.inference_params.main_submission_weight}")
 
     for row_id, cell_id, gene_id in zip(
         input.evaluation_ids["row_id"], input.evaluation_ids["cell_id"], input.evaluation_ids["gene_id"]

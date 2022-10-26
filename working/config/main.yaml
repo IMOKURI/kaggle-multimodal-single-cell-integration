@@ -334,6 +334,7 @@ model_params:
 inference_params:
   cite_ensemble_weight_optimization: False
   multi_ensemble_weight_optimization: False
+  main_submission_weight: 2
   cite_pretrained:
     2022-10-11_01-48-10: 0.19653 # tabnet 0.90216 by 687, pretrain with all data
     2022-10-18_10-55-21: 0.94984 # tabnet 0.90277 by 687, pretrain with all data
