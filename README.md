@@ -37,14 +37,19 @@
 
 ##### Model (CV Score, Num of Feature, Ensemble weight)
 
-To be updated...
+- TabNet
+- MLP
+- ResNet
+- 1D CNN
+- XGBoost
+
 
 #### Multiome
 
 
 ##### Model (CV Score, Num of Feature, Ensemble weight)
 
-To be updated...
+- 1D CNN のみ
 
 
 ### Postprocess
@@ -62,34 +67,38 @@ To be updated...
 
 - 各推論を Standardize してからアンサンブルする
     - OOF と 推論結果をまとめて Standardize する
-- Optuna でアンサンブルの重み最適化
+- Optuna でアンサンブルの重み最適化する
     - 評価指標には、Adversarial training で誤判断された細胞 3 万件ほど使用
+- Public submission と 上原さんの Submission をアンサンブルする
 
 ## Score
 
 CV weight -> cite:multi = 0.712:0.288
 
 ```
-2022-10-18 12:15:57,983 [INFO][load_data] Load CITEseq inference data.
-2022-10-18 12:15:57,984 [INFO][load_data]   -> 2022-10-18_10-55-21
-2022-10-18 12:15:58,306 [INFO][load_data]   -> 2022-10-18_11-33-29
-2022-10-18 12:15:58,599 [INFO][load_data]   -> 2022-10-12_00-50-18
-2022-10-18 12:15:59,181 [INFO][load_data]   -> 2022-10-12_11-11-39
-2022-10-18 12:15:59,770 [INFO][load_data]   -> 2022-10-15_01-02-59
-2022-10-18 12:16:00,342 [INFO][load_data]   -> 2022-10-15_01-16-43
-2022-10-18 12:16:00,900 [INFO][load_data]   -> 2022-10-15_01-34-34
-2022-10-18 12:16:01,468 [INFO][load_data]   -> 2022-10-15_01-44-29
-2022-10-18 12:16:01,993 [INFO][load_data]   -> 2022-10-15_12-50-55
-2022-10-18 12:16:02,589 [INFO][load_data]   -> 2022-10-17_00-13-14
-2022-10-18 12:16:03,166 [INFO][load_data]   -> 2022-10-14_03-16-10
-2022-10-18 12:16:03,522 [INFO][load_data] Load Multiome inference data.
-2022-10-18 12:16:03,522 [INFO][load_data]   -> 2022-10-16_13-08-46
-2022-10-18 12:17:57,379 [INFO][load_data]   -> 2022-10-16_13-30-35
-2022-10-18 12:20:06,484 [INFO][load_data]   -> 2022-10-17_00-25-56
-2022-10-18 12:22:44,774 [INFO][load_data]   -> 2022-10-17_13-19-49
-2022-10-18 12:31:37,825 [INFO][postprocess] All training data CV: 0.83690 (cite: 0.90391, multi: 0.67126)
-2022-10-18 12:31:58,183 [INFO][postprocess] training data that similar test data CV: 0.83402 (cite: 0.90149(size: 13112), multi: 0.66723(size: 16702))
-2022-10-18 12:31:58,185 [INFO][postprocess] Optimize cite ensemble weight.
-2022-10-18 12:42:55,117 [INFO][postprocess] cite optimization result. CV: 0.90161, weight: [0.2640474387440314, 0.946477353882143, 0.019359167217375066, 0.07263067920479108, 0.8004125030010443, 0.23299235688015946, 0.14623894627162803, 0.08619918775342417, 0.19411397275938902, 0.1314448260365039, 0.816985969895111]
-2022-10-18 12:42:55,118 [INFO][postprocess] training data that similar test data optimized CV: 0.83411
+2022-10-26 21:58:31,975 [INFO][load_data] Load CITEseq inference data.
+2022-10-26 21:58:31,976 [INFO][load_data]   -> 2022-10-11_01-48-10: 0.19653
+2022-10-26 21:58:32,265 [INFO][load_data]   -> 2022-10-18_10-55-21: 0.94984
+2022-10-26 21:58:32,539 [INFO][load_data]   -> 2022-10-18_11-33-29: 0.87416
+2022-10-26 21:58:32,814 [INFO][load_data]   -> 2022-10-15_01-02-59: 0.41997
+2022-10-26 21:58:33,247 [INFO][load_data]   -> 2022-10-15_01-16-43: 0.3216
+2022-10-26 21:58:33,687 [INFO][load_data]   -> 2022-10-15_01-34-34: 0.13372
+2022-10-26 21:58:34,125 [INFO][load_data]   -> 2022-10-15_01-44-29: 0.16316
+2022-10-26 21:58:34,565 [INFO][load_data]   -> 2022-10-15_12-39-39: 0.31211
+2022-10-26 21:58:35,004 [INFO][load_data]   -> 2022-10-15_12-50-55: 0.27789
+2022-10-26 21:58:35,439 [INFO][load_data]   -> 2022-10-14_03-16-10: 0.15874
+2022-10-26 21:58:35,686 [INFO][load_data]   -> 2022-10-18_00-16-49: 0.74503
+2022-10-26 21:58:35,955 [INFO][load_data] Load Multiome inference data.
+2022-10-26 21:58:35,955 [INFO][load_data]   -> 2022-10-16_13-08-46: 1
+2022-10-26 22:00:18,263 [INFO][load_data]   -> 2022-10-16_13-30-35: 1
+2022-10-26 22:02:05,304 [INFO][load_data]   -> 2022-10-17_00-25-56: 1
+2022-10-26 22:04:10,814 [INFO][load_data]   -> 2022-10-17_13-19-49: 1
+2022-10-26 22:05:45,760 [INFO][load_data] Load public submission.
+2022-10-26 22:05:45,762 [INFO][load_data]   -> 5-5-msci22-ensembling-citeseq: 1
+2022-10-26 22:06:46,478 [INFO][load_data]   -> all-in-one-citeseq-multiome-with-keras: 1
+2022-10-26 22:07:46,988 [INFO][load_data]   -> uehara-san-2022-10-24-1906: 1.5
+2022-10-26 22:13:57,347 [INFO][postprocess] All training data CV: 0.83707 (cite: 0.90414, multi: 0.67126)
+2022-10-26 22:14:17,358 [INFO][postprocess] training data that similar test data CV: 0.83422 (cite: 0.90177(size: 13112), multi: 0.66723(size: 16702))
+2022-10-26 22:14:50,765 [INFO][postprocess] Main submission weight: 2
+2022-10-26 22:54:27,678 [INFO][postprocess] Done.
 ```
