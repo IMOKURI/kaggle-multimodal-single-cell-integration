@@ -366,7 +366,7 @@ inference_params:
   pretrained:
     5-5-msci22-ensembling-citeseq: 1 # 0.812
     all-in-one-citeseq-multiome-with-keras: 1 # 0.812
-    uehara-san-2022-10-28-0749: 0.5 # 0.811
+    uehara-san-2022-10-28-0749: 1 # 0.811
   # pretrained:
   #   - dir: ""
   #     model: ""
