@@ -249,7 +249,7 @@ params:
 
 global_params:
   # seed: 440
-  method: nn # tuning_tabnet, adversarial_tabnet  # ** adversarial
+  method: tabnet # tuning_tabnet, adversarial_tabnet  # ** adversarial
   data: cite # cite, multi
 
 cv_params:
@@ -292,10 +292,10 @@ model_params:
     gamma: 1.6
     mask_type: entmax
     cite:
-      n_d: 56
+      n_d: 64
       n_steps: 1
-      n_independent: 2
-      gamma: 1.6
+      n_independent: 1
+      gamma: 1.9
       mask_type: entmax
     multi:
       n_d: 56
