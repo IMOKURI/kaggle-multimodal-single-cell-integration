@@ -224,6 +224,8 @@ class LoadData:
                     df.columns = [f"{id}_{col}" for col in df.columns]
                 elif "ivis_supervised" in stem:
                     df.columns = [f"ivis_supervised_{col}" for col in df.columns]
+                if len(df.columns) == 240:
+                    df = df.iloc[:, :100]
                 train_inputs = pd.concat([train_inputs, df], axis=1)
                 train_inputs.index = df.index
                 train_inputs.index.name = df.index.name
@@ -233,6 +235,8 @@ class LoadData:
                     df.columns = [f"{id}_{col}" for col in df.columns]
                 elif "ivis_supervised" in stem:
                     df.columns = [f"ivis_supervised_{col}" for col in df.columns]
+                if len(df.columns) == 240:
+                    df = df.iloc[:, :100]
                 test_inputs = pd.concat([test_inputs, df], axis=1)
                 test_inputs.index = df.index
                 test_inputs.index.name = df.index.name

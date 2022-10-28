@@ -84,7 +84,7 @@ def main(c):
 
         objective = Objective(input.train_cite_targets, input.cite_oof, cite_good_validation.index)
         study = optuna.create_study(direction="maximize")
-        study.optimize(objective, n_trials=400)
+        study.optimize(objective, n_trials=1000)
 
         optimized_cv_cite = study.best_trial.value
         best_weight_cite = list(study.best_trial.params.values())
@@ -169,7 +169,7 @@ class Objective:
         weights = [0] * self.num
 
         for n in range(self.num):
-            weights[n] = trial.suggest_float(f"weight_{n}", 0, 1, step=1e-5)
+            weights[n] = trial.suggest_float(f"weight_{n}", 0, 1, step=1e-2)
 
         df = None
         for weight, prediction in zip(weights, self.predictions):

@@ -36,8 +36,11 @@ def train_epoch(c, train_loader, model, criterion, optimizer, scheduler, scaler,
             losses.update(loss.item(), batch_size)
             loss = loss / c.training_params.gradient_acc_step
 
-        assert not torch.isnan(y_preds).any()
-        assert not torch.isnan(loss).any()
+        try:
+            assert not torch.isnan(y_preds).any()
+            assert not torch.isnan(loss).any()
+        except AssertionError as e:
+            log.warning(f"Nan detected. -> {e}")
 
         scaler.scale(loss).backward()
 
@@ -100,8 +103,11 @@ def validate_epoch(c, valid_loader, model, criterion, device, verbose=False):
 
         loss = criterion(y_preds, labels)
 
-        assert not torch.isnan(y_preds).any()
-        assert not torch.isnan(loss).any()
+        try:
+            assert not torch.isnan(y_preds).any()
+            assert not torch.isnan(loss).any()
+        except AssertionError as e:
+            log.warning(f"Nan detected. -> {e}")
 
         losses.update(loss.item(), batch_size)
 
