@@ -125,7 +125,10 @@ settings:
   preprocesses:
     # - train_cite_inputs.pickle
     - train_cite_no_pca_inputs.pickle
-    - train_cite_ontology_pca_240.pickle
+    # - train_cite_ontology_pca_240.pickle
+    - train_cite_ontology_pca_240_p.pickle
+    - train_cite_ontology_pca_240_f.pickle
+    - train_cite_ontology_pca_240_c.pickle
     # - train_cite_sum_by_rna_type_inputs.pickle
     # - train_cite_mean_by_rna_type_inputs.pickle
     # - train_cite_std_by_rna_type_inputs.pickle
@@ -141,7 +144,10 @@ settings:
 
     # - test_cite_inputs.pickle
     - test_cite_no_pca_inputs.pickle
-    - test_cite_ontology_pca_240.pickle
+    # - test_cite_ontology_pca_240.pickle
+    - test_cite_ontology_pca_240_p.pickle
+    - test_cite_ontology_pca_240_f.pickle
+    - test_cite_ontology_pca_240_c.pickle
     # - test_cite_sum_by_rna_type_inputs.pickle
     # - test_cite_mean_by_rna_type_inputs.pickle
     # - test_cite_std_by_rna_type_inputs.pickle
@@ -306,7 +312,7 @@ model_params:
       n_d: 64
       n_steps: 1
       n_independent: 1
-      gamma: 1.9
+      gamma: 1.3
       mask_type: entmax
   one_d_cnn:
     hidden_size: 4096
@@ -341,23 +347,22 @@ inference_params:
   multi_ensemble_weight_optimization: False
   main_submission_weight: 2
   cite_pretrained:
-    # 2022-10-18_10-55-21: 0.0  # tabnet 0.90277 by 687, pretrain with all data
-    2022-10-15_01-02-59: 0.45 # MLP dropout 0.90199 by 686
-    2022-10-15_01-16-43: 0.51 # MLP_tf dropout 0.90198 by 686, seed 1440
-    2022-10-15_01-34-34: 0.3  # MLP resnet 0.90139 by 686
-    2022-10-15_01-44-29: 0.18 # MLP_tf resnet 0.90147 by 686, seed 1440
-    2022-10-15_12-39-39: 0.2  # 1D CNN 0.90189 by 686
-    2022-10-15_12-50-55: 0.3  # 1D CNN 0.90175 by 686
-    2022-10-14_03-16-10: 0.44 # xgboost 0.89997 by 687
-    2022-10-18_00-16-49: 0.96 # xgboost 0.89998 by 687
-    2022-10-27_12-50-48: 0.35 # tabnet 0.90283 by 407
-    2022-10-27_12-55-11: 0.87 # tabnet 0.90291 by 407
-    # 2022-10-27_13-38-18: 0.05 # dropout 0.90280 by 406
-    # 2022-10-27_13-38-48: 0.03 # dropout 0.90280 by 406
-    2022-10-28_14-34-19: 0.92 # tabnet 56-1-1-1.9 0.90298 by 407
-    2022-10-28_14-46-38: 0.97 # tabnet 56-1-1-1.9 0.90293 by 407
-    2022-10-28_14-52-22: 0.98 # tabnet 64-1-1-1.9 0.90301 by 407
-    2022-10-28_14-54-39: 0.91 # tabnet 64-1-1-1.9 0.90305 by 407
+    2022-10-15_01-16-43: 1 # 0.18 # 0.55 # 0.24 # MLP_tf dropout 0.90198 by 686, seed 1440
+    2022-10-15_01-34-34: 1 # 0.13 # 0.18 # 0.15 # MLP resnet 0.90139 by 686
+    2022-10-15_12-39-39: 1 # 0.2  # 0.33 # 0.21 # 1D CNN 0.90189 by 686
+    2022-10-15_12-50-55: 1 # 0.19 # 0.38 # 0.32 # 1D CNN 0.90175 by 686
+    2022-10-14_03-16-10: 1 # 0.47 # 0.63 # 0.70 # xgboost 0.89997 by 687
+    2022-10-18_00-16-49: 1 # 0.98 # 0.94 # 0.91 # xgboost 0.89998 by 687
+    2022-10-27_12-50-48: 1 # 0.19 # 0.54 # 0.39 # tabnet 0.90283 by 407
+    2022-10-27_12-55-11: 1 # 0.54 # 0.17 # 0.3  # tabnet 0.90291 by 407
+    2022-10-28_14-34-19: 1 # 0.68 # 0.73 # 0.93 # tabnet 56-1-1-1.9 0.90298 by 407
+    2022-10-28_14-46-38: 1 # 0.96 # 0.75 # 0.78 # tabnet 56-1-1-1.9 0.90293 by 407
+    2022-10-28_14-52-22: 1 # 0.85 # 0.77 # 0.9  # tabnet 64-1-1-1.9 0.90301 by 407
+    2022-10-28_14-54-39: 1 # 0.86 # 0.95 # 0.36 # tabnet 64-1-1-1.9 0.90305 by 407
+    2022-10-30_03-45-35: 1 # 0.67 # 0.93 # 0.9  # tabnet 0.90307 by 507
+    2022-10-30_03-47-04: 1 # 0.58 # 0.67 # 0.5  # tabnet 0.90302 by 507
+    2022-10-30_04-05-42: 1 # 0.56 # 0.88 # 0.86 # tabnet 0.90304 by 507
+    2022-10-30_04-48-37: 1 # 0.61 # 0.79 # 0.4  # dropout 0.90265 by 506
   multi_pretrained:
     2022-10-16_13-08-46: 1 # 1D CNN_tf 0.67085 by 3344
     2022-10-16_13-30-35: 1 # 1D CNN 0.67086 by 3344
