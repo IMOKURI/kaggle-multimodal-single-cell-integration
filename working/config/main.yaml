@@ -49,6 +49,9 @@ settings:
     # - train_cite_inputs_raw.h5
     # - train_cite_targets_raw.h5
 
+    # - test_cite_ontology.pickle
+    # - train_cite_ontology.pickle
+
     # - test_multi_inputs.h5
     # - train_multi_inputs.h5
     - train_multi_targets.h5
@@ -122,6 +125,7 @@ settings:
   preprocesses:
     # - train_cite_inputs.pickle
     - train_cite_no_pca_inputs.pickle
+    - train_cite_ontology_pca_240.pickle
     # - train_cite_sum_by_rna_type_inputs.pickle
     # - train_cite_mean_by_rna_type_inputs.pickle
     # - train_cite_std_by_rna_type_inputs.pickle
@@ -137,6 +141,7 @@ settings:
 
     # - test_cite_inputs.pickle
     - test_cite_no_pca_inputs.pickle
+    - test_cite_ontology_pca_240.pickle
     # - test_cite_sum_by_rna_type_inputs.pickle
     # - test_cite_mean_by_rna_type_inputs.pickle
     # - test_cite_std_by_rna_type_inputs.pickle
@@ -288,7 +293,7 @@ model_params:
   tabnet:
     n_d: 56
     n_steps: 1
-    n_independent: 2
+    n_independent: 1
     gamma: 1.6
     mask_type: entmax
     cite:
@@ -298,10 +303,10 @@ model_params:
       gamma: 1.9
       mask_type: entmax
     multi:
-      n_d: 56
-      n_steps: 2
+      n_d: 64
+      n_steps: 1
       n_independent: 1
-      gamma: 1.0
+      gamma: 1.9
       mask_type: entmax
   one_d_cnn:
     hidden_size: 4096
@@ -322,13 +327,13 @@ model_params:
       dropout_3: 0.1
       weight_norm: True
     multi:
-      hidden_size: 4096
+      hidden_size: 8192
       ch_1: 256
       ch_2: 512
       ch_3: 512
-      dropout_1: 0.15
-      dropout_2: 0.35
-      dropout_3: 0.15
+      dropout_1: 0.1
+      dropout_2: 0.2
+      dropout_3: 0.1
       weight_norm: True
 
 inference_params:
@@ -349,15 +354,16 @@ inference_params:
     2022-10-27_12-55-11: 0.87 # tabnet 0.90291 by 407
     # 2022-10-27_13-38-18: 0.05 # dropout 0.90280 by 406
     # 2022-10-27_13-38-48: 0.03 # dropout 0.90280 by 406
-    2022-10-28_14-34-19: 0.92 # tabnet 56-1-1-1.6 0.90298 by 407
-    2022-10-28_14-46-38: 0.97 # tabnet 56-1-1-1.6 0.90293 by 407
-    2022-10-28_14-52-22: 0.98 # tabnet 64-1-1-1.6 0.90301 by 407
-    2022-10-28_14-54-39: 0.91 # tabnet 64-1-1-1.6 0.90305 by 407
+    2022-10-28_14-34-19: 0.92 # tabnet 56-1-1-1.9 0.90298 by 407
+    2022-10-28_14-46-38: 0.97 # tabnet 56-1-1-1.9 0.90293 by 407
+    2022-10-28_14-52-22: 0.98 # tabnet 64-1-1-1.9 0.90301 by 407
+    2022-10-28_14-54-39: 0.91 # tabnet 64-1-1-1.9 0.90305 by 407
   multi_pretrained:
     2022-10-16_13-08-46: 1 # 1D CNN_tf 0.67085 by 3344
     2022-10-16_13-30-35: 1 # 1D CNN 0.67086 by 3344
     2022-10-17_00-25-56: 1 # 1D CNN 0.67076 by 3104
     2022-10-17_13-19-49: 1 # 1D CNN_tf 0.67069 by 3104
+    2022-10-30_00-30-35: 1 # 1D CNN 0.67084 by 3344 ch 8192
     # 2022-10-07_06-25-40: 1  # tabnet 0.66899 by 3104
     # 2022-10-07_06-15-47: 1  # tabnet 0.66904 by 3105
     # 2022-10-07_12-36-15: 1  # tabnet 0.66900 by 3105, seed 1440

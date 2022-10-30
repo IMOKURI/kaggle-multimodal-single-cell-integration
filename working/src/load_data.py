@@ -212,6 +212,12 @@ class LoadData:
                 log.info(f"Load preprocessed file. path: {file_path}")
                 df = pd.read_pickle(file_path)
 
+            elif os.path.exists(file_path.replace(".pickle", ".csv")):
+                log.info(f"Load csv preprocessed file. path: {file_path}")
+
+                df = pd.read_csv(file_path.replace(".pickle", ".csv"), low_memory=False, index_col=0, header=0)
+                df.to_pickle(file_path)
+
             else:
                 log.warning(f"File does not exist. path: {file_path}")
                 continue

@@ -107,21 +107,21 @@ class MlpResnetModel(nn.Module):
         self.amp = c.settings.amp
         self.model_input = c.model_params.model_input
         self.model_output = c.settings.n_class
-        hidden_size = self.model_input // 3
+        hidden_size = self.model_input
 
         self.batch_norm1 = nn.BatchNorm1d(self.model_input)
         self.dense1 = nn.utils.weight_norm(nn.Linear(self.model_input, hidden_size))
 
         self.batch_norm2 = nn.BatchNorm1d(self.model_input + hidden_size)
-        self.dropout2 = nn.Dropout(0.1)
+        self.dropout2 = nn.Dropout(0.3)
         self.dense2 = nn.utils.weight_norm(nn.Linear(self.model_input + hidden_size, hidden_size))
 
         self.batch_norm3 = nn.BatchNorm1d(hidden_size * 2)
-        self.dropout3 = nn.Dropout(0.2)
+        self.dropout3 = nn.Dropout(0.3)
         self.dense3 = nn.utils.weight_norm(nn.Linear(hidden_size * 2, hidden_size))
 
         self.batch_norm4 = nn.BatchNorm1d(hidden_size * 2)
-        self.dropout4 = nn.Dropout(0.1)
+        self.dropout4 = nn.Dropout(0.3)
         self.dense4 = nn.utils.weight_norm(nn.Linear(hidden_size * 2, self.model_output))
 
         if c.model_params.tf_initialization:
