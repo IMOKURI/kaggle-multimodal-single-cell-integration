@@ -52,8 +52,8 @@ settings:
     # - test_cite_ontology.pickle
     # - train_cite_ontology.pickle
 
-    # - test_multi_inputs.h5
-    # - train_multi_inputs.h5
+    - test_multi_inputs.h5
+    - train_multi_inputs.h5
     - train_multi_targets.h5
 
     # - test_multi_inputs_raw.h5
@@ -88,7 +88,7 @@ settings:
     # - train_multi_chr9_inputs_pca_100.pickle
     # - train_multi_chrX_inputs_pca_100.pickle
     # - train_multi_chrY_inputs_pca_100.pickle
-    - train_multi_nopca_inputs.pickle
+    # - train_multi_nopca_inputs.pickle
 
     # - test_multi_GL_inputs__100.pickle
     # - test_multi_KI_inputs__100.pickle
@@ -116,7 +116,7 @@ settings:
     # - test_multi_chr9_inputs_pca_100.pickle
     # - test_multi_chrX_inputs_pca_100.pickle
     # - test_multi_chrY_inputs_pca_100.pickle
-    - test_multi_nopca_inputs.pickle
+    # - test_multi_nopca_inputs.pickle
 
     # - train.csv
     # - test.csv
@@ -187,7 +187,9 @@ settings:
     - train_multi_chrY_inputs_pca_100.pickle
 
     - train_multi_all_inputs_ivis_240.pickle
+    # - train_multi_nopca_inputs.pickle
     - train_multi_nopca_inputs_ivis_240.pickle
+    - train_multi_no_pca_inputs.pickle # 79
 
     - train_multi_targets.pickle
 
@@ -219,7 +221,9 @@ settings:
     - test_multi_chrY_inputs_pca_100.pickle
 
     - test_multi_all_inputs_ivis_240.pickle
+    # - test_multi_nopca_inputs.pickle
     - test_multi_nopca_inputs_ivis_240.pickle
+    - test_multi_no_pca_inputs.pickle # 79
 
     - metadata.pickle
 
@@ -260,8 +264,8 @@ params:
 
 global_params:
   # seed: 440
-  method: xgboost # tuning_tabnet, adversarial_tabnet  # ** adversarial
-  data: cite # cite, multi
+  method: tabnet # tuning_tabnet, adversarial_tabnet  # ** adversarial
+  data: multi # cite, multi
 
 cv_params:
   n_fold: 7

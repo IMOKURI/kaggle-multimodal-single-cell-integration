@@ -1,5 +1,5 @@
 preprocess_params:
-  cols: all  # all, chr1 ~ chr22, chrX, chrY, GL, KI
+  cols: all # all, chr1 ~ chr22, chrX, chrY, GL, KI
   methods:
     # - neighbors
     # - pca
@@ -308,6 +308,87 @@ preprocess_params:
 
     # ENSG00000198502_HLA-DRB5
     # ENSG00000114013_CD86
+
+  multi_no_pca_cols:
+    - inputs_chr10:100519441-100519880
+    - inputs_chr10:112416441-112417233
+    - inputs_chr10:79445360-79446260
+    - inputs_chr11:65110031-65110848
+    - inputs_chr11:65640304-65641188
+    - inputs_chr11:66316653-66317422
+    - inputs_chr11:76210201-76211139
+    - inputs_chr12:108879426-108880348
+    - inputs_chr12:111263703-111264562
+    - inputs_chr12:121686628-121687540
+    - inputs_chr12:4538279-4539164
+    - inputs_chr12:94262083-94262915
+    - inputs_chr12:9925503-9926409
+    - inputs_chr13:113433639-113434503
+    - inputs_chr13:42271518-42272375
+    - inputs_chr14:101809637-101810552
+    - inputs_chr14:102304717-102305611
+    - inputs_chr14:105050302-105051161
+    - inputs_chr14:90900501-90901426
+    - inputs_chr15:40873568-40874476
+    - inputs_chr16:19487650-19488510
+    - inputs_chr16:27315381-27316272
+    - inputs_chr16:30534477-30535263
+    - inputs_chr16:57060900-57061782
+    - inputs_chr16:71489186-71490007
+    - inputs_chr16:85583187-85584104
+    - inputs_chr16:88941483-88942242
+    - inputs_chr17:30086624-30087519
+    - inputs_chr17:42183799-42184672
+    - inputs_chr17:47941047-47941927
+    - inputs_chr18:2982512-2983414
+    - inputs_chr18:79395789-79396491
+    - inputs_chr18:79988097-79988952
+    - inputs_chr19:13879865-13880769
+    - inputs_chr19:40716574-40717484
+    - inputs_chr19:41248634-41249461
+    - inputs_chr19:4402074-4402966
+    - inputs_chr19:49533556-49534441
+    - inputs_chr19:57350783-57351662
+    - inputs_chr1:110003642-110004563
+    - inputs_chr1:224376573-224377391
+    - inputs_chr1:228275594-228276433
+    - inputs_chr1:31376413-31377243
+    - inputs_chr20:34955366-34956237
+    - inputs_chr21:38448348-38449257
+    - inputs_chr22:37161145-37162036
+    - inputs_chr22:38681480-38682389
+    - inputs_chr2:106193933-106194817
+    - inputs_chr2:111897854-111898805
+    - inputs_chr2:151289155-151290066
+    - inputs_chr2:16034066-16034954
+    - inputs_chr2:174486764-174487644
+    - inputs_chr2:181891403-181892214
+    - inputs_chr2:189179257-189180040
+    - inputs_chr2:218607612-218608552
+    - inputs_chr2:70248259-70249177
+    - inputs_chr2:79512415-79513337
+    - inputs_chr2:96824463-96825021
+    - inputs_chr3:115099906-115100813
+    - inputs_chr3:184185557-184186468
+    - inputs_chr5:103258290-103259094
+    - inputs_chr5:141560561-141561460
+    - inputs_chr5:147374931-147375804
+    - inputs_chr5:160260681-160261601
+    - inputs_chr6:119349377-119350277
+    - inputs_chr6:149648274-149649178
+    - inputs_chr6:151451811-151452721
+    - inputs_chr6:25962244-25963155
+    - inputs_chr6:3231182-3232054
+    - inputs_chr6:33271521-33272382
+    - inputs_chr7:102464532-102465425
+    - inputs_chr7:1530269-1531122
+    - inputs_chr7:2314050-2314940
+    - inputs_chr7:90726353-90727135
+    - inputs_chr9:113516846-113517756
+    - inputs_chr9:127450976-127451825
+    - inputs_chrX:119468825-119469591
+    - inputs_chrX:40266642-40267411
+    - inputs_chrX:40647166-40648008
 
   cite_drop_cols: []
   multi_drop_cols: []

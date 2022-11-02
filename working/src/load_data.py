@@ -172,6 +172,24 @@ class PreprocessData:
 
             elif c.global_params.data == "multi":
                 ...
+                # 明示的に温存する column を抽出する
+                cols = []
+                if c.preprocess_params.multi_no_pca_cols != []:
+                    cols += c.preprocess_params.multi_no_pca_cols
+
+                cols = list(set(cols))
+
+                train = self.train_multi_inputs[cols]
+                test = self.test_multi_inputs[cols]
+
+                log.info(f"multi no pca data: {train.shape}")
+
+                train.to_pickle(
+                    os.path.join(c.settings.dirs.preprocess, f"train_{c.global_params.data}_no_pca_inputs.pickle")
+                )
+                test.to_pickle(
+                    os.path.join(c.settings.dirs.preprocess, f"test_{c.global_params.data}_no_pca_inputs.pickle")
+                )
 
                 # input_ids = []
                 # for row in self.multiome_target2input["input_id"]:
