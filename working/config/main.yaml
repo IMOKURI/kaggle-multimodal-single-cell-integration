@@ -264,7 +264,7 @@ params:
 
 global_params:
   # seed: 440
-  method: tabnet # tuning_tabnet, adversarial_tabnet  # ** adversarial
+  method: nn # tuning_tabnet, adversarial_tabnet  # ** adversarial
   data: multi # cite, multi
 
 cv_params:
@@ -337,7 +337,7 @@ model_params:
       dropout_3: 0.1
       weight_norm: True
     multi:
-      hidden_size: 8192
+      hidden_size: 4096
       ch_1: 256
       ch_2: 512
       ch_3: 512
@@ -351,37 +351,33 @@ inference_params:
   multi_ensemble_weight_optimization: False
   main_submission_weight: 2
   cite_pretrained:
-    2022-10-15_01-02-59: 0.65 # 0.27 # 0.45 # MLP dropout 0.90199 by 686, seed 440
-    2022-10-15_01-16-43: 0.18 # 0.27 # 0.47 # 0.18 # 0.55 # 0.24 # MLP_tf dropout 0.90198 by 686, seed 1440
-    2022-10-15_12-39-39: 0.02 # 0.2  # 0.15 # 0.2  # 0.33 # 0.21 # 1D CNN 0.90189 by 686
-    2022-10-15_12-50-55: 0.05 # 0.25 # 0.13 # 0.19 # 0.38 # 0.32 # 1D CNN 0.90175 by 686
-    2022-10-27_12-50-48: 0.21 # 0.81 # 0.56 # 0.19 # 0.54 # 0.39 # tabnet 0.90283 by 407
-    2022-10-27_12-55-11: 0.31 # 0.77 # 0.39 # 0.54 # 0.17 # 0.3  # tabnet 0.90291 by 407
-    2022-10-28_14-34-19: 0.6  # 0.6  # 0.37 # 0.68 # 0.73 # 0.93 # tabnet 56-1-1-1.9 0.90298 by 407
-    2022-10-28_14-46-38: 0.74 # 0.81 # 0.97 # 0.96 # 0.75 # 0.78 # tabnet 56-1-1-1.9 0.90293 by 407
-    2022-10-28_14-52-22: 0.96 # 0.87 # 0.70 # 0.85 # 0.77 # 0.9  # tabnet 64-1-1-1.9 0.90301 by 407
-    2022-10-28_14-54-39: 1.0  # 1.0  # 0.71 # 0.86 # 0.95 # 0.36 # tabnet 64-1-1-1.9 0.90305 by 407
-    2022-10-27_13-54-13: 0.6  # 0.23 # 0.53 # xgboost 0.90019 by 407
-    2022-10-27_13-55-23: 0.57 # 0.89 # 0.66 # xgboost 0.90021 by 407
+    2022-10-15_01-02-59: 0.45 # MLP dropout 0.90199 by 686, seed 440
+    2022-10-15_01-16-43: 0.51 # MLP_tf dropout 0.90198 by 686, seed 1440
+    2022-10-15_01-34-34: 0.3  # MLP resnet
+    2022-10-15_01-44-29: 0.18 # MLP resnet
+    2022-10-15_12-39-39: 0.2  # 1D CNN 0.90189 by 686
+    2022-10-15_12-50-55: 0.3  # 1D CNN 0.90175 by 686
+    2022-10-14_03-16-10: 0.44 # xgboost
+    2022-10-18_00-16-49: 0.96 # xgboost
+    2022-10-27_12-50-48: 0.35 # tabnet 0.90283 by 407
+    2022-10-27_12-55-11: 0.87 # tabnet 0.90291 by 407
+    2022-10-28_14-34-19: 0.92 # tabnet 56-1-1-1.9 0.90298 by 407
+    2022-10-28_14-46-38: 0.97 # tabnet 56-1-1-1.9 0.90293 by 407
+    2022-10-28_14-52-22: 0.98 # tabnet 64-1-1-1.9 0.90301 by 407
+    2022-10-28_14-54-39: 0.91 # tabnet 64-1-1-1.9 0.90305 by 407
   multi_pretrained:
     2022-10-16_13-08-46: 1 # 1D CNN_tf 0.67085 by 3344
     2022-10-16_13-30-35: 1 # 1D CNN 0.67086 by 3344
     2022-10-17_00-25-56: 1 # 1D CNN 0.67076 by 3104
     2022-10-17_13-19-49: 1 # 1D CNN_tf 0.67069 by 3104
-    2022-10-30_00-30-35: 1 # 1D CNN 0.67084 by 3344 ch 8192
-    # 2022-10-07_06-25-40: 1  # tabnet 0.66899 by 3104
-    # 2022-10-07_06-15-47: 1  # tabnet 0.66904 by 3105
-    # 2022-10-07_12-36-15: 1  # tabnet 0.66900 by 3105, seed 1440
-    # 2022-10-11_03-22-34: 1  # tabnet 0.66918 by 3105, pretrain with train data
-    # 2022-10-11_03-26-46: 1  # tabnet 0.66902 by 3105, pretrain with all data
-    # 2022-10-14_09-27-14: 1  # tabnet 0.66902 by 3345, pretrain with all data
-    # 2022-10-14_12-20-29: 1  # tabnet 0.66903 by 3345, pretrain with all data, seed 2440
-    # 2022-10-19_06-59-06: 1  # tabnet 0.66951 by 3345, pretrain with all data
-    # 2022-10-19_22-19-09: 1  # tabnet 0.66945 by 3345, pretrain with all data
+    2022-11-04_20-41-00: 1 # 1D CNN 0.67080 by 3143
+    # 2022-11-02_02-33-12: 1 # tabnet 0.66943 by 3144
+    # 2022-11-02_02-33-31: 1 # tabnet 0.66942 by 3144
   pretrained:
     5-5-msci22-ensembling-citeseq: 1 # 0.812
     all-in-one-citeseq-multiome-with-keras: 1 # 0.812
     uehara-san-2022-10-28-0749: 1 # 0.811
+    # uehara-san-2022-10-24-1906: 1.5 # ** with day **
   # pretrained:
   #   - dir: ""
   #     model: ""

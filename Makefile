@@ -34,7 +34,7 @@ train: ## Run training.
 		python train.py  # +settings.run_fold=0
 
 debug: ## Run training debug mode.
-	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=0"' \
+	docker run -d --rm -u $(shell id -u):$(shell id -g) --gpus '"device=1,2"' \
 		-v $(shell pwd):/app -w /app/working \
 		--shm-size=256g \
 		kaggle-gpu-with-custom-packages \
