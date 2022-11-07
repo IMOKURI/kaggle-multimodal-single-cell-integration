@@ -374,7 +374,8 @@ inference_params:
     # 2022-11-02_02-33-12: 1 # tabnet 0.66943 by 3144
     # 2022-11-02_02-33-31: 1 # tabnet 0.66942 by 3144
   pretrained:
-    5-5-msci22-ensembling-citeseq: 1 # 0.812
+    # 5-5-msci22-ensembling-citeseq: 1 # 0.812
+    5-5-msci22-ensembling-citeseq-v2: 1 # 0.812
     all-in-one-citeseq-multiome-with-keras: 1 # 0.812
     uehara-san-2022-10-28-0749: 1 # 0.811 No.11
     # uehara-san-2022-11-05-1337: 0.2 # 0.807 No.12 catboost
