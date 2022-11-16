@@ -21,7 +21,7 @@ Therefore, we decided to devise some kind of biological features and to improve 
 
 ## ✨ Result
 
-- Private: xxx
+- Private: 0.769
 - Public: 0.813
 
 
