@@ -21,9 +21,8 @@ Therefore, we decided to devise some kind of biological features and to improve 
 
 ## ✨ Result
 
-- Private: 0.769
-- Public: 0.813
-
+- Private: 0.769808, 41st place
+- Public: 0.813093
 
 
 ## 🖼️ Solution
